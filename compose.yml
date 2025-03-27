@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+
+  llm-multi-backend:
+    build:
+      context: env-llm-multi-backend/
+      dockerfile: Containerfile
+    ports:
+      - "8686:8686"
+    devices:
+      - "nvidia.com/gpu=all"
+    volumes:
+      - ${HOST_CACHE_HUGGINGFACE:-~/.cache/huggingface}:/root/.cache/huggingface
+      - ${HOST_CACHE_HUGGINGFACE:-~/.cache/huggingface}/hub:/models  # tabbyAPI...
+      - ${HOST_CACHE_LLAMACPP:-~/.cache/llama.cpp}:/root/.cache/llama.cpp
+      - ./configs:/configs
+      - ./configs/tabby-api_tokens.yml:/opt/api_tokens.yml
+    working_dir: "/opt"
+    security_opt:
+      - label:disable
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - HUGGING_FACE_HUB_TOKEN
+    ipc: host
+    entrypoint:
+      /usr/local/bin/llama-swap
+    command:
+      -config /configs/llama-swap-config.yaml -listen ':8686'

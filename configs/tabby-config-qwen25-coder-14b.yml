@@ -1,0 +1,26 @@
+network:
+  host: 0.0.0.0  # change to 127.0.0.1 if podman uses --net host
+  port: 8000
+
+# Options for logging
+logging:
+  # Enable prompt logging (default: False).
+  log_prompt: false
+
+  # Enable generation parameter logging (default: False).
+  log_generation_params: true
+
+  # Enable request logging (default: False).
+  # NOTE: Only use this for debugging!
+  log_requests: true
+
+model:
+  model_name: /root/.cache/huggingface/hub/models--bartowski--Qwen2.5-Coder-14B-Instruct-exl2/snapshots/612dc9547c5753e6ceb28c5d05d9db48e99d6989
+  #model_name: /root/.cache/huggingface/hub/models--bartowski--Qwen2.5-Coder-32B-Instruct-exl2/snapshots/53639449af5a7026dacca14c5c3c18868698c05f
+  max_seq_len: 16384
+  cache_mode: Q4
+  
+
+draft_model:
+  draft_model_name: /root/.cache/huggingface/hub/models--LatentWanderer--Qwen_Qwen2.5-Coder-1.5B-Instruct-6.5bpw-h8-exl2/snapshots/5904487d2dc0e0303b2a345eba57dbf920d53053
+  draft_cache_mode: Q4

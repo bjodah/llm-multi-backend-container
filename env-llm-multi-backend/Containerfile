@@ -1,0 +1,32 @@
+#FROM ghcr.io/ggml-org/llama.cpp:server-cuda
+FROM docker.io/vllm/vllm-openai:latest
+
+# install llama.cpp
+RUN \
+    apt-get update --quiet && apt-get install --assume-yes libcurl4-openssl-dev \
+    && git clone https://github.com/ggml-org/llama.cpp /opt/llama.cpp \
+    && cmake \
+         -DGGML_CUDA=ON \
+         -DGGML_CUDA_FA_ALL_QUANTS=ON \
+         -DCMAKE_CUDA_ARCHITECTURES="86" \
+         -DLLAMA_CURL=ON \
+         -S /opt/llama.cpp \
+         -B /opt/llama.cpp/build \
+    && cmake --build /opt/llama.cpp/build --config Release --parallel
+
+# install exllamav2
+RUN \
+    git clone https://github.com/turboderp/exllamav2 /opt/exllamav2 \
+    && cd /opt/exllamav2 \
+    && TORCH_CUDA_ARCH_LIST="8.6" pip install -e .
+
+#python setup.py build_ext -i \
+#    && pip install -e .
+
+RUN \
+    git clone https://github.com/theroyallab/tabbyAPI /opt/tabbyAPI \
+    && cd /opt/tabbyAPI \
+    && pip install -e .
+
+RUN curl -Ls https://github.com/mostlygeek/llama-swap/releases/download/v96/llama-swap_96_linux_amd64.tar.gz \
+    | tar xz -C /usr/local/bin

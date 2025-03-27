@@ -1,0 +1,124 @@
+logRequests: true
+
+healthCheckTimeout: 30
+
+models:
+
+  # the name below works with aider, thanks to:
+  # https://github.com/Aider-AI/aider/blob/8f15269bd063a3c720ced514303b9efcc03fe29f/aider/models.py#L429
+  llamacpp-QwQ-32B:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+           --port 8000
+           --ctx-size 32768
+           --n-gpu-layers 99 
+           --seed "-1" 
+           --prio 2 
+           --temp 0.8 
+           --repeat-penalty 1.1 
+           --dry-multiplier 0.5 
+           --min-p 0.01 
+           --top-k 40 
+           --top-p 0.95 
+           --samplers "top_k;dry;top_p;min_p;temperature;typ_p;xtc" 
+           --dry-allowed-length 5
+           --cache-type-k q8_0 
+           --cache-type-v q4_0 
+           --flash-attn
+           --hf-repo unsloth/QwQ-32B-GGUF:Q4_K_M
+           --hf-repo-draft bartowski/InfiniAILab_QwQ-0.5B-GGUF:IQ4_XS
+           --override-kv tokenizer.ggml.bos_token_id=int:151643
+           #mradermacher/QwQ-0.5B-GGUF:IQ4_XS
+           #--verbose
+    proxy: http://127.0.0.1:8000
+    ttl: 3600
+
+  # the name below works with aider, thanks to:
+  # https://github.com/Aider-AI/aider/blob/8f15269bd063a3c720ced514303b9efcc03fe29f/aider/models.py#L418
+  llamacpp-Qwen2.5-Coder-32B-Instruct:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+           --port 8000
+           --threads 16
+           --ctx-size 32768 
+           --n-gpu-layers 999 
+           --seed "-1" 
+           --temp 0.3
+           --repeat-penalty 1.1 
+           --dry-multiplier 0.5 
+           --min-p 0.01 
+           --top-k 40 
+           --top-p 0.95 
+           --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
+           --cache-type-k q8_0 
+           --cache-type-v q4_0 
+           --flash-attn
+           --hf-repo unsloth/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M
+           --hf-repo-draft unsloth/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q4_K_M
+           #            --verbose
+    proxy: http://127.0.0.1:8000
+    ttl: 3600
+
+  llamacpp-gemma-3-27b-it:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+           --port 8000
+           --threads 16
+           --cache-type-k q8_0
+           --cache-type-v q8_0
+           --flash-attn
+           --gpu-layers 999
+           --hf-repo unsloth/gemma-3-27b-it-GGUF:Q5_K_M
+           --ctx-size 16000
+           --temp 1.0
+           --prio 2
+           --temp 1.0
+           --repeat-penalty 1.0
+           --min-p 0.01
+           --top-k 64
+           --top-p 0.95
+    proxy: http://127.0.0.1:8000
+    ttl: 3600
+
+  llamacpp-Mistral-Small-3.1-24B-Instruct-2503:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+           --port 8000
+           --threads 16
+           --ctx-size 128000
+           --cache-type-k q8_0
+           --cache-type-v q8_0
+           --flash-attn
+           --gpu-layers 64
+           --hf-repo bartowski/mistralai_Mistral-Small-3.1-24B-Instruct-2503-GGUF:Q6_K_L
+           --hf-repo-draft bartowski/alamios_Mistral-Small-3.1-DRAFT-0.5B-GGUF:Q8_0
+           --ctx-size 32000
+           --temp 0.15
+    proxy: http://127.0.0.1:8000
+    ttl: 3600
+
+  exllamav2-QwQ-32B:
+    cmd: >
+      python /opt/tabbyAPI/main.py --config /configs/tabby-config-qwq32b.yml
+    proxy: http://127.0.0.1:8000
+    ttl: 3600
+
+  exllamav2-Qwen2.5-Coder-14B-Instruct:
+    cmd: >
+      python /opt/tabbyAPI/main.py --config /configs/tabby-config-qwen25-coder-14b.yml
+    proxy: http://127.0.0.1:8000
+    ttl: 3600
+
+  # Not working: CUDA out of memory(!?)
+  vllm-SmolLM2-1.7B-Instruct:
+    cmd: >
+      python -m vllm.entrypoints.openai.api_server
+      --api-key duck123
+      --port 8000
+      --model HuggingFaceTB/SmolLM2-1.7B-Instruct
+      --gpu-memory-utilization 0.25
+      --max-model-len 2048
+
+    proxy: http://127.0.0.1:8000
+    ttl: 3600
+    
