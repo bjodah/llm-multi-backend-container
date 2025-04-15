@@ -1,3 +1,7 @@
+# llama.cpp server flags: https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md
+# vLLM serve flags: https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html
+# TabbyAPI config: https://github.com/theroyallab/tabbyAPI/wiki/02.-Server-options
+
 version: "3.9"
 services:
 
@@ -26,3 +30,41 @@ services:
       /usr/local/bin/llama-swap
     command:
       -config /configs/llama-swap-config.yaml -listen ':8686'
+
+  open-webui-demo:
+    image: ghcr.io/open-webui/open-webui:main
+    environment:
+#      - DATA_DIR="/app/backend/data"
+      - ENABLE_OLLAMA_API=False
+      - ENABLE_OPENAI_API=True
+      - OPENAI_API_KEY=sk-empty
+      - OPENAI_API_BASE_URL=http://llm-multi-backend:8686/v1
+      - DEFAULT_MODELS="openai/exllamav2-Qwen2.5-Coder-14B-Instruct"
+      - WEBUI_AUTH=False
+      - DEFAULT_USER_ROLE="admin"
+      - HOST=0.0.0.0 # 127.0.0.1
+      - PORT=33033
+    entrypoint:
+      bash
+    command:
+      start.sh
+      #-c "while true; do sleep 1; done"
+    # extra_hosts:
+    #   - host.docker.internal:host-gateway
+    # network_mode: host 
+    ports:
+      - 33033:33033
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+#      - ./data/open-webui:/app/backend/data:rw
+
+  open-webui-pipelines:
+    image: ghcr.io/open-webui/pipelines:main
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    network_mode: host
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./data/open-webui-pipelines:/app/pipelines:rw

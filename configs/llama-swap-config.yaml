@@ -1,6 +1,6 @@
 logRequests: true
 
-healthCheckTimeout: 30
+healthCheckTimeout: 300  # 5minutes, loading vLLM models can take a while
 
 models:
 
@@ -190,23 +190,26 @@ models:
   vllm-Qwen-QwQ-32B:
     cmd: >
       env VLLM_ATTENTION_BACKEND=FLASHINFER python -m vllm.entrypoints.openai.api_server
+          --api-key sk-empty
           --port 8010
+          --served-model-name vllm-Qwen-QwQ-32B
           --model Qwen/QwQ-32B-AWQ
           --trust-remote-code
-          --gpu-memory-utilization 0.9
+          --gpu-memory-utilization 0.95
           --enable-prefix-caching
           --enable-chunked-prefill
-          --max-model-len 32768
+          --max-model-len 20500
           --disable-sliding-window
           --generation-config Qwen/QwQ-32B-AWQ
           --enable-reasoning
           --reasoning-parser deepseek_r1
-          --enable-auto-tool-choice
           --tool-call-parser hermes 
           --kv-cache-dtype fp8_e5m2
     proxy: http://127.0.0.1:8010
     ttl: 3600
+    # --max-model-len 32768
     #  --kv-cache-dtype fp8_e4m3
+    # --enable-auto-tool-choice
 
   llamacpp-Ling-Coder-lite:
     cmd: >

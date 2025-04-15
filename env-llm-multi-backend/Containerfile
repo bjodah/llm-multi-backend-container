@@ -3,10 +3,11 @@ FROM docker.io/vllm/vllm-openai:latest
 
 
 # git clone https://github.com/ggml-org/llama.cpp /opt/llama.cpp
+# "xd/fix_template_ling" https://github.com/makllama/llama.cpp
 # install llama.cpp
 RUN \
     apt-get update --quiet && apt-get install --assume-yes libcurl4-openssl-dev \
-    && git clone --recursive --depth 1 --branch "xd/fix_template_ling" https://github.com/makllama/llama.cpp /opt/llama.cpp \
+    && git clone --recursive --depth 1 --branch master https://github.com/ggml-org/llama.cpp /opt/llama.cpp \
     && cmake \
          -DGGML_CUDA=ON \
          -DGGML_CUDA_FA_ALL_QUANTS=ON \
