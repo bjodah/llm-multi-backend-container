@@ -27,9 +27,9 @@ services:
       - HUGGING_FACE_HUB_TOKEN
     ipc: host
     entrypoint:
-      /usr/local/bin/llama-swap
+      /usr/local/bin/watch-and-restart-llama-swap.sh
     command:
-      -config /configs/llama-swap-config.yaml -listen ':8686'
+      /configs/llama-swap-config.yaml
 
   open-webui-demo:
     image: ghcr.io/open-webui/open-webui:main
@@ -57,7 +57,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-#      - ./data/open-webui:/app/backend/data:rw
+      - ./data/open-webui:/app/backend/data
 
   open-webui-pipelines:
     image: ghcr.io/open-webui/pipelines:main

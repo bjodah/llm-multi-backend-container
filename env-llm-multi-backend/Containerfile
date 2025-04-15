@@ -33,3 +33,7 @@ RUN \
 
 RUN curl -Ls https://github.com/mostlygeek/llama-swap/releases/download/v100/llama-swap_100_linux_amd64.tar.gz \
     | tar xz -C /usr/local/bin
+
+COPY watch-and-restart-llama-swap.sh /usr/local/bin/
+
+RUN apt-get update --quiet && apt-get install --quiet --assume-yes inotify-tools

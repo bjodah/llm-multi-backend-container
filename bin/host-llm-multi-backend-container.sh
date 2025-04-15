@@ -26,9 +26,12 @@ if [ ! -v HUGGING_FACE_HUB_TOKEN ]; then
     >&2 echo "No environment variable HUGGING_FACE_HUB_TOKEN?"
     exit 1
 fi
+echo "You can view open-webui: $ xdg-open http://localhost:33033/"
 ( set -x; env \
     HOST_CACHE_HUGGINGFACE="$(realpath $HOME/.cache/huggingface)" \
     HOST_CACHE_LLAMACPP="$(realpath $HOME/.cache/llama.cpp)" \
     $COMPOSE_CMD \
     --file "$repo_root"/compose.yml \
     up "$@" )
+
+

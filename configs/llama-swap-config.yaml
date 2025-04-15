@@ -165,22 +165,23 @@ models:
 
   exllamav2-QwQ-32B:
     cmd: >
-      python /opt/tabbyAPI/main.py --config /configs/tabby-config-qwq32b.yml
+      python3 /opt/tabbyAPI/main.py --config /configs/tabby-config-qwq32b.yml
     proxy: http://127.0.0.1:8007
     ttl: 3600
 
   exllamav2-Qwen2.5-Coder-14B-Instruct:
     cmd: >
-      python /opt/tabbyAPI/main.py --config /configs/tabby-config-qwen25-coder-14b.yml
+      python3 /opt/tabbyAPI/main.py --config /configs/tabby-config-qwen25-coder-14b.yml
     proxy: http://127.0.0.1:8008
     ttl: 3600
 
   # Not working: CUDA out of memory(!?)
   vllm-SmolLM2-1.7B-Instruct:
     cmd: >
-      python -m vllm.entrypoints.openai.api_server
+      python3 -m vllm.entrypoints.openai.api_server
           --api-key sk-empty
           --port 8009
+          --served-model-name vllm-SmolLM2-1.7B-Instruct
           --model HuggingFaceTB/SmolLM2-1.7B-Instruct
           --gpu-memory-utilization 0.5
           --max-model-len 2048
@@ -189,7 +190,7 @@ models:
 
   vllm-Qwen-QwQ-32B:
     cmd: >
-      env VLLM_ATTENTION_BACKEND=FLASHINFER python -m vllm.entrypoints.openai.api_server
+      env VLLM_ATTENTION_BACKEND=FLASHINFER python3 -m vllm.entrypoints.openai.api_server
           --api-key sk-empty
           --port 8010
           --served-model-name vllm-Qwen-QwQ-32B
@@ -234,3 +235,35 @@ models:
            #--verbose
     proxy: http://127.0.0.1:8011
     ttl: 3600
+
+  vllm-Qwen2.5-VL-32B:
+    cmd: >
+      python3 -m vllm.entrypoints.openai.api_server
+          --api-key sk-empty
+          --port 8013
+          --served-model-name vllm-Qwen2.5-VL-32B
+          --model Qwen/Qwen2.5-VL-32B-Instruct-AWQ
+          --trust-remote-code
+          --gpu-memory-utilization 0.97
+          --enable-chunked-prefill
+          --max-model-len 8192
+          --kv-cache-dtype fp8_e5m2
+    proxy: http://127.0.0.1:8013
+    ttl: 3600
+  
+  vllm-Qwen2.5-VL-7B:
+    cmd: >
+      python3 -m vllm.entrypoints.openai.api_server
+          --api-key sk-empty
+          --port 8014
+          --served-model-name vllm-Qwen2.5-VL-7B
+          --model Qwen/Qwen2.5-VL-7B-Instruct-AWQ
+          --trust-remote-code
+          --gpu-memory-utilization 0.95
+          --enable-chunked-prefill
+          --max-model-len 32768
+          --max-num-batched-tokens 32768
+          --kv-cache-dtype fp8_e5m2
+    proxy: http://127.0.0.1:8014
+    ttl: 3600
+  
