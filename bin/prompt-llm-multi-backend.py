@@ -46,8 +46,9 @@ def _litellm_completion_kw(model: str, content: str, opts: str):
     if model not in models:
         raise ValueError(f"Unknown model: {model}, choose from: {', '.join(models)}")
     kw = {}
-    for k, v in map(lambda kv: kv.split('='), opts.split(';')):
-        kw[k] = _known_opts[k](v)
+    if len(opts) > 0:
+        for k, v in map(lambda kv: kv.split('='), opts.split(';')):
+            kw[k] = _known_opts[k](v)
     return kw | dict(
         model=f"openai/{model}",
         api_base="http://localhost:8686/v1",

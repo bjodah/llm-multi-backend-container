@@ -10,14 +10,16 @@ models:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
            --port 8001
-           --ctx-size 32768
-           --n-gpu-layers 99 
+           --threads 16
+           --metrics
+           --ctx-size 29000
+           --n-gpu-layers 99
            --seed "-1" 
            --prio 2 
            --temp 0.8 
            --repeat-penalty 1.1 
            --dry-multiplier 0.5 
-           --min-p 0.01 
+           --min-p 0.01
            --top-k 40 
            --top-p 0.95 
            --samplers "top_k;dry;top_p;min_p;temperature;typ_p;xtc" 
@@ -28,8 +30,14 @@ models:
            --hf-repo unsloth/QwQ-32B-GGUF:Q4_K_M
            --hf-repo-draft bartowski/InfiniAILab_QwQ-0.5B-GGUF:IQ4_XS
            --override-kv tokenizer.ggml.bos_token_id=int:151643
+           --jinja
+           #--ctx-size 32768
            #mradermacher/QwQ-0.5B-GGUF:IQ4_XS
            #--verbose
+           # --draft-max 16
+           # --draft-min 5
+           # --draft-p-min 0.5
+
     proxy: http://127.0.0.1:8001
     ttl: 3600
 
@@ -102,6 +110,26 @@ models:
     proxy: http://127.0.0.1:8004
     ttl: 3600
 
+  llamacpp-gemma-3-1b-it:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+           --port 8012
+           --threads 16
+           --cache-type-k q4_0
+           --cache-type-v q4_0
+           --flash-attn
+           --gpu-layers 999
+           --hf-repo unsloth/gemma-3-1b-it-GGUF:Q8_0
+           --ctx-size 16000
+           --temp 1.0
+           --prio 2
+           --temp 1.0
+           --repeat-penalty 1.0
+           --min-p 0.01
+           --top-k 64
+           --top-p 0.95
+    proxy: http://127.0.0.1:8012
+    ttl: 3600
 
   llamacpp-Mistral-Small-3.1-24B-Instruct-2503:
     cmd: >

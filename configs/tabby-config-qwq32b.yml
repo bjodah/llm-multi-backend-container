@@ -23,7 +23,7 @@ model:
 
 draft_model:
   # env HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download cgus/Qwen2.5-0.5B-Instruct-exl2 --revision 4.5bpw-h6
-  draft_model_name: /root/.cache/huggingface/hub/models--cgus--Qwen2.5-0.5B-Instruct-exl2/snapshots/504c367cb6a5bc94dab41bdfd99ea5db3f4d1f77
+  draft_model_name: models--cgus--Qwen2.5-0.5B-Instruct-exl2/snapshots/504c367cb6a5bc94dab41bdfd99ea5db3f4d1f77
   max_seq_len: 4000
   # Possible values: 'FP16', 'Q8', 'Q6', 'Q4'.
   draft_cache_mode: Q4
