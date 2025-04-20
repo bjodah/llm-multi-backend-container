@@ -277,3 +277,22 @@ models:
   #         # --quant int4
   #   proxy: http://127.0.0.1:8015
   #   ttl: 3600
+
+  llamacpp-llama4-maverick:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --port 8016
+        --ctx-size 16384
+        --seed "-1"
+        --prio 2
+        --temp 0.6
+        --min-p 0.01
+        --top-k 40
+        --top-p 0.9
+        --model /root/.cache/huggingface/hub/models--unsloth--Llama-4-Maverick-17B-128E-Instruct-GGUF/snapshots/d68803567c756664117d0de7da050bf0ec1bb092/UD-Q2_K_XL/Llama-4-Maverick-17B-128E-Instruct-UD-Q2_K_XL-00001-of-00004.gguf
+        -ot '([0-9]+).ffn_.*_exps.=CPU'
+        --n-gpu-layers 99
+        --jinja
+
+    proxy: http://127.0.0.1:8016
+    ttl: 3600
