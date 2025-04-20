@@ -237,19 +237,19 @@ models:
     proxy: http://127.0.0.1:8011
     ttl: 3600
 
-  llamacpp-Qwen2.5-VL-32B:
-    cmd: >
-      /opt/llama.cpp/build/bin/llama-server
-        --port 8013
-        --ctx-size 4096
-        --cache-type-k q8_0
-        --cache-type-v q4_0
-        --flash-attn
-        --n-gpu-layers 64
-        --hf-repo mradermacher/Qwen2.5-VL-32B-Instruct-i1-GGUF:i1-IQ3_S
-        --temp 0.15
-    proxy: http://127.0.0.1:8013
-    ttl: 3600
+  # llamacpp-Qwen2.5-VL-32B:
+  #   cmd: >
+  #     /opt/llama.cpp/build/bin/llama-server
+  #       --port 8013
+  #       --ctx-size 4096
+  #       --cache-type-k q8_0
+  #       --cache-type-v q4_0
+  #       --flash-attn
+  #       --n-gpu-layers 64
+  #       --hf-repo mradermacher/Qwen2.5-VL-32B-Instruct-i1-GGUF:i1-IQ3_S
+  #       --temp 0.15
+  #   proxy: http://127.0.0.1:8013
+  #   ttl: 3600
   
   vllm-Qwen2.5-VL-7B:
     cmd: >
@@ -268,12 +268,12 @@ models:
     # (--max-model-len) 32768
     # --enable-chunked-prefill
 
-  phildougherty-Qwen2.5-VL-7B:
-    cmd: >
-      python3 /phildougherty-qwen-vl-api/app.py
-          --model Qwen2.5-VL-7B-Instruct
-          --port 8015
-          --quant int8
-          # --quant int4
-    proxy: http://127.0.0.1:8015
-    ttl: 3600
+  # phildougherty-Qwen2.5-VL-7B:
+  #   cmd: >
+  #     python3 /phildougherty-qwen-vl-api/app.py
+  #         --model Qwen2.5-VL-7B-Instruct
+  #         --port 8015
+  #         --quant int8
+  #         # --quant int4
+  #   proxy: http://127.0.0.1:8015
+  #   ttl: 3600
