@@ -37,3 +37,5 @@ RUN curl -Ls https://github.com/mostlygeek/llama-swap/releases/download/v100/lla
 COPY watch-and-restart-llama-swap.sh /usr/local/bin/
 
 RUN apt-get update --quiet && apt-get install --quiet --assume-yes inotify-tools
+ENV PIP_ROOT_USER_ACTION=ignore
+RUN python3 -m pip install flash-attn qwen-vl-utils[decord] torchvision fastapi uvicorn torch pillow gputil 

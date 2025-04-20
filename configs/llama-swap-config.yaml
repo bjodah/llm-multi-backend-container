@@ -9,34 +9,33 @@ models:
   llamacpp-QwQ-32B:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-           --port 8001
-           --threads 16
-           --metrics
-           --ctx-size 29000
-           --n-gpu-layers 99
-           --seed "-1" 
-           --prio 2 
-           --temp 0.8 
-           --repeat-penalty 1.1 
-           --dry-multiplier 0.5 
-           --min-p 0.01
-           --top-k 40 
-           --top-p 0.95 
-           --samplers "top_k;dry;top_p;min_p;temperature;typ_p;xtc" 
-           --dry-allowed-length 5
-           --cache-type-k q8_0 
-           --cache-type-v q4_0 
-           --flash-attn
-           --hf-repo unsloth/QwQ-32B-GGUF:Q4_K_M
-           --hf-repo-draft bartowski/InfiniAILab_QwQ-0.5B-GGUF:IQ4_XS
-           --override-kv tokenizer.ggml.bos_token_id=int:151643
-           --jinja
-           #--ctx-size 32768
-           #mradermacher/QwQ-0.5B-GGUF:IQ4_XS
-           #--verbose
-           # --draft-max 16
-           # --draft-min 5
-           # --draft-p-min 0.5
+        --port 8001
+        --ctx-size 29000
+        --seed "-1"
+        --prio 2
+        --temp 0.8
+        --repeat-penalty 1.1
+        --dry-multiplier 0.5
+        --min-p 0.01
+        --top-k 40
+        --top-p 0.95
+        --samplers "top_k;dry;top_p;min_p;temperature;typ_p;xtc"
+        --dry-allowed-length 5
+        --cache-type-k q8_0
+        --cache-type-v q4_0
+        --flash-attn
+        --hf-repo unsloth/QwQ-32B-GGUF:Q4_K_M
+        --hf-repo-draft bartowski/InfiniAILab_QwQ-0.5B-GGUF:Q8_0
+        --n-gpu-layers 99
+        --n-gpu-layers-draft 99
+        --override-kv tokenizer.ggml.bos_token_id=int:151643
+        --jinja
+        #--ctx-size 32768
+        #mradermacher/QwQ-0.5B-GGUF:IQ4_XS
+        #--verbose
+        # --draft-max 16
+        # --draft-min 5
+        # --draft-p-min 0.5
 
     proxy: http://127.0.0.1:8001
     ttl: 3600
@@ -46,24 +45,25 @@ models:
   llamacpp-Qwen2.5-Coder-32B-Instruct:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-           --port 8002
-           --threads 16
-           --ctx-size 32768 
-           --n-gpu-layers 999 
-           --seed "-1" 
-           --temp 0.3
-           --repeat-penalty 1.1 
-           --dry-multiplier 0.5 
-           --min-p 0.01 
-           --top-k 40 
-           --top-p 0.95 
-           --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
-           --cache-type-k q8_0 
-           --cache-type-v q4_0 
-           --flash-attn
-           --hf-repo unsloth/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M
-           --hf-repo-draft unsloth/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q4_K_M
-           #            --verbose
+        --port 8002
+        --ctx-size 32768 
+        --seed "-1" 
+        --temp 0.3
+        --repeat-penalty 1.1 
+        --dry-multiplier 0.5 
+        --min-p 0.01 
+        --top-k 40 
+        --top-p 0.95 
+        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
+        --cache-type-k q8_0 
+        --cache-type-v q4_0 
+        --flash-attn
+        --hf-repo unsloth/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M
+        #--hf-repo-draft unsloth/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q4_K_M
+        --n-gpu-layers 999 
+        #--n-gpu-layers-draft 999
+
+        #            --verbose
     proxy: http://127.0.0.1:8002
     ttl: 3600
 
@@ -71,141 +71,142 @@ models:
     # we could use Q5_K_M, if no other processes run on GPU...
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-           --port 8003
-           --threads 16
-           --cache-type-k q8_0
-           --cache-type-v q8_0
-           --flash-attn
-           --gpu-layers 999
-           --hf-repo unsloth/gemma-3-27b-it-GGUF:Q4_K_M
-           --ctx-size 16000
-           --temp 1.0
-           --prio 2
-           --temp 1.0
-           --repeat-penalty 1.0
-           --min-p 0.01
-           --top-k 64
-           --top-p 0.95
+        --port 8003
+        --cache-type-k q8_0
+        --cache-type-v q8_0
+        --flash-attn
+        --hf-repo google/gemma-3-27b-it-qat-q4_0-gguf
+        --hf-repo-draft google/gemma-3-1b-it-qat-q4_0-gguf
+        --n-gpu-layers 999 
+        --n-gpu-layers-draft 999
+        --ctx-size 12000
+        --temp 1.0
+        --prio 2
+        --temp 1.0
+        --repeat-penalty 1.0
+        --min-p 0.01
+        --top-k 64
+        --top-p 0.95
+        # unsloth/gemma-3-27b-it-GGUF:Q4_K_M
     proxy: http://127.0.0.1:8003
     ttl: 3600
 
   llamacpp-gemma-3-4b-it:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-           --port 8004
-           --threads 16
-           --cache-type-k q4_0
-           --cache-type-v q4_0
-           --flash-attn
-           --gpu-layers 999
-           --hf-repo unsloth/gemma-3-4b-it-GGUF:Q4_K_M
-           --ctx-size 16000
-           --temp 1.0
-           --prio 2
-           --temp 1.0
-           --repeat-penalty 1.0
-           --min-p 0.01
-           --top-k 64
-           --top-p 0.95
+        --port 8004
+        --cache-type-k q4_0
+        --cache-type-v q4_0
+        --flash-attn
+        --n-gpu-layers 999
+        --hf-repo google/gemma-3-4b-it-qat-q4_0-gguf # unsloth/gemma-3-4b-it-GGUF:Q4_K_M
+        --ctx-size 16000
+        --temp 1.0
+        --prio 2
+        --temp 1.0
+        --repeat-penalty 1.0
+        --min-p 0.01
+        --top-k 64
+        --top-p 0.95
     proxy: http://127.0.0.1:8004
     ttl: 3600
 
   llamacpp-gemma-3-1b-it:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-           --port 8012
-           --threads 16
-           --cache-type-k q4_0
-           --cache-type-v q4_0
-           --flash-attn
-           --gpu-layers 999
-           --hf-repo unsloth/gemma-3-1b-it-GGUF:Q8_0
-           --ctx-size 16000
-           --temp 1.0
-           --prio 2
-           --temp 1.0
-           --repeat-penalty 1.0
-           --min-p 0.01
-           --top-k 64
-           --top-p 0.95
+        --port 8012
+        --cache-type-k q4_0
+        --cache-type-v q4_0
+        --flash-attn
+        --n-gpu-layers 999
+        --hf-repo unsloth/gemma-3-1b-it-GGUF:Q8_0
+        --ctx-size 16000
+        --temp 1.0
+        --prio 2
+        --temp 1.0
+        --repeat-penalty 1.0
+        --min-p 0.01
+        --top-k 64
+        --top-p 0.95
     proxy: http://127.0.0.1:8012
     ttl: 3600
 
   llamacpp-Mistral-Small-3.1-24B-Instruct-2503:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-           --port 8005
-           --threads 16
-           --cache-type-k q8_0
-           --cache-type-v q8_0
-           --flash-attn
-           --gpu-layers 64
-           --hf-repo bartowski/mistralai_Mistral-Small-3.1-24B-Instruct-2503-GGUF:Q6_K_L
-           --hf-repo-draft bartowski/alamios_Mistral-Small-3.1-DRAFT-0.5B-GGUF:Q8_0
-           --ctx-size 32000
-           --temp 0.15
+        --port 8005
+        --cache-type-k q8_0
+        --cache-type-v q8_0
+        --flash-attn
+        --hf-repo bartowski/mistralai_Mistral-Small-3.1-24B-Instruct-2503-GGUF:Q6_K_L
+        --hf-repo-draft bartowski/alamios_Mistral-Small-3.1-DRAFT-0.5B-GGUF:Q8_0
+        --n-gpu-layers 99
+        --n-gpu-layers-draft 99
+        --ctx-size 32000
+        --temp 0.15
     proxy: http://127.0.0.1:8005
     ttl: 3600
 
   llamacpp-phi-4:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-           --port 8006
-           --threads 16
-           --ctx-size 4096
-           --cache-type-k q4_0
-           --cache-type-v q4_0
-           --flash-attn
-           --gpu-layers 64
-           --hf-repo unsloth/phi-4-GGUF:Q2_K_L
-           --temp 0.15
+        --port 8006
+        --ctx-size 4096
+        --cache-type-k q4_0
+        --cache-type-v q4_0
+        --flash-attn
+        --n-gpu-layers 64
+        --hf-repo unsloth/phi-4-GGUF:Q2_K_L
+        --temp 0.15
     proxy: http://127.0.0.1:8006
     ttl: 3600
 
 
   exllamav2-QwQ-32B:
     cmd: >
-      python3 /opt/tabbyAPI/main.py --config /configs/tabby-config-qwq32b.yml
+      python3 /opt/tabbyAPI/main.py
+        --config /configs/tabby-config-qwq32b.yml
     proxy: http://127.0.0.1:8007
     ttl: 3600
 
   exllamav2-Qwen2.5-Coder-14B-Instruct:
     cmd: >
-      python3 /opt/tabbyAPI/main.py --config /configs/tabby-config-qwen25-coder-14b.yml
+      python3 /opt/tabbyAPI/main.py
+        --config /configs/tabby-config-qwen25-coder-14b.yml
     proxy: http://127.0.0.1:8008
     ttl: 3600
 
-  # Not working: CUDA out of memory(!?)
   vllm-SmolLM2-1.7B-Instruct:
     cmd: >
       python3 -m vllm.entrypoints.openai.api_server
-          --api-key sk-empty
-          --port 8009
-          --served-model-name vllm-SmolLM2-1.7B-Instruct
-          --model HuggingFaceTB/SmolLM2-1.7B-Instruct
-          --gpu-memory-utilization 0.5
-          --max-model-len 2048
+        --api-key sk-empty
+        --port 8009
+        --served-model-name vllm-SmolLM2-1.7B-Instruct
+        --model HuggingFaceTB/SmolLM2-1.7B-Instruct
+        --gpu-memory-utilization 0.5
+        --max-model-len 2048
     proxy: http://127.0.0.1:8009
     ttl: 3600
 
   vllm-Qwen-QwQ-32B:
     cmd: >
-      env VLLM_ATTENTION_BACKEND=FLASHINFER python3 -m vllm.entrypoints.openai.api_server
-          --api-key sk-empty
-          --port 8010
-          --served-model-name vllm-Qwen-QwQ-32B
-          --model Qwen/QwQ-32B-AWQ
-          --trust-remote-code
-          --gpu-memory-utilization 0.95
-          --enable-prefix-caching
-          --enable-chunked-prefill
-          --max-model-len 20500
-          --disable-sliding-window
-          --generation-config Qwen/QwQ-32B-AWQ
-          --enable-reasoning
-          --reasoning-parser deepseek_r1
-          --tool-call-parser hermes 
-          --kv-cache-dtype fp8_e5m2
+      env VLLM_ATTENTION_BACKEND=FLASHINFER python3
+        -m vllm.entrypoints.openai.api_server
+        --api-key sk-empty
+        --port 8010
+        --served-model-name vllm-Qwen-QwQ-32B
+        --model Qwen/QwQ-32B-AWQ
+        --trust-remote-code
+        --gpu-memory-utilization 0.95
+        --enable-prefix-caching
+        --enable-chunked-prefill
+        --max-model-len 20500
+        --disable-sliding-window
+        --generation-config Qwen/QwQ-32B-AWQ
+        --enable-reasoning
+        --reasoning-parser deepseek_r1
+        --tool-call-parser hermes 
+        --kv-cache-dtype fp8_e5m2
     proxy: http://127.0.0.1:8010
     ttl: 3600
     # --max-model-len 32768
@@ -236,18 +237,17 @@ models:
     proxy: http://127.0.0.1:8011
     ttl: 3600
 
-  vllm-Qwen2.5-VL-32B:
+  llamacpp-Qwen2.5-VL-32B:
     cmd: >
-      python3 -m vllm.entrypoints.openai.api_server
-          --api-key sk-empty
-          --port 8013
-          --served-model-name vllm-Qwen2.5-VL-32B
-          --model Qwen/Qwen2.5-VL-32B-Instruct-AWQ
-          --trust-remote-code
-          --gpu-memory-utilization 0.97
-          --enable-chunked-prefill
-          --max-model-len 8192
-          --kv-cache-dtype fp8_e5m2
+      /opt/llama.cpp/build/bin/llama-server
+        --port 8013
+        --ctx-size 4096
+        --cache-type-k q8_0
+        --cache-type-v q4_0
+        --flash-attn
+        --n-gpu-layers 64
+        --hf-repo mradermacher/Qwen2.5-VL-32B-Instruct-i1-GGUF:i1-IQ3_S
+        --temp 0.15
     proxy: http://127.0.0.1:8013
     ttl: 3600
   
@@ -259,7 +259,7 @@ models:
           --served-model-name vllm-Qwen2.5-VL-7B
           --model Qwen/Qwen2.5-VL-7B-Instruct-AWQ
           --trust-remote-code
-          --gpu-memory-utilization 0.95
+          --gpu-memory-utilization 0.954330
           --max-model-len 8192
           --max-num-batched-tokens 32768
     proxy: http://127.0.0.1:8014
@@ -268,3 +268,12 @@ models:
     # (--max-model-len) 32768
     # --enable-chunked-prefill
 
+  phildougherty-Qwen2.5-VL-7B:
+    cmd: >
+      python3 /phildougherty-qwen-vl-api/app.py
+          --model Qwen2.5-VL-7B-Instruct
+          --port 8015
+          --quant int8
+          # --quant int4
+    proxy: http://127.0.0.1:8015
+    ttl: 3600

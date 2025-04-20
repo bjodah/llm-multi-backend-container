@@ -43,18 +43,35 @@ _known_opts = dict(  # a subset of kwargs accepted by litellm's `completion` fun
 )
 
 def _litellm_completion_kw(model: str, content: str, opts: str):
-    if model not in models:
-        raise ValueError(f"Unknown model: {model}, choose from: {', '.join(models)}")
-    kw = {}
+    kw = dict(
+        messages=[{"content": content, "role": "user"}]
+    )
     if len(opts) > 0:
         for k, v in map(lambda kv: kv.split('='), opts.split(';')):
             kw[k] = _known_opts[k](v)
-    return kw | dict(
-        model=f"openai/{model}",
-        api_base="http://localhost:8686/v1",
-        api_key="sk-empty",
-        messages=[{"content": content, "role": "user"}]
-    )
+    if '/' in model:
+        kw['model'] = model
+        if model.startswith('openrouter/'):
+            kw['extra_body'] = {
+                "provider": {
+                    "order": [
+                        "lambda",
+                        "nebius",
+                        "novita",
+                        "deepseek"
+                    ]
+                }
+            }
+    else:
+        if model not in models:
+            raise ValueError(f"Unknown model: {model}, choose from: {', '.join(models)}")
+        kw |= dict(
+            model=f"openai/{model}",
+            api_base="http://localhost:8686/v1",
+            api_key="sk-empty",
+        )
+
+    return kw
 
 def query(path: str='', txt: str='', model=models[0], opts=''):
     import litellm

@@ -1,6 +1,9 @@
-# llama.cpp server flags: https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md
-# vLLM serve flags: https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html
-# TabbyAPI config: https://github.com/theroyallab/tabbyAPI/wiki/02.-Server-options
+# llama.cpp server flags:
+#   https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md
+# vLLM serve flags:
+#   https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html
+# TabbyAPI config:
+#   https://github.com/theroyallab/tabbyAPI/wiki/02.-Server-options
 
 version: "3.9"
 services:
@@ -19,12 +22,16 @@ services:
       - ${HOST_CACHE_LLAMACPP:-~/.cache/llama.cpp}:/root/.cache/llama.cpp
       - ./configs:/configs
       - ./configs/tabby-api_tokens.yml:/api_tokens.yml
+      - ./qwen2.5-VL-inference-openai:/phildougherty-qwen-vl-api
     working_dir: "/"
     security_opt:
       - label:disable
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - HUGGING_FACE_HUB_TOKEN
+      - HF_TOKEN=${HUGGING_FACE_HUB_TOKEN}
+      - LLAMA_ARG_THREADS=16
+      - LLAMA_ARG_ENDPOINT_METRICS=1
     ipc: host
     entrypoint:
       /usr/local/bin/watch-and-restart-llama-swap.sh
