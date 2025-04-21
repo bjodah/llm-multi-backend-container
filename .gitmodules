@@ -1,3 +1,4 @@
 [submodule "qwen2.5-VL-inference-openai"]
 	path = qwen2.5-VL-inference-openai
 	url = github.com:bjodah/qwen2.5-VL-inference-openai
+        branch = adapt-paths-for-my-machine
