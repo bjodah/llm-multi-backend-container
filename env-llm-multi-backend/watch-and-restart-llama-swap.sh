@@ -14,15 +14,20 @@ while true; do
     # Start the process again
     /usr/local/bin/llama-swap -config $1 -listen :8686 &
     PID=$!
-    echo "Started llama-swap with PID $PID"
+    >&2 echo "Started llama-swap with PID $PID"
 
     # Wait for modifications in the specified directory or file
     inotifywait -e modify "$1"
 
     # Check if process exists before sending signal
     if kill -0 $PID 2>/dev/null; then
-        echo "Sending SIGTERM to $PID"
-        kill -SIGTERM $PID
+        >&2 echo "Sending SIGTERM to $PID (timeout 10s)"
+        timeout 10s kill -SIGTERM $PID
+        wait $PID
+        if kill -0 $PID 2>/dev/null; then
+            >&2 echo "Sending SIGKILL to $PID"
+            kill -SIGKILL $PID
+        fi
         wait $PID
     else
         echo "Process $PID no longer exists"

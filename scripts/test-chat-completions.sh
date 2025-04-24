@@ -12,8 +12,9 @@ query_chat() {
          -d '{"model": "'"$1"'", "messages": [{"role": "user", "content": "'"$2"'"}]}' | tee $logfile | jq '.choices[0].message.content'
     echo "Full log found in: $logfile"
 }
-query_chat llamacpp-llama4-maverick "Answer only with the missing word: The capital of Estonia is"
+query_chat llamacpp-glm-4-32b-0414 "Answer only with the missing word: The capital of Latvia is"
 exit
+query_chat llamacpp-llama4-maverick "Answer only with the missing word: The capital of Estonia is"
 query_chat vllm-Qwen-QwQ-32B "Answer only with the missing word: The capital of Latvia is"
 query_chat llamacpp-Ling-Coder-lite "Answer only with the missing word: The capital of the Netherlands is"
 query_chat vllm-SmolLM2-1.7B-Instruct "Answer only with the missing word: The capital of Poland is"

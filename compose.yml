@@ -20,9 +20,11 @@ services:
       - ${HOST_CACHE_HUGGINGFACE:-~/.cache/huggingface}:/root/.cache/huggingface
       - ${HOST_CACHE_HUGGINGFACE:-~/.cache/huggingface}/hub:/models  # tabbyAPI...
       - ${HOST_CACHE_LLAMACPP:-~/.cache/llama.cpp}:/root/.cache/llama.cpp
+      - ./logs:/logs
       - ./configs:/configs
       - ./configs/tabby-api_tokens.yml:/api_tokens.yml
       - ./qwen2.5-VL-inference-openai:/phildougherty-qwen-vl-api
+      - /opt/gguf-unsloth-maverick:/opt/gguf-unsloth-maverick  # my machine only...
     working_dir: "/"
     security_opt:
       - label:disable
