@@ -12,7 +12,7 @@ def gptel():
 (gptel-make-openai "llm-multi-backend"
   :stream t
   :protocol "http"
-  :host "localhost:8686"
+  :host (concat (if (string= (getenv "container") "podman") "host.docker.internal" "localhost") ":8686")
   :key "sk-empty"
   :models '({' '.join(models)})
 )
@@ -29,7 +29,8 @@ def minuet():
     (setq minuet-provider 'openai-fim-compatible)
     (setq minuet-n-completions 1)
     (setq minuet-context-window 512)
-    (plist-put minuet-openai-fim-compatible-options :end-point "http://localhost:8686/v1/completions")
+    (plist-put minuet-openai-fim-compatible-options :end-point
+        (concat (if (string= (getenv "container") "podman") "http://host.docker.internal" "http://localhost") ":8686/v1/completions"))
     (plist-put minuet-openai-fim-compatible-options :name "llm-multi-backend")
     (plist-put minuet-openai-fim-compatible-options :api-key "sk-empty")
     (plist-put minuet-openai-fim-compatible-options :model "{model}")

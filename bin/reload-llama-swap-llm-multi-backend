@@ -1,0 +1,2 @@
+#!/bin/bash
+podman exec llm-mb_llama-swapper pkill llama-swap

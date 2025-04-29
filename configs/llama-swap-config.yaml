@@ -1,15 +1,14 @@
 # llama-swap config. Note that there are environment variables set in compose.yml that
-# affects the behviour of some inference engines, grep for e.g. LLAMA_ARG_THREADS
+# affects the behviour of some inference engines, grep for e.g. LLAMA_ARG_THREADS, VLLM_API_KEY, etc.
 healthCheckTimeout: 900  # 15minutes, downloading models can take a while
 
-logLevel: warn
+logLevel: debug # info warn
 
 # # meta-commentary
 #     llamac.pp)
 #         - I'm now avoiding `--repeat-penalty`, preferring `--dry-multiplifer`
 #         `--prio` flag (need to figure out what does values do, responsible for spinning 1 thread 100%?)
 #         - No longer setting `--seed "-1"`, default and respawning llama-swap for setting deterministic is not practical.
-#         - 
 
 
 models:
@@ -19,31 +18,23 @@ models:
   llamacpp-QwQ-32B:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-QwQ-32B
+        --log-file /logs/llamacpp-QwQ-32B.log
         --port 8001
         --hf-repo unsloth/QwQ-32B-GGUF:Q4_K_M
-        --hf-repo-draft bartowski/InfiniAILab_QwQ-0.5B-GGUF:Q8_0
         --n-gpu-layers 99
-        --n-gpu-layers-draft 99
-        --override-kv tokenizer.ggml.bos_token_id=int:151643
         --jinja
-        --ctx-size 29000
+        --ctx-size 32768
         --cache-type-k q8_0
-        --cache-type-v q4_0
+        --cache-type-v q8_0
         --flash-attn
         --samplers "top_k;dry;top_p;min_p;temperature;typ_p;xtc"
-        --top-k 40
-        --dry-multiplier 0.5
+        --top-k 50
+        --dry-multiplier 0.25
         --dry-allowed-length 5
-        --top-p 0.95
+        --top-p 0.92
         --min-p 0.01
-        --temp 0.8
-        #--ctx-size 32768
-        #mradermacher/QwQ-0.5B-GGUF:IQ4_XS
+        --temp 0.5  # was 0.6
         #--verbose
-        # --draft-max 16
-        # --draft-min 5
-        # --draft-p-min 0.5
 
     proxy: http://127.0.0.1:8001
     ttl: 3600
@@ -53,7 +44,7 @@ models:
   llamacpp-Qwen2.5-Coder-32B-Instruct:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen2.5-Coder-32B-Instruct
+        --log-file /logs/llamacpp-Qwen2.5-Coder-32B-Instruct.log
         --port 8002
         --hf-repo unsloth/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M
         #--hf-repo-draft unsloth/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q4_K_M
@@ -76,7 +67,7 @@ models:
   llamacpp-gemma-3-27b-it:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-gemma-3-27b-it
+        --log-file /logs/llamacpp-gemma-3-27b-it.log
         --port 8003
         --hf-repo google/gemma-3-27b-it-qat-q4_0-gguf
         --n-gpu-layers 999
@@ -99,7 +90,7 @@ models:
   llamacpp-gemma-3-4b-it:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-gemma-3-4b-it
+        --log-file /logs/llamacpp-gemma-3-4b-it.log
         --port 8004
         --hf-repo google/gemma-3-4b-it-qat-q4_0-gguf # unsloth/gemma-3-4b-it-GGUF:Q4_K_M
         --cache-type-k q4_0
@@ -120,7 +111,7 @@ models:
   llamacpp-gemma-3-1b-it:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-gemma-3-1b-it
+        --log-file /logs/llamacpp-gemma-3-1b-it.log
         --port 8012
         --hf-repo unsloth/gemma-3-1b-it-GGUF:Q8_0
         --n-gpu-layers 999
@@ -140,7 +131,7 @@ models:
   llamacpp-mistral-small-24b-it-2501:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-mistral-small-24b-it-2501
+        --log-file /logs/llamacpp-mistral-small-24b-it-2501.log
         --port 8005
         --hf-repo unsloth/Mistral-Small-24B-Instruct-2501-GGUF:Q6_K
         --n-gpu-layers 99
@@ -163,7 +154,7 @@ models:
   llamacpp-phi-4:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-phi-4
+        --log-file /logs/llamacpp-phi-4.log
         --port 8006
         --hf-repo unsloth/phi-4-GGUF:Q6_K  # Q2_K_L, bartowski/phi-4-GGUF:Q8_0
         --n-gpu-layers 999
@@ -197,7 +188,6 @@ models:
   vllm-SmolLM2-1.7B-Instruct:
     cmd: >
       python3 -m vllm.entrypoints.openai.api_server
-        --api-key sk-empty
         --port 8009
         --served-model-name vllm-SmolLM2-1.7B-Instruct
         --model HuggingFaceTB/SmolLM2-1.7B-Instruct
@@ -208,17 +198,18 @@ models:
 
   vllm-Qwen-QwQ-32B:
     cmd: >
-      env VLLM_ATTENTION_BACKEND=FLASHINFER python3
+      env TORCH_CUDA_ARCH_LIST=8.6 VLLM_ATTENTION_BACKEND=FLASHINFER python3
         -m vllm.entrypoints.openai.api_server
-        --api-key sk-empty
         --port 8010
         --served-model-name vllm-Qwen-QwQ-32B
         --model Qwen/QwQ-32B-AWQ
         --trust-remote-code
-        --gpu-memory-utilization 0.95
-        --enable-prefix-caching
+        --gpu-memory-utilization 0.97
         --enable-chunked-prefill
-        --max-model-len 20500
+        --enable-prefix-caching
+        --max-model-len 16500
+        --max-num-seqs 128
+        --max-num-batched-tokens 32768
         --disable-sliding-window
         --generation-config Qwen/QwQ-32B-AWQ
         --enable-reasoning
@@ -227,6 +218,7 @@ models:
         --kv-cache-dtype fp8_e5m2
     proxy: http://127.0.0.1:8010
     ttl: 3600
+    # 
     # --max-model-len 32768
     #  --kv-cache-dtype fp8_e4m3
     # --enable-auto-tool-choice
@@ -234,7 +226,7 @@ models:
   llamacpp-Ling-Coder-lite:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Ling-Coder-lite
+        --log-file /logs/llamacpp-Ling-Coder-lite.log
         --port 8011
         --hf-repo mradermacher/Ling-Coder-lite-GGUF:Q4_K_M
         --n-gpu-layers 99 
@@ -275,7 +267,7 @@ models:
   llamacpp-llama4-maverick:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-llama4-maverick
+        --log-file /logs/llamacpp-llama4-maverick.log
         --port 8016
         --model /root/.cache/huggingface/hub/models--unsloth--Llama-4-Maverick-17B-128E-Instruct-GGUF/snapshots/d68803567c756664117d0de7da050bf0ec1bb092/UD-Q2_K_XL/Llama-4-Maverick-17B-128E-Instruct-UD-Q2_K_XL-00001-of-00004.gguf
         --n-gpu-layers 99
@@ -297,7 +289,7 @@ models:
   llamacpp-glm-4-32b-0414:  # ~16 tps TG
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-glm-4-32b-0414
+        --log-file /logs/llamacpp-glm-4-32b-0414.log
         --port 8018
         --hf-repo bartowski/THUDM_GLM-4-32B-0414-GGUF:Q4_K_M # Q5_K_M
         --n-gpu-layers 999
@@ -308,12 +300,12 @@ models:
         --cache-type-k q8_0 
         # --cache-type-v q8_0  # TODO: try with q8_0, maybe lower context?
         # --flash-attn
-        --samplers "min_p;dry;xtc;min_p;temperature"
-        --dry-multiplier 1.1 # 1.0
+        --samplers "min_p;dry;temperature;xtc"
+        --dry-multiplier 1.2 # 1.0 1.1
         --dry-allowed-length 4  # 3
-        --dry-penalty-last-n 1024
-        --min-p 0.01
-        --temp 0.4
+        --dry-penalty-last-n 2048
+        --min-p 0.02
+        --temp 0.6
     proxy: http://127.0.0.1:8018
     ttl: 3600
 
@@ -321,7 +313,7 @@ models:
   llamacpp-glm-z1-32b-0414:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-glm-z1-32b-0414
+        --log-file /logs/llamacpp-glm-z1-32b-0414.log
         --port 8019
         --hf-repo bartowski/THUDM_GLM-Z1-32B-0414-GGUF:Q3_K_XL # IQ4_XS # Q4_K_L, Q5_K_S
         --n-gpu-layers 999
@@ -333,7 +325,7 @@ models:
         # --cache-type-v q8_0
         # --flash-attn
         --samplers "min_p;dry;xtc;temperature"
-        --min-p 0.03
+        --min-p 0.01
         --dry-multiplier 0.5
         --dry-allowed-length 3
         --temp 0.4 # 0.6
@@ -343,7 +335,7 @@ models:
   llamacpp-glm-z1-rumination-32b-0414:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-glm-z1-rumination-32b-0414
+        --log-file /logs/llamacpp-glm-z1-rumination-32b-0414.log
         --port 8020
         --hf-repo bartowski/THUDM_GLM-Z1-Rumination-32B-0414-GGUF:Q3_K_XL #IQ4_XS  # Q4_K_L, Q5_K_S
         --n-gpu-layers 999
@@ -355,7 +347,7 @@ models:
         # --cache-type-v q8_0 
         # --flash-attn
         --samplers "min_p;dry;xtc;temperature"
-        --min-p 0.03
+        --min-p 0.01
         --dry-multiplier 1.1 # 1.0
         --dry-allowed-length 4  # 3
         --dry-penalty-last-n 1024
@@ -366,7 +358,7 @@ models:
   llamacpp-ling-lite-0415:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-ling-lite-0415
+        --log-file /logs/llamacpp-ling-lite-0415.log
         --port 8022
         --hf-repo bartowski/inclusionAI_Ling-lite-0415-GGUF:Q6_K_L
         --ctx-size 32768
@@ -387,7 +379,7 @@ models:
   llamacpp-openthinker2-32b:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-openthinker2-32b
+        --log-file /logs/llamacpp-openthinker2-32b.log
         --port 8024
         --hf-repo bartowski/open-thoughts_OpenThinker2-32B-GGUF
         --n-gpu-layers 999
@@ -404,3 +396,211 @@ models:
     proxy: http://127.0.0.1:8024
     ttl: 3600
 
+
+  # see https://github.com/LG-AI-EXAONE/EXAONE-Deep
+  llamacpp-exaone-deep-32b:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-exaone-deep-32b
+        --port 8028
+        --hf-repo bartowski/LGAI-EXAONE_EXAONE-Deep-32B-GGUF:Q4_K_M # 19.3GB
+        --n-gpu-layers 99
+        --jinja
+        --ctx-size 32768
+        --cache-type-k q8_0
+        --cache-type-v q8_0
+        --flash-attn
+        --samplers "min_p;dry;xtc;temperature"
+        --min-p 0.02
+        --dry-multiplier 0.5
+        --dry-allowed-length 3
+        --dry-penalty-last-n 4096
+        --temp 0.7  # 0.6 recommended, with top_p=0.95
+    proxy: http://127.0.0.1:8028
+    ttl: 3600
+
+  llamacpp-Qwen3-0.6B:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-Qwen3-0.6B.log
+        --port 8702
+        --hf-repo unsloth/Qwen3-0.6B-GGUF:Q8_K_XL
+        --n-gpu-layers 999
+        --jinja
+        --cache-type-k q8_0
+        --ctx-size 32768
+        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc"
+        --min-p 0.01
+        --top-p 0.95  # thinking mode, for non-thinking use 0.8
+        --top-k 20
+        --dry-multiplier 0.5
+        --dry-allowed-length 5
+        --temp 0.6  # thinking mode, for non-thinking use 0.7
+    proxy: http://127.0.0.1:8702
+    ttl: 3600
+
+  llamacpp-Qwen3-1.7B:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-Qwen3-1.7B.log
+        --port 8703
+        --hf-repo unsloth/Qwen3-1.7B-GGUF:Q8_K_XL
+        --n-gpu-layers 999
+        --jinja
+        --cache-type-k q8_0
+        --ctx-size 32768
+        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc"
+        --min-p 0.01
+        --top-p 0.95  # thinking mode, for non-thinking use 0.8
+        --top-k 20
+        --dry-multiplier 0.5
+        --dry-allowed-length 5
+        --temp 0.6  # thinking mode, for non-thinking use 0.7
+    proxy: http://127.0.0.1:8703
+    ttl: 3600
+
+  llamacpp-Qwen3-4B:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-Qwen3-4B.log
+        --port 8704
+        --hf-repo unsloth/Qwen3-4B-GGUF:Q8_K_XL
+        --n-gpu-layers 999
+        --jinja
+        --cache-type-k q8_0
+        --ctx-size 32768
+        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc"
+        --min-p 0.01
+        --top-p 0.95  # thinking mode, for non-thinking use 0.8
+        --top-k 20
+        --dry-multiplier 0.5
+        --dry-allowed-length 5
+        --temp 0.6  # thinking mode, for non-thinking use 0.7
+    proxy: http://127.0.0.1:8704
+    ttl: 3600
+
+  llamacpp-Qwen3-4B-128K:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-Qwen3-4B-128K.log
+        --port 8705
+        --hf-repo unsloth/Qwen3-4B-128K-GGUF:Q8_K_XL
+        --n-gpu-layers 999
+        --jinja
+        --cache-type-k q8_0
+        --cache-type-v q4_0
+        --flash-attn
+        --ctx-size 32768
+        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc"
+        --min-p 0.01
+        --top-p 0.95  # thinking mode, for non-thinking use 0.8
+        --top-k 20
+        --dry-multiplier 0.5
+        --dry-allowed-length 5
+        --temp 0.6  # thinking mode, for non-thinking use 0.7
+    proxy: http://127.0.0.1:8705
+    ttl: 3600
+
+  llamacpp-Qwen3-8B:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-Qwen3-8B.log
+        --port 8706
+        --hf-repo unsloth/Qwen3-8B-GGUF:Q8_K_XL
+        --n-gpu-layers 999
+        --jinja
+        --cache-type-k q8_0
+        --ctx-size 32768
+        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc"
+        --min-p 0.01
+        --top-p 0.95  # thinking mode, for non-thinking use 0.8
+        --top-k 20
+        --dry-multiplier 0.5
+        --dry-allowed-length 5
+        --temp 0.6  # thinking mode, for non-thinking use 0.7
+    proxy: http://127.0.0.1:8706
+    ttl: 3600
+
+  llamacpp-Qwen3-14B:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-Qwen3-14B.log
+        --port 8707
+        --hf-repo unsloth/Qwen3-14B-GGUF:Q6_K_XL
+        --n-gpu-layers 999
+        --jinja
+        --cache-type-k q8_0
+        --ctx-size 32768
+        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc"
+        --min-p 0.01
+        --top-p 0.95  # thinking mode, for non-thinking use 0.8
+        --top-k 20
+        --dry-multiplier 0.5
+        --dry-allowed-length 5
+        --temp 0.6  # thinking mode, for non-thinking use 0.7
+    proxy: http://127.0.0.1:8707
+    ttl: 3600
+
+  llamacpp-Qwen3-30B-A3B:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-Qwen3-30B-A3B.log
+        --port 8708
+        --hf-repo unsloth/Qwen3-30B-A3B-GGUF:Q4_K_XL
+        --n-gpu-layers 999
+        --jinja
+        --cache-type-k q8_0
+        --cache-type-v q8_0
+        --flash-attn
+        --ctx-size 32768
+        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc"
+        --min-p 0.01
+        --top-p 0.95  # thinking mode, for non-thinking use 0.8
+        --top-k 20
+        --dry-multiplier 0.5
+        --dry-allowed-length 5
+        --temp 0.6  # thinking mode, for non-thinking use 0.7
+    proxy: http://127.0.0.1:8708
+    ttl: 3600
+
+  llamacpp-Qwen3-32B:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-Qwen3-32B.log
+        --port 8709
+        --hf-repo unsloth/Qwen3-32B-GGUF:Q4_K_M
+        --n-gpu-layers 999
+        --jinja
+        --cache-type-k q8_0
+        --cache-type-v q8_0
+        --flash-attn
+        --ctx-size 32768
+        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc"
+        --min-p 0.01
+        --top-p 0.95  # thinking mode, for non-thinking use 0.8
+        --top-k 20
+        --dry-multiplier 0.5
+        --dry-allowed-length 5
+        --temp 0.6  # thinking mode, for non-thinking use 0.7
+    proxy: http://127.0.0.1:8709
+    ttl: 3600
+
+  llamacpp-Qwen3-30B-A3B-Q6_K:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-Qwen3-30B-A3B-Q6_K.log
+        --port 8710
+        --hf-repo unsloth/Qwen3-30B-A3B-GGUF:Q6_K
+        --n-gpu-layers 32
+        --jinja
+        --cache-type-k q8_0
+        --ctx-size 32768
+        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc"
+        --min-p 0.01
+        --top-p 0.95  # thinking mode, for non-thinking use 0.8
+        --top-k 20
+        --dry-multiplier 0.5
+        --dry-allowed-length 5
+        --temp 0.6  # thinking mode, for non-thinking use 0.7
+    proxy: http://127.0.0.1:8710
+    ttl: 3600

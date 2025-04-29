@@ -8,8 +8,11 @@ RUN \
     apt-get update --quiet && apt-get install --assume-yes libcurl4-openssl-dev ccache \
     && git clone --recursive --depth 1 --branch master https://github.com/ggml-org/llama.cpp /opt/llama.cpp \
     && cmake \
+         -DGGML_RPC=ON \
          -DGGML_CUDA=ON \
          -DGGML_CUDA_FA_ALL_QUANTS=ON \
+         -DGGML_CUDA_FORCE_MMQ=ON \
+         -DGGML_SCHED_MAX_COPIES=1 \
          -DCMAKE_CUDA_ARCHITECTURES="86" \
          -DLLAMA_CURL=ON \
          -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache" \
@@ -43,10 +46,15 @@ RUN curl -Ls https://go.dev/dl/go1.24.2.linux-amd64.tar.gz | tar xz -C /usr/loca
     && cd llama-swap \
     && make clean all
 
-RUN apt-get update --quiet && apt-get install --quiet --assume-yes inotify-tools \
-    && cp /tmp/llama-swap/build/llama-swap-linux-amd64 /usr/local/bin/llama-swap
+#    && git checkout 1f7aa359b1f70a80c9ddf051af79f9ab463ce2e2 \
 
-COPY watch-and-restart-llama-swap.sh /usr/local/bin/
+
+
+RUN apt-get update --quiet && apt-get install --quiet --assume-yes inotify-tools \
+    && cp /tmp/llama-swap/build/llama-swap-linux-amd64 /usr/local/bin/llama-swap \
+    && go install github.com/go-delve/delve/cmd/dlv@latest \
+    && ln -s /root/go/bin/dlv /usr/local/bin/dlv
+
 
 # ENV PIP_ROOT_USER_ACTION=ignore
 # RUN python3 -m pip install flash-attn qwen-vl-utils[decord] torchvision fastapi uvicorn torch pillow gputil 

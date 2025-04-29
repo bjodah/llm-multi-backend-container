@@ -1,0 +1,21 @@
+network:
+  host: 127.0.0.1
+  port: 2507
+
+# Options for logging
+logging:
+  log_prompt: true
+  log_generation_params: true
+  log_requests: true
+
+model:
+  # $ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download bartowski/Qwen2.5-Coder-7B-Instruct-exl2 --revision 6_5
+  model_name: /root/.cache/huggingface/hub/models--bartowski--Qwen2.5-Coder-7B-Instruct-exl2/snapshots/12f1435bed0acd3038ca5faddb4e85291e666dbe
+  max_seq_len: 8192
+  cache_mode: Q8
+  
+
+# draft_model:
+#   # HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download Zenabius/Qwen2.5-Coder-0.5B-Instruct-exl2
+#   draft_model_name: /root/.cache/huggingface/hub/models--Zenabius--Qwen2.5-Coder-0.5B-Instruct-exl2/snapshots/0eae4fb6a191ef413ef9d2bbc041cd415571b5f7
+#   draft_cache_mode: Q8

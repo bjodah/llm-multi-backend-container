@@ -13,9 +13,28 @@ $ ./bin/prompt-llm-multi-backend.py stream --model llamacpp-gemma-3-27b-it -t "W
 bear on a unicycle" --
 ```
 
+<details>
+<summary>testing qwen2.5-coder-7b on port 2507</summary>
+
+```console
+$ ./bin/host-qwen2.5-coder-7b_localhost_port2507.sh
+$ env OPENAI_API_BASE=localhost:2507/v1 OPENAI_API_KEY=sk-empty \
+    ./scripts/test-chat-completions.sh modelnameplaceholder "In python, how do I defer deletion of a specific path to end of program?" \
+    | jq -r | batcat -pp -l md
+```
+</details>
+
 ## Testing
 ```console
 $ bash -x scripts/test-chat-completions.sh
+```
+
+## Monitoring
+```console
+$ watch "ps aux | grep -E '(vllm|llama-|tabbyAPI)' | grep -v emacs | grep -v 'grep -E'"
+$ while true; do clear; date; echo -n "currently loaded model: "; curl -s localhost:8686/running | jq -r '.running[0].model';  echo '...sleeping for 60 seconds'; sleep 60; done
+$ curl -s localhost:8686/logs/stream/upstream
+$ curl -s localhost:8686/logs/stream/proxy
 ```
 
 ## Notes
@@ -109,4 +128,17 @@ $ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/DeepSeek-V3-0324-
 
 ```
 
+</details>
+
+<details>
+<summary>draft model for QwQ-32B (I need an additional GPU for it to make sense)</summary>
+```
+        #--hf-repo-draft mradermacher/Qwen2.5-Coder-0.5B-QwQ-draft-i1-GGUF:Q4_K_M  # <-- token 151665 content differs - target '<tool_response>', draft ''
+        --hf-repo-draft bartowski/InfiniAILab_QwQ-0.5B-GGUF:Q8_0
+        --n-gpu-layers-draft 99
+        --override-kv tokenizer.ggml.bos_token_id=int:151643
+        # --draft-max 16
+        # --draft-min 5
+        # --draft-p-min 0.5
+```
 </details>

@@ -18,12 +18,12 @@ model:
   # huggingface-cli download bartowski/QwQ-32B-exl2 --revision 4_25
   model_name: models--bartowski--QwQ-32B-exl2/snapshots/b7cdabb0cd9e3c26ae8af760e4a6e986b9bb351f  
   max_seq_len: 32768
-  cache_mode: Q4
+  cache_mode: Q8
   max_batch_size: 1
 
-draft_model:
-  # env HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download cgus/Qwen2.5-0.5B-Instruct-exl2 --revision 4.5bpw-h6
-  draft_model_name: models--cgus--Qwen2.5-0.5B-Instruct-exl2/snapshots/504c367cb6a5bc94dab41bdfd99ea5db3f4d1f77
-  max_seq_len: 4000
-  # Possible values: 'FP16', 'Q8', 'Q6', 'Q4'.
-  draft_cache_mode: Q4
+# draft_model:
+#   # env HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download cgus/Qwen2.5-0.5B-Instruct-exl2 --revision 4.5bpw-h6
+#   draft_model_name: models--cgus--Qwen2.5-0.5B-Instruct-exl2/snapshots/504c367cb6a5bc94dab41bdfd99ea5db3f4d1f77
+#   max_seq_len: 4000
+#   # Possible values: 'FP16', 'Q8', 'Q6', 'Q4'.
+#   draft_cache_mode: Q4

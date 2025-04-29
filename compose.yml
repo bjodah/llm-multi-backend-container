@@ -8,15 +8,19 @@
 version: "3.9"
 services:
 
-  llm-multi-backend:
+  llama-swapper:
+    name: llm-mb_llama-swapper
     build:
       context: env-llm-multi-backend/
       dockerfile: Containerfile
     ports:
       - "8686:8686"
+    restart: unless-stopped
     devices:
       - "nvidia.com/gpu=all"
     volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
       - ${HOST_CACHE_HUGGINGFACE:-~/.cache/huggingface}:/root/.cache/huggingface
       - ${HOST_CACHE_HUGGINGFACE:-~/.cache/huggingface}/hub:/models  # tabbyAPI...
       - ${HOST_CACHE_LLAMACPP:-~/.cache/llama.cpp}:/root/.cache/llama.cpp
@@ -28,19 +32,25 @@ services:
     working_dir: "/"
     security_opt:
       - label:disable
+    cap_add:
+      - SYS_PTRACE  # gdb debugging
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - HUGGING_FACE_HUB_TOKEN
       - HF_TOKEN=${HUGGING_FACE_HUB_TOKEN}
       - LLAMA_ARG_THREADS=16
       - LLAMA_ARG_ENDPOINT_METRICS=1
+      - LLAMA_API_KEY=sk-empty
+      - VLLM_API_KEY=sk-empty
     ipc: host
     entrypoint:
-      /usr/local/bin/watch-and-restart-llama-swap.sh
+      /configs/autorestart-llama-swap.sh
     command:
       /configs/llama-swap-config.yaml
+      /logs/llama-swap.log
 
   open-webui-demo:
+    name: llm-mb_open-webui
     image: ghcr.io/open-webui/open-webui:main
     environment:
 #      - DATA_DIR="/app/backend/data"
@@ -69,6 +79,7 @@ services:
       - ./data/open-webui:/app/backend/data
 
   open-webui-pipelines:
+    name: llm-mb_open-webui-pipelines
     image: ghcr.io/open-webui/pipelines:main
     extra_hosts:
       - host.docker.internal:host-gateway
