@@ -26,6 +26,13 @@ if [ ! -v HUGGING_FACE_HUB_TOKEN ]; then
     >&2 echo "No environment variable HUGGING_FACE_HUB_TOKEN?"
     exit 1
 fi
+declare -a srcs
+
+if [ -e "$repo_root/configs/llama-swap-config-local.yaml" ]; then
+    srcs+=( "$repo_root/configs/llama-swap-config-local.yaml" )
+fi
+cat ${srcs[@]} >$repo_root/configs/llama-swap-config.yaml
+
 echo "You can view open-webui: $ xdg-open http://localhost:33033/"
 ( set -x; env \
     HOST_CACHE_HUGGINGFACE="$(realpath $HOME/.cache/huggingface)" \

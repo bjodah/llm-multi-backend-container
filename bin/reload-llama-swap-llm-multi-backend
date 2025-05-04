@@ -1,2 +1,3 @@
 #!/bin/bash
+podman exec llm-mb_llama-swapper pkill -9 /opt/llama.cpp/build/bin/llama-server
 podman exec llm-mb_llama-swapper pkill llama-swap
