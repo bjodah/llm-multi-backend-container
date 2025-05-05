@@ -1,3 +1,5 @@
 #!/bin/bash
+repo_root="$(cd $(dirname $(realpath "$BASH_SOURCE")); git rev-parse --show-toplevel 2>/dev/null)"
+$repo_root/scripts/regenerate-llama-swap-conf.sh
 podman exec llm-mb_llama-swapper pkill -9 /opt/llama.cpp/build/bin/llama-server
 podman exec llm-mb_llama-swapper pkill llama-swap

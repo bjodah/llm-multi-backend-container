@@ -28,10 +28,7 @@ if [ ! -v HUGGING_FACE_HUB_TOKEN ]; then
 fi
 declare -a srcs
 
-if [ -e "$repo_root/configs/llama-swap-config-local.yaml" ]; then
-    srcs+=( "$repo_root/configs/llama-swap-config-local.yaml" )
-fi
-cat ${srcs[@]} >$repo_root/configs/llama-swap-config.yaml
+$repo_root/scripts/regenerate-llama-swap-conf.sh
 
 echo "You can view open-webui: $ xdg-open http://localhost:33033/"
 ( set -x; env \

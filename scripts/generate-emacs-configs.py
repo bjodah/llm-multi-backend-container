@@ -44,7 +44,10 @@ def minuet():
                  (plist-get ctx :before-cursor)
                  (plist-get ctx :after-cursor)))
      :template)
-    (minuet-set-optional-options minuet-openai-fim-compatible-options :max_tokens 56))
+    (minuet-set-optional-options minuet-openai-fim-compatible-options :max_tokens 56)
+    (minuet-set-optional-options minuet-openai-fim-compatible-options :temperature 0.123)
+    (minuet-set-optional-options minuet-openai-fim-compatible-options :min_p 0.0)
+    (minuet-set-optional-options minuet-openai-fim-compatible-options :top_p 0.95))
 """
 
 if __name__ == '__main__':

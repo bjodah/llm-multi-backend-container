@@ -52,7 +52,7 @@ models:
         #--n-gpu-layers-draft 999
         --ctx-size 32768 
         --cache-type-k q8_0 
-        --cache-type-v q4_0 
+        --cache-type-v q5_1 
         --flash-attn
         --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
         --top-k 40 
@@ -62,6 +62,30 @@ models:
         --dry-multiplier 0.5
         --dry-allowed-length 5
     proxy: http://127.0.0.1:8002
+    ttl: 3600
+
+  # I use this model for "tab-completion" in emacs (minuet.el), hence small context window.
+  llamacpp-Qwen2.5-Coder-7B-Instruct:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-Qwen2.5-Coder-7B-Instruct.log
+        --port 8013
+        --hf-repo bartowski/Qwen2.5.1-Coder-7B-Instruct-GGUF:Q8_0
+        --hf-repo-draft bartowski/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q8_0
+        --n-gpu-layers 999
+        --n-gpu-layers-draft 999
+        --ctx-size 4096 
+        --cache-type-k q8_0 
+        --cache-type-v q8_0 
+        --flash-attn
+        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
+        --top-k 40 
+        --top-p 0.95
+        --min-p 0.0 
+        --temp 0.1
+        --dry-multiplier 0.1
+        --dry-allowed-length 3
+    proxy: http://127.0.0.1:8013
     ttl: 3600
 
   llamacpp-gemma-3-27b-it:
@@ -188,12 +212,12 @@ models:
         --top-k 50
         --dry-multiplier 1.2
         --dry-allowed-length 3
-        --dry-penalty-last-n 512
-        --top-p 0.92
+        --dry-penalty-last-n 256
+        --top-p 0.95
         --min-p 0.01
         --temp 0.8
-        --repeat-penalty 1.1
-        --frequency-penalty 0.1
+        --repeat-penalty 1.05
+        --frequency-penalty 0.01
         --repeat-last-n 16
         #--verbose
 
@@ -263,7 +287,7 @@ models:
         --n-gpu-layers 99 
         --ctx-size 32768
         --cache-type-k q8_0 
-        --cache-type-v q4_0 
+        --cache-type-v q5_1
         --flash-attn
         --samplers "top_k;dry;top_p;min_p;temperature;typ_p;xtc" 
         --top-k 40 
@@ -520,7 +544,7 @@ models:
         --n-gpu-layers 999
         --jinja
         --cache-type-k q8_0
-        --cache-type-v q4_0
+        --cache-type-v q5_1
         --flash-attn
         --ctx-size 131072
         --samplers "top_k;top_p;min_p;temperature;dry;typ_p"
@@ -604,7 +628,7 @@ models:
         --n-gpu-layers 999
         --jinja
         --cache-type-k q8_0
-        --cache-type-v q4_0
+        --cache-type-v q5_1
         --flash-attn
         --ctx-size 32768
         --samplers "top_k;top_p;min_p;temperature;dry;typ_p"
@@ -715,7 +739,7 @@ models:
         --n-gpu-layers 999
         --jinja
         --cache-type-k q8_0
-        --cache-type-v q4_0
+        --cache-type-v q5_1
         --flash-attn
         --ctx-size 131072
         --samplers "top_k;dry;min_p;temperature;top_p"
@@ -811,7 +835,7 @@ models:
         --n-gpu-layers 999
         --jinja
         --cache-type-k q8_0
-        --cache-type-v q4_0
+        --cache-type-v q5_1
         --flash-attn
         --ctx-size 32768
         --samplers "top_k;dry;min_p;temperature;top_p"

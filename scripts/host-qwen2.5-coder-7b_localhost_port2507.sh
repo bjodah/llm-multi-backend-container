@@ -7,6 +7,7 @@ fi
 
 podrun \
     --net=host \
+    -w "/" \
     -v ~/.cache/huggingface:/root/.cache/huggingface \
     -v "$repo_root_dir/configs":/configs \
     -v "$repo_root_dir/configs/tabby-api_tokens.yml:/api_tokens.yml" \
