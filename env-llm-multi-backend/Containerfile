@@ -1,12 +1,22 @@
 #FROM ghcr.io/ggml-org/llama.cpp:server-cuda
 FROM docker.io/vllm/vllm-openai:latest
 
+#          -DCMAKE_LINKER_TYPE=MOLD 
+# RUN \
+#     curl -Ls -o /tmp/cmake.sh https://github.com/Kitware/CMake/releases/download/v4.0.2/cmake-4.0.2-linux-x86_64.sh \
+#     && bash /tmp/cmake.sh --prefix=/usr/local --skip-license \
+#     && rm /tmp/cmake.sh \
+#     && curl -Ls https://github.com/rui314/mold/releases/download/v2.39.0/mold-2.39.0-x86_64-linux.tar.gz \
+#        | tar xz -C /usr/local --strip-components=1 --no-same-owner \
+#     && which cmake \
+#     && cmake --version \
+#     && which mold \
+#     && mold --version
+
 # install llama.cpp
 RUN \
     --mount=type=cache,target=/root/.cache,sharing=locked \
-    apt-get update --quiet && apt-get install --assume-yes libcurl4-openssl-dev ccache \
-    && curl -Ls https://github.com/rui314/mold/releases/download/v2.39.0/mold-2.39.0-x86_64-linux.tar.gz \
-       | tar xz -C /usr/local --strip-components=1 --no-same-owner \
+    apt-get update --quiet && apt-get install --assume-yes ccache libcurl4-openssl-dev \
     && git clone --recursive --depth 1 --branch master https://github.com/ggml-org/llama.cpp /opt/llama.cpp \
     && cmake \
          -DGGML_RPC=ON \
@@ -19,7 +29,6 @@ RUN \
          -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache" \
          -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
          -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
-         -DCMAKE_LINKER_TYPE=MOLD \
          -S /opt/llama.cpp \
          -B /opt/llama.cpp/build \
     && cmake --build /opt/llama.cpp/build --config Release --parallel
