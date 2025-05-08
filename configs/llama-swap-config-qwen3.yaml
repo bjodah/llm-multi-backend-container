@@ -55,8 +55,8 @@
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-4B.log
         --port 8704
-        --hf-repo unsloth/Qwen3-4B-GGUF:Q8_K_XL
-        #--hf-repo bartowski/Qwen_Qwen3-4B-GGUF:Q8_0
+        #--hf-repo unsloth/Qwen3-4B-GGUF:Q8_K_XL
+        --hf-repo bartowski/Qwen_Qwen3-4B-GGUF:Q8_0
         --n-gpu-layers 999
         --jinja
         --cache-type-k q8_0
@@ -73,7 +73,7 @@
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
-        --verbose
+        #--verbose
     proxy: http://127.0.0.1:8704
     ttl: 3600
 
@@ -126,7 +126,7 @@
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
-        --verbose
+        #--verbose
     proxy: http://127.0.0.1:8706
     ttl: 3600
 

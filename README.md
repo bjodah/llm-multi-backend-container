@@ -75,6 +75,12 @@ Answer with a single captial letter."\
 {'I': -0.0008952451171353459, 'L': -7.637594699859619, 'J': -8.77194881439209, 'P': -9.472918510437012, 'M': -9.596308708190918, 'E': -10.473910331726074, 'K': -10.606471061706543, 'O': -11.581477165222168, 'A': -11.586169242858887, 'N': -11.649832725524902, 'F': -11.727849006652832, 'H': -12.113730430603027, 'G': -12.510756492614746, 'B': -12.937010765075684, 'D': -13.124835014343262, 'C': -13.154669761657715}
 ```
 
+Tool usage (symbolic mathematics using SymPy):
+```console
+$ ( set -x; for meth in query query-with-sympy; do time ./bin/prompt-llm-multi-backend.py ${meth} --model llamacpp-Qwen3-4B -t "If x*x + 5 equals 3*y, and one plus the cube of x equals 2*x, then what are the possible sets of values (x, y) that satisfy these conditions?"; done )  # Qwen3 4B even without tool calling is quite impressive.
+TODO (json encoding shenanigans?)
+```
+
 <details>
 <summary>testing qwen2.5-coder-7b on port 2507</summary>
 
