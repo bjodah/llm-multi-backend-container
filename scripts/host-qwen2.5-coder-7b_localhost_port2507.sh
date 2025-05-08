@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Sometimes we don't want to involve llama-swap, this is just an example
+# of how to directly use one of the backends (exllamav2) in the container image.
+
 repo_root_dir="$(realpath $(dirname $0)/..)"
 if [ ! -d "$repo_root_dir"/env-llm-multi-backend ]; then
     >&2 echo "No such directory: $repo_root_dir/env-llm-multi-backend/"
