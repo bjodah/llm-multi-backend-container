@@ -4,8 +4,8 @@ healthCheckTimeout: 900  # 15minutes, downloading models can take a while
 
 logLevel: debug # info warn
 
-# # meta-commentary
-#     llamac.pp)
+# - meta-commentary
+#   - llama.cpp)
 #         - I'm now avoiding `--repeat-penalty`, preferring `--dry-multiplifer`
 #         `--prio` flag (need to figure out what does values do, responsible for spinning 1 thread 100%?)
 #         - No longer setting `--seed "-1"`, default and respawning llama-swap for setting deterministic is not practical.

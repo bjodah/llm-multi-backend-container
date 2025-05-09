@@ -221,7 +221,7 @@ def _get_ranked_choices(kw, choices):
 def logprobs(path: str='', txt: str='', choices: str='', model: str=models[0], opts=''):
     kw = _litellm_completion_kw(
         model=model,
-        content=_get_content(path, txt),
+        messages=_messages_zero_shot(_get_content(path, txt)),
         opts=opts
     )
     return _get_ranked_choices(kw, choices)
@@ -230,19 +230,17 @@ def multiple_choice(path: str='', txt: str='', choices: str='ABC', model: str=mo
     """Multi-shot prompt."""
     kw = _litellm_completion_kw(
         model=model,
-        content=_get_content(path, txt),
+        messages=[
+            {"content": "What's the capital of France? X) Paris, Y) London, Z) Berlin. Answer with a single captial letter.", "role": "user"},
+            {"content": "X", "role": "assistant"},
+            {"content": "What's 2+2? P) 5, Q) 2, R) four, S) sqrt(2+2). Answer with a single captial letter.", "role": "user"},
+            {"content": "R", "role": "assistant"},
+            {"content": "What kind of celestial body is the sun? T) galaxy, U) star, V) moon, W) black hole. Answer with a single captial letter.", "role": "user"},
+            {"content": "U", "role": "assistant"},
+            {"content": content, "role": "user"}
+        ],
         opts=opts
     )
-    content = kw.pop('messages')[0]['content']
-    kw['messages'] = [
-        {"content": "What's the capital of France? X) Paris, Y) London, Z) Berlin. Answer with a single captial letter.", "role": "user"},
-        {"content": "X", "role": "assistant"},
-        {"content": "What's 2+2? P) 5, Q) 2, R) four, S) sqrt(2+2). Answer with a single captial letter.", "role": "user"},
-        {"content": "R", "role": "assistant"},
-        {"content": "What kind of celestial body is the sun? T) galaxy, U) star, V) moon, W) black hole. Answer with a single captial letter.", "role": "user"},
-        {"content": "U", "role": "assistant"},
-        {"content": content, "role": "user"}
-    ]
     if raw:
         import litellm
         return litellm.completion(**kw, logprobs=True)
