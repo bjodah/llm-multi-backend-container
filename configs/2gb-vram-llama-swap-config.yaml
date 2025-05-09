@@ -1,6 +1,7 @@
 # I have an old laptop (2gb Nvidia 1050 mobile, intel kaby lake, 16gb ram)
-# this goal of this config is to add a few configs that works with that setup.
-# I've only bothered building llama.cpp on that mahcine, and I built for 
+# the goal here is to add a few configs that works with that setup.
+# I've only bothered building llama.cpp on that mahcine, and I built for compute
+# capability 6.1 (pascal)
 healthCheckTimeout: 900  # 15minutes, downloading models can take a while
 
 logLevel: debug # info warn
@@ -87,16 +88,17 @@ models:
     proxy: http://127.0.0.1:8703
     ttl: 3600
 
-  llamacpp-Qwen3-30B-A3B:  # yoga720-15ikb: 16tps pp, 7tps tg
+  #--hf-repo unsloth/Qwen3-30B-A3B-GGUF:IQ1_S
+  llamacpp-Qwen3-30B-A3B:  # yoga720-15ikb: 79 pp, 4.5 tg
     cmd: >
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-30B-A3B.log
         --port 8708
-        --hf-repo unsloth/Qwen3-30B-A3B-GGUF:IQ1_S
-        --n-gpu-layers 99                       # \_ with gpu + cpu:      pp,      tg
-        --override-tensor '.ffn_.*_exps.=CPU'   # /  only       cpu:      pp,      tg
+        --hf-repo bartowski/Qwen_Qwen3-30B-A3B-GGUF:IQ3_XXS  # 12.2 GB
+        #--n-gpu-layers 99                       # \_ with gpu + cpu:   79 pp,  4.5 tg
+        #--override-tensor '.ffn_.*_exps.=CPU'   # /  only       cpu:   78 pp,  3.2 tg  (gpu util 100% during pp)
         --threads 4
-        #--no-mmap
+        --no-mmap  # mmap 79pp,4.5tg, no-mmap (10.8G ram): 79pp,4.5tg
         --jinja
         --cache-type-k q5_1
         --cache-type-v q5_1
@@ -117,13 +119,14 @@ models:
     proxy: http://127.0.0.1:8708
     ttl: 3600
 
+  #unsloth/Qwen3-0.6B-GGUF:Q8_0
   llamacpp-Qwen3-30B-A3B-draft:  # yoga720-15ikb: 16tps pp, 7tps tg
     cmd: >
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-30B-A3B.log
         --port 8708
-        --hf-repo unsloth/Qwen3-30B-A3B-GGUF:IQ1_S
-        --hf-repo-draft unsloth/Qwen3-0.6B-GGUF:Q8_0
+        --hf-repo bartowski/Qwen_Qwen3-30B-A3B-GGUF:IQ3_XXS  # 12.2 GB
+        --hf-repo-draft bartowski/Qwen_Qwen3-0.6B-GGUF:Q4_K_L  # 0.6 GB
         --n-gpu-layers-draft 99
         --threads 4
         --no-mmap
