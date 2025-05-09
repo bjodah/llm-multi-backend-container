@@ -11,43 +11,9 @@ $ ./bin/host-llm-multi-backend-container.sh --build --force-recreate
 ```console
 $ ./bin/prompt-llm-multi-backend.py stream --model llamacpp-gemma-3-27b-it \
 -t "Write a poem about a bear on a unicycle" -o 'temperature=1.9;seed=42;top_p=0.99'
+$ ./bin/prompt-llm-multi-backend.py stream --model llamacpp-Qwen3-30B-A3B-cpu -o 'temperature=0.8;seed=17;top_p=0.99' \
+-p scripts/generic-prompt-for-testing-1906words.txt  # should give a peom about a bear on a unicycle too! (or quant is broken)
 ```
-<details>
-<summary>output</summary>
-
-```
-Old Barnaby Bear, a fluffy brown sight,
-Had a passion unusual, with all of his might.
-He didn't like fishing, or berries you see,
-Barnaby dreamed of mobility!
-
-He traded a honeycomb, sticky and sweet,
-For a unicycle, two wheels 'neath his feet.
-The villagers chuckled, "A bear on one wheel?
-A comical vision, beyond the appeal!"
-
-But Barnaby practiced, with wobble and sway,
-Falling and grumbling, each and every day.
-He'd bump into trees and tumble and roll,
-But stubborn determination controlled his strong soul.
-
-Then one sunny morning, a gasp filled the air,
-As Barnaby pedaled, beyond all compare!
-He zoomed 'round the meadow, a blur of brown fur,
-A unicycling bear, a joyful murmur!
-
-He balanced and wobbled, he laughed and he grinned,
-A skill he'd perfected, from deep within.
-He waved to the children, he honked a small horn,
-A bear on a unicycle, freshly reborn!
-
-Now Barnaby Bear, a legend he's grown,
-Rides through the forest, entirely his own.
-A lesson he teaches, with every slow spin,
-That anything's possible, if you try from within!
-```
-
-</details>
 
 multiple choice questions using logprobs:
 ```console
