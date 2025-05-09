@@ -7,13 +7,15 @@ logLevel: debug # info warn
 
 models:
 
-  llamacpp-gemma-3-1b-it:
+  llamacpp-gemma-3-1b: # yoga720-15ikb: 252tps pp, 28tps tg
     cmd: >
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-gemma-3-1b-it.log
         --port 8012
         --hf-repo unsloth/gemma-3-1b-it-GGUF:Q8_0  # 1.05 GB
-        --n-gpu-layers 999
+        --n-gpu-layers 99  # of 26   \_ gpu:  231.2 pp, 21.5 tg
+        --no-mmap          #         /  cpu:  221.7 pp, 18.2 tg
+        --threads 4
         --ctx-size 8192 # (k8,v8,8192): 1.693
         --cache-type-k q8_0
         --cache-type-v q8_0
@@ -25,12 +27,45 @@ models:
     proxy: http://127.0.0.1:8012
     ttl: 3600
 
-  llamacpp-Qwen3-1.7B:
+  # Nope, IQ1_M=1.24GB, IQ1_S=1.18GB, IQ2_XXS=1.34, tried with ~k4,v4 4-8k ctx
+  # 4b parameters degrades too much when quantized to 2GB vram.
+  #llamacpp-gemma-3-4b: # yoga720-15ikb:  pp,  tg
+
+  llamacpp-Qwen3-0.6B: # yoga720-15ikb: 846tps pp, 22.2tps tg
     cmd: >
       /build/llama.cpp/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-1.7B.log
+        --log-file /tmp/llamacpp-Qwen3-0.6B.log
+        --port 8703
+        --hf-repo unsloth/Qwen3-0.6B-GGUF:Q4_K_XL  # 1.13 GB
+        --threads 4
+        --n-gpu-layers 99
+        --jinja
+        --cache-type-k q8_0
+        --cache-type-v q5_1
+        --flash-attn
+        --ctx-size 24000  # (k8,v51,24000):1.945
+        --samplers "top_k;dry;min_p;temperature;top_p"
+        --min-p 0.005
+        --top-p 0.97
+        --top-k 40
+        --temp 0.7
+        --dry-multiplier 0.7
+        --dry-allowed-length 4
+        --dry-penalty-last-n 2048
+        --presence-penalty 0.05
+        --frequency-penalty 0.005
+        --repeat-penalty 1.01
+        --repeat-last-n 16
+    proxy: http://127.0.0.1:8703
+    ttl: 3600
+
+  llamacpp-Qwen3-1.7B: # yoga720-15ikb: 500tps pp, 15tps tg
+    cmd: >
+      /build/llama.cpp/bin/llama-server
+        --log-file /tmp/llamacpp-Qwen3-1.7B.log
         --port 8703
         --hf-repo unsloth/Qwen3-1.7B-GGUF:Q4_K_XL  # 1.13 GB
+        --threads 2       # 1,gpu: (519, 15), 2,gpu: (523,15), 2,cpu: (421, 4.6)
         --n-gpu-layers 99
         --jinja
         --cache-type-k q8_0
@@ -52,19 +87,51 @@ models:
     proxy: http://127.0.0.1:8703
     ttl: 3600
 
-  llamacpp-Qwen3-30B-A3B:
+  llamacpp-Qwen3-30B-A3B:  # yoga720-15ikb: 16tps pp, 7tps tg
     cmd: >
       /build/llama.cpp/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-30B-A3B.log
+        --log-file /tmp/llamacpp-Qwen3-30B-A3B.log
         --port 8708
         --hf-repo unsloth/Qwen3-30B-A3B-GGUF:IQ1_S
-        --override-tensor '.ffn_.*_exps.=CPU'
-        --n-gpu-layers 99
+        --n-gpu-layers 99                       # \_ with gpu + cpu:      pp,      tg
+        --override-tensor '.ffn_.*_exps.=CPU'   # /  only       cpu:      pp,      tg
+        --threads 4
+        #--no-mmap
         --jinja
         --cache-type-k q5_1
         --cache-type-v q5_1
         --flash-attn
-        --ctx-size 8192 # (k4,v4,2048): 1.15, (k4,v4,4096): 1.244, (k4,v4,8192): 1.345, (k51,v51,8192): 1.420
+        --ctx-size 8192 # (k4,v4,2048): 1.15, (k4,v4,4096): 1.244, (k4,v4,8192): 1.345, (k51,v51,8192): 1.420, (k51,v51,16384): 
+        --samplers "top_k;dry;min_p;temperature;top_p"  # vain attempt to capture both thinking/non-thinking
+        --min-p 0.005
+        --top-p 0.97
+        --top-k 40
+        --temp 0.7
+        --dry-multiplier 0.7
+        --dry-allowed-length 4
+        --dry-penalty-last-n 2048
+        --presence-penalty 0.05
+        --frequency-penalty 0.005
+        --repeat-penalty 1.01
+        --repeat-last-n 16
+    proxy: http://127.0.0.1:8708
+    ttl: 3600
+
+  llamacpp-Qwen3-30B-A3B-draft:  # yoga720-15ikb: 16tps pp, 7tps tg
+    cmd: >
+      /build/llama.cpp/bin/llama-server
+        --log-file /tmp/llamacpp-Qwen3-30B-A3B.log
+        --port 8708
+        --hf-repo unsloth/Qwen3-30B-A3B-GGUF:IQ1_S
+        --hf-repo-draft unsloth/Qwen3-0.6B-GGUF:Q8_0
+        --n-gpu-layers-draft 99
+        --threads 4
+        --no-mmap
+        --jinja
+        --ctx-size 4096 # <-- I wonder if llama_kv_cache_unified reporting f16 for k and v is the culprit, yup:
+        --cache-type-k q5_1       # https://github.com/ggml-org/llama.cpp/issues/11200#issuecomment-2585822315
+        --cache-type-v q4_0
+        --flash-attn
         --samplers "top_k;dry;min_p;temperature;top_p"  # vain attempt to capture both thinking/non-thinking
         --min-p 0.005
         --top-p 0.97
@@ -81,7 +148,7 @@ models:
     ttl: 3600
 
 
-  llamacpp-Qwen2.5-Coder-1.5B-Instruct:
+  llamacpp-Qwen2.5-Coder-1.5B:  # 259 pp, 31 tg
     cmd: >
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen2.5-Coder-1.5B-Instruct.log
@@ -102,39 +169,24 @@ models:
     proxy: http://127.0.0.1:8013
     ttl: 3600
 
-  llamacpp-Qwen2.5-Coder-3B-Instruct:
-    cmd: >
-      /build/llama.cpp/bin/llama-server
-        --log-file /tmp/llamacpp-Qwen2.5-Coder-3B-Instruct.log
-        --port 8013
-        --hf-repo unsloth/Qwen2.5-Coder-3B-Instruct-GGUF:Q2_K  # 1.27GB
-        --n-gpu-layers 99
-        --ctx-size 4096 
-        --cache-type-k q8_0 
-        --cache-type-v q8_0 
-        --flash-attn
-        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
-        --top-k 40 
-        --top-p 0.95
-        --min-p 0.0 
-        --temp 0.1
-        --dry-multiplier 0.1
-        --dry-allowed-length 3
-    proxy: http://127.0.0.1:8013
-    ttl: 3600
+  # Nope, Q2_K quant is completely broken:
+  # llamacpp-Qwen2.5-Coder-3B:
+  #       --hf-repo unsloth/Qwen2.5-Coder-3B-Instruct-GGUF:Q2_K  # 1.27GB
 
 
-  llamacpp-Phi-4-mini:
+  # Q2_K (1.68GB) does not fit on gpu with 4096 ctx (k4,v4). Trying partial offloading:
+  llamacpp-Phi-4-mini:  # yoga720-15ikb: 65pp, 13tg
     cmd: >
       /build/llama.cpp/bin/llama-server
-        --log-file /logs/llamacpp-Phi-4.log
+        --log-file /tmp/llamacpp-Phi-4.log
         --port 8006
         --hf-repo bartowski/microsoft_Phi-4-mini-instruct-GGUF:Q2_K  # 1.68GB
-        --n-gpu-layers 999
+        --n-gpu-layers 24 # of 32, (k4,q4,4096): 1.894GB vram
+        --threads 4
         --ctx-size 4096
-        --cache-type-k q8_0
-        # --cache-type-v q8_0
-        # --flash-attn
+        --cache-type-k q4_0
+        --cache-type-v q4_0
+        --flash-attn
         --samplers "min_p;dry;temperature"  # xtc;
         --min-p 0.03
         --dry-multiplier 1.0
@@ -145,15 +197,16 @@ models:
     ttl: 3600
 
 
-  llamacpp-Ling-Coder-lite:
+  llamacpp-Ling-Coder-lite: # yoga720-15ikb: 33 pp, 13 tg
     cmd: >
       /build/llama.cpp/bin/llama-server
-        --log-file /logs/llamacpp-Ling-Coder-lite.log
+        --log-file /tmp/llamacpp-Ling-Coder-lite.log
         --port 8011
         --hf-repo mradermacher/Ling-Coder-lite-GGUF:IQ4_XS # 9.19GB
-        --n-gpu-layers 99 
-        --override-tensor '.ffn_.*_exps.=CPU'
-        --ctx-size 4096
+        --n-gpu-layers 99                       # \_ with gpu + cpu:  145 pp, 10.1 tg
+        --override-tensor '.ffn_.*_exps.=CPU'   # /  only       cpu:  140 pp,  8.5 tg
+        --no-mmap
+        --ctx-size 16384 # (k8,v51,4096): 1.09, (k8,v51,8192): 1.18, (k8,v51,8192): 1.392 
         --cache-type-k q8_0 
         --cache-type-v q5_1
         --flash-attn
@@ -171,15 +224,16 @@ models:
   llamacpp-ling-lite-0415:
     cmd: >
       /build/llama.cpp/bin/llama-server
-        --log-file /logs/llamacpp-ling-lite-0415.log
+        --log-file /tmp/llamacpp-ling-lite-0415.log
         --port 8022
         --hf-repo bartowski/inclusionAI_Ling-lite-0415-GGUF:IQ4_XS # 9.19GB
-        --n-gpu-layers 99 
-        --override-tensor '.ffn_.*_exps.=CPU'
-        --ctx-size 4096
+        --n-gpu-layers 28                       # of 28,  \_ with gpu + cpu:  142 pp,  6.5 tg
+        --override-tensor '.ffn_.*_exps.=CPU'   #         /  only       cpu:  145 pp,  8.6 tg
+        --no-mmap
+        --ctx-size 16384  # (k8,v51,16384): 1.77GB vram
         --cache-type-k q8_0 
-        #--cache-type-v q8_0
-        #--flash-attn  # <-- gibberish for large context?
+        --cache-type-v q5_1
+        --flash-attn  # <-- gibberish for large context?
         --samplers "min_p;dry;xtc;temperature"
         --min-p 0.01
         --dry-multiplier 1.1 # 1.0

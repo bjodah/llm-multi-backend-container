@@ -175,10 +175,10 @@ def query_with_sympy(path: str='', txt: str='', model=models[0], opts='', raw: b
         return respo[-1].choices[0].message.content
 
 
-async def completeion_call(content, model, opts=''):
+async def completion_call(content, model, opts=''):
     kw = _litellm_completion_kw(
         model=model,
-        messages=_messages_zero_shot(_get_content(path=path, txt=txt)),
+        messages=_messages_zero_shot(content),
         opts=opts
     )
     import litellm
@@ -197,7 +197,7 @@ async def completeion_call(content, model, opts=''):
 
 def stream(path: str='', txt: str='', model: str=models[0], opts=''):
     content = _get_content(path, txt)
-    asyncio.run(completeion_call(content, model, opts))
+    asyncio.run(completion_call(content, model, opts))
     print("") # prints a newline
 
 
