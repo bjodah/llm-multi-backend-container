@@ -1,0 +1,190 @@
+# I have an old laptop (2gb Nvidia 1050 mobile, intel kaby lake, 16gb ram)
+# this goal of this config is to add a few configs that works with that setup.
+# I've only bothered building llama.cpp on that mahcine, and I built for 
+healthCheckTimeout: 900  # 15minutes, downloading models can take a while
+
+logLevel: debug # info warn
+
+models:
+
+  llamacpp-gemma-3-1b-it:
+    cmd: >
+      /build/llama.cpp/bin/llama-server
+        --log-file /tmp/llamacpp-gemma-3-1b-it.log
+        --port 8012
+        --hf-repo unsloth/gemma-3-1b-it-GGUF:Q8_0  # 1.05 GB
+        --n-gpu-layers 999
+        --ctx-size 8192
+        --cache-type-k q8_0
+        --cache-type-v q8_0
+        --flash-attn
+        --temp 1.0
+        --min-p 0.01
+        --top-k 64
+        --top-p 0.95
+    proxy: http://127.0.0.1:8012
+    ttl: 3600
+
+  llamacpp-Qwen3-1.7B:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-Qwen3-1.7B.log
+        --port 8703
+        --hf-repo unsloth/Qwen3-1.7B-GGUF:Q4_K_XL  # 1.13 GB
+        --n-gpu-layers 99
+        --jinja
+        --cache-type-k q8_0
+        --ctx-size 4096
+        --samplers "top_k;dry;min_p;temperature;top_p"
+        --min-p 0.005
+        --top-p 0.97
+        --top-k 40
+        --temp 0.7
+        --dry-multiplier 0.7
+        --dry-allowed-length 4
+        --dry-penalty-last-n 2048
+        --presence-penalty 0.05
+        --frequency-penalty 0.005
+        --repeat-penalty 1.01
+        --repeat-last-n 16
+    proxy: http://127.0.0.1:8703
+    ttl: 3600
+
+  llamacpp-Qwen3-30B-A3B:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-Qwen3-30B-A3B.log
+        --port 8708
+        --hf-repo unsloth/Qwen3-30B-A3B-GGUF:IQ1_S
+        --override-tensor '.ffn_.*_exps.=CPU'
+        --n-gpu-layers 99
+        --jinja
+        --cache-type-k q8_0
+        --cache-type-v q8_0
+        --flash-attn
+        --ctx-size 32768
+        --samplers "top_k;dry;min_p;temperature;top_p"  # vain attempt to capture both thinking/non-thinking
+        --min-p 0.005
+        --top-p 0.97
+        --top-k 40
+        --temp 0.7
+        --dry-multiplier 0.7
+        --dry-allowed-length 4
+        --dry-penalty-last-n 2048
+        --presence-penalty 0.05
+        --frequency-penalty 0.005
+        --repeat-penalty 1.01
+        --repeat-last-n 16
+    proxy: http://127.0.0.1:8708
+    ttl: 3600
+
+
+  llamacpp-Qwen2.5-Coder-1.5B-Instruct:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /tmp/llamacpp-Qwen2.5-Coder-1.5B-Instruct.log
+        --port 8013
+        --hf-repo unsloth/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q5_K_M  # 1.13GB
+        --n-gpu-layers 99
+        --ctx-size 4096 
+        --cache-type-k q8_0 
+        --cache-type-v q8_0 
+        --flash-attn
+        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
+        --top-k 40 
+        --top-p 0.95
+        --min-p 0.0 
+        --temp 0.1
+        --dry-multiplier 0.1
+        --dry-allowed-length 3
+    proxy: http://127.0.0.1:8013
+    ttl: 3600
+
+  llamacpp-Qwen2.5-Coder-3B-Instruct:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /tmp/llamacpp-Qwen2.5-Coder-3B-Instruct.log
+        --port 8013
+        --hf-repo unsloth/Qwen2.5-Coder-3B-Instruct-GGUF:Q2_K  # 1.27GB
+        --n-gpu-layers 99
+        --ctx-size 4096 
+        --cache-type-k q8_0 
+        --cache-type-v q8_0 
+        --flash-attn
+        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
+        --top-k 40 
+        --top-p 0.95
+        --min-p 0.0 
+        --temp 0.1
+        --dry-multiplier 0.1
+        --dry-allowed-length 3
+    proxy: http://127.0.0.1:8013
+    ttl: 3600
+
+
+  llamacpp-Phi-4-mini:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-Phi-4.log
+        --port 8006
+        --hf-repo bartowski/microsoft_Phi-4-mini-instruct-GGUF:Q2_K  # 1.68GB
+        --n-gpu-layers 999
+        --ctx-size 4096
+        --cache-type-k q8_0
+        # --cache-type-v q8_0
+        # --flash-attn
+        --samplers "min_p;dry;temperature"  # xtc;
+        --min-p 0.03
+        --dry-multiplier 1.0
+        --dry-allowed-length 3
+        --dry-penalty-last-n 256
+        --temp 0.5
+    proxy: http://127.0.0.1:8006
+    ttl: 3600
+
+
+  llamacpp-Ling-Coder-lite:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-Ling-Coder-lite.log
+        --port 8011
+        --hf-repo mradermacher/Ling-Coder-lite-GGUF:IQ4_XS # 9.19GB
+        --n-gpu-layers 99 
+        --override-tensor '.ffn_.*_exps.=CPU'
+        --ctx-size 4096
+        --cache-type-k q8_0 
+        --cache-type-v q5_1
+        --flash-attn
+        --samplers "top_k;dry;top_p;min_p;temperature;typ_p;xtc" 
+        --top-k 40 
+        --dry-multiplier 0.5 
+        --dry-allowed-length 5
+        --top-p 0.95 
+        --min-p 0.01 
+        --temp 0.8 
+
+    proxy: http://127.0.0.1:8011
+    ttl: 3600
+
+  llamacpp-ling-lite-0415:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-ling-lite-0415.log
+        --port 8022
+        --hf-repo bartowski/inclusionAI_Ling-lite-0415-GGUF:IQ4_XS # 9.19GB
+        --n-gpu-layers 99 
+        --override-tensor '.ffn_.*_exps.=CPU'
+        --ctx-size 4096
+        --cache-type-k q8_0 
+        #--cache-type-v q8_0
+        #--flash-attn  # <-- gibberish for large context?
+        --samplers "min_p;dry;xtc;temperature"
+        --min-p 0.01
+        --dry-multiplier 1.1 # 1.0
+        --dry-allowed-length 4  # 3
+        --dry-penalty-last-n 1024
+        --temp 0.6
+        #--verbose
+    proxy: http://127.0.0.1:8022
+    ttl: 3600
+

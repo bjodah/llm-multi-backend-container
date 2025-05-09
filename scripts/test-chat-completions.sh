@@ -13,7 +13,7 @@ query_chat() {
     echo "Full log found in: $logfile"
 }
 if [ $# -eq 0 ]; then
-    query_chat llamacpp-Qwen3-4B ""
+    query_chat llamacpp-Qwen3-0.6B ""
     exit
     query_chat llamacpp-Qwen3-32B "/nothink Answer only with the missing word: The capital of Italy is"
     query_chat llamacpp-Qwen3-30B-A3B "/nothink Answer only with the missing word: The capital of Greece is"
