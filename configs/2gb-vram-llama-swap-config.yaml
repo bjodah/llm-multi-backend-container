@@ -14,7 +14,7 @@ models:
         --port 8012
         --hf-repo unsloth/gemma-3-1b-it-GGUF:Q8_0  # 1.05 GB
         --n-gpu-layers 999
-        --ctx-size 8192
+        --ctx-size 8192 # (k8,v8,8192): 1.693
         --cache-type-k q8_0
         --cache-type-v q8_0
         --flash-attn
@@ -27,14 +27,16 @@ models:
 
   llamacpp-Qwen3-1.7B:
     cmd: >
-      /opt/llama.cpp/build/bin/llama-server
+      /build/llama.cpp/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-1.7B.log
         --port 8703
         --hf-repo unsloth/Qwen3-1.7B-GGUF:Q4_K_XL  # 1.13 GB
         --n-gpu-layers 99
         --jinja
         --cache-type-k q8_0
-        --ctx-size 4096
+        --cache-type-v q5_1
+        --flash-attn
+        --ctx-size 8192  # (k8,4096):1.802, (k8,6200):1.97, (k8,v51,8192): 1.845
         --samplers "top_k;dry;min_p;temperature;top_p"
         --min-p 0.005
         --top-p 0.97
@@ -52,17 +54,17 @@ models:
 
   llamacpp-Qwen3-30B-A3B:
     cmd: >
-      /opt/llama.cpp/build/bin/llama-server
+      /build/llama.cpp/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-30B-A3B.log
         --port 8708
         --hf-repo unsloth/Qwen3-30B-A3B-GGUF:IQ1_S
         --override-tensor '.ffn_.*_exps.=CPU'
         --n-gpu-layers 99
         --jinja
-        --cache-type-k q8_0
-        --cache-type-v q8_0
+        --cache-type-k q5_1
+        --cache-type-v q5_1
         --flash-attn
-        --ctx-size 32768
+        --ctx-size 8192 # (k4,v4,2048): 1.15, (k4,v4,4096): 1.244, (k4,v4,8192): 1.345, (k51,v51,8192): 1.420
         --samplers "top_k;dry;min_p;temperature;top_p"  # vain attempt to capture both thinking/non-thinking
         --min-p 0.005
         --top-p 0.97
@@ -81,7 +83,7 @@ models:
 
   llamacpp-Qwen2.5-Coder-1.5B-Instruct:
     cmd: >
-      /opt/llama.cpp/build/bin/llama-server
+      /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen2.5-Coder-1.5B-Instruct.log
         --port 8013
         --hf-repo unsloth/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q5_K_M  # 1.13GB
@@ -102,7 +104,7 @@ models:
 
   llamacpp-Qwen2.5-Coder-3B-Instruct:
     cmd: >
-      /opt/llama.cpp/build/bin/llama-server
+      /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen2.5-Coder-3B-Instruct.log
         --port 8013
         --hf-repo unsloth/Qwen2.5-Coder-3B-Instruct-GGUF:Q2_K  # 1.27GB
@@ -124,7 +126,7 @@ models:
 
   llamacpp-Phi-4-mini:
     cmd: >
-      /opt/llama.cpp/build/bin/llama-server
+      /build/llama.cpp/bin/llama-server
         --log-file /logs/llamacpp-Phi-4.log
         --port 8006
         --hf-repo bartowski/microsoft_Phi-4-mini-instruct-GGUF:Q2_K  # 1.68GB
@@ -145,7 +147,7 @@ models:
 
   llamacpp-Ling-Coder-lite:
     cmd: >
-      /opt/llama.cpp/build/bin/llama-server
+      /build/llama.cpp/bin/llama-server
         --log-file /logs/llamacpp-Ling-Coder-lite.log
         --port 8011
         --hf-repo mradermacher/Ling-Coder-lite-GGUF:IQ4_XS # 9.19GB
@@ -168,7 +170,7 @@ models:
 
   llamacpp-ling-lite-0415:
     cmd: >
-      /opt/llama.cpp/build/bin/llama-server
+      /build/llama.cpp/bin/llama-server
         --log-file /logs/llamacpp-ling-lite-0415.log
         --port 8022
         --hf-repo bartowski/inclusionAI_Ling-lite-0415-GGUF:IQ4_XS # 9.19GB

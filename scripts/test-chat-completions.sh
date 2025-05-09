@@ -13,10 +13,11 @@ query_chat() {
     echo "Full log found in: $logfile"
 }
 if [ $# -eq 0 ]; then
-    query_chat llamacpp-Qwen3-0.6B ""
+    query_chat llamacpp-Qwen3-30B-A3B "/no_think Answer only with the missing word: The capital of Greece is"
     exit
+    query_chat llamacpp-gemma-3-1b-it "/no_think What't the captial of Sweden?"
+    query_chat llamacpp-Qwen3-1.7B "/no_think What't the captial of Sweden?"
     query_chat llamacpp-Qwen3-32B "/nothink Answer only with the missing word: The capital of Italy is"
-    query_chat llamacpp-Qwen3-30B-A3B "/nothink Answer only with the missing word: The capital of Greece is"
     query_chat llamacpp-Qwen3-30B-A3B-Q6_K "/nothink Answer only with the missing word: The capital of Greece is"
     exit
     for quant in 30B-A3B 0.6B 1.7B 4B 4B-128K 8B 14B 32B; do
