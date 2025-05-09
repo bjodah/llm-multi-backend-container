@@ -16,7 +16,7 @@ while true; do
     >&2 echo -n "Starting llama-swap..."
     /usr/local/bin/llama-swap -config $1 -listen :8686 2>&1 >$2 &
     PID=$!
-    sleep 1
+    sleep 0.1
     # Check if process exists before sending signal
     if kill -0 $PID 2>/dev/null; then
         >&2 echo "successfully started with pid: $PID"
@@ -26,5 +26,5 @@ while true; do
         cat $2 >&2
         exit 1
     fi
-    sleep 1
+    sleep 0.1
 done
