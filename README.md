@@ -8,45 +8,6 @@ $ ./bin/host-llm-multi-backend-container.sh --build --force-recreate
 ```
 
 ## Useful(?) tools
-```console
-$ ./bin/prompt-llm-multi-backend.py stream --model llamacpp-gemma-3-27b-it \
--t "Write a poem about a bear on a unicycle" -o 'temperature=1.9;seed=42;top_p=0.99'
-$ ./bin/prompt-llm-multi-backend.py stream --model llamacpp-Qwen3-30B-A3B-cpu -o 'temperature=0.8;seed=17;top_p=0.99' \
--p scripts/generic-prompt-for-testing-1906words.txt  # should give a peom about a bear on a unicycle too! (or quant is broken)
-```
-
-multiple choice questions using logprobs:
-```console
-$ ./bin/prompt-llm-multi-backend.py multiple-choice --model llamacpp-gemma-3-4b-it -t "\
-What animals are likely to take to the sky among (Vulture, Beaver, Shark, Owl)?\
- A) All of them,\
- B) All but Owl,\
- C) All but Shark,\
- D) All but Beaver,\
- E) All but Vulture,\
- F) Vulture & Beaver,\
- G) Vulture & Shark,\
- H) Beaver & Shark,\
- I) Vulture & Owl,\
- J) Beaver & Owl,\
- K) Shark & Owl,\
- L) Owl and Beaver,\
- M) only Vulture,\
- N) only Beaver,\
- O) just Shark,\
- P) none except Owl. \
-Answer with a single captial letter."\
-  -c 'ABCDEFGHIJKLMNOP' \
-  -o 'temperature=0.5;seed=3' # --raw
-{'I': -0.0008952451171353459, 'L': -7.637594699859619, 'J': -8.77194881439209, 'P': -9.472918510437012, 'M': -9.596308708190918, 'E': -10.473910331726074, 'K': -10.606471061706543, 'O': -11.581477165222168, 'A': -11.586169242858887, 'N': -11.649832725524902, 'F': -11.727849006652832, 'H': -12.113730430603027, 'G': -12.510756492614746, 'B': -12.937010765075684, 'D': -13.124835014343262, 'C': -13.154669761657715}
-```
-
-Tool usage (symbolic mathematics using SymPy):
-```console
-$ ( set -x; for meth in query query-with-sympy; do time ./bin/prompt-llm-multi-backend.py ${meth} --model llamacpp-Qwen3-4B -t "If x*x + 5 equals 3*y, and one plus the cube of x equals 2*x, then what are the possible sets of values (x, y) that satisfy these conditions?"; done )  # Qwen3 4B even without tool calling is quite impressive.
-TODO (json encoding shenanigans?)
-```
-
 <details>
 <summary>testing qwen2.5-coder-7b on port 2507</summary>
 

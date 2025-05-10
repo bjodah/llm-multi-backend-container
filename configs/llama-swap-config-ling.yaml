@@ -1,0 +1,42 @@
+  llamacpp-Ling-Coder-lite:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-Ling-Coder-lite.log
+        --port 8011
+        --hf-repo mradermacher/Ling-Coder-lite-GGUF:Q4_K_M
+        --n-gpu-layers 99 
+        --ctx-size 32768
+        --cache-type-k q8_0 
+        --cache-type-v q5_1
+        --flash-attn
+        --samplers "top_k;dry;top_p;min_p;temperature;typ_p;xtc" 
+        --top-k 40 
+        --dry-multiplier 0.5 
+        --dry-allowed-length 5
+        --top-p 0.95 
+        --min-p 0.01 
+        --temp 0.8 
+
+    proxy: http://127.0.0.1:8011
+    ttl: 3600
+
+  llamacpp-ling-lite-0415:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-ling-lite-0415.log
+        --port 8022
+        --hf-repo bartowski/inclusionAI_Ling-lite-0415-GGUF:Q6_K_L
+        --ctx-size 32768
+        --n-gpu-layers 99 
+        --cache-type-k q8_0 
+        #--cache-type-v q8_0
+        #--flash-attn  # <-- gibberish for large context?
+        --samplers "min_p;dry;xtc;temperature"
+        --min-p 0.01
+        --dry-multiplier 1.1 # 1.0
+        --dry-allowed-length 4  # 3
+        --dry-penalty-last-n 1024
+        --temp 0.6
+        #--verbose
+    proxy: http://127.0.0.1:8022
+    ttl: 3600
