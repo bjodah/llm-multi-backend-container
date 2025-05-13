@@ -13,6 +13,30 @@ logLevel: debug # info warn
 
 models:
 
+  # Mistral-3.1-2503 has vision support, for which text generation suffers?
+  # Neither is is it particularly good at coding either (Qwen2.5-Coder is better)
+  llamacpp-mistral-small-24b-it-2501:
+    cmd: >
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-mistral-small-24b-it-2501.log
+        --port 8005
+        --hf-repo unsloth/Mistral-Small-24B-Instruct-2501-GGUF:Q6_K
+        --n-gpu-layers 99
+        # --hf-repo-draft bartowski/alamios_Mistral-Small-3.1-DRAFT-0.5B-GGUF:Q8_0
+        # --n-gpu-layers-draft 99
+        --ctx-size 24000
+        --cache-type-k q8_0
+        # --cache-type-v q8_0
+        # --flash-attn
+        --samplers "min_p;dry;xtc;temperature"
+        --min-p 0.03
+        --dry-multiplier 1.0
+        --dry-allowed-length 3
+        --dry-penalty-last-n 256
+        --temp 0.15
+
+    proxy: http://127.0.0.1:8005
+    ttl: 3600
 
   # the name below works with aider, thanks to:
   # https://github.com/Aider-AI/aider/blob/8f15269bd063a3c720ced514303b9efcc03fe29f/aider/models.py#L429
@@ -39,32 +63,6 @@ models:
 
     proxy: http://127.0.0.1:8001
     ttl: 3600
-
-  # Mistral-3.1-2503 has vision support, for which text generation suffers?
-  # Neither is is it particularly good at coding either (Qwen2.5-Coder is better)
-  llamacpp-mistral-small-24b-it-2501:
-    cmd: >
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-mistral-small-24b-it-2501.log
-        --port 8005
-        --hf-repo unsloth/Mistral-Small-24B-Instruct-2501-GGUF:Q6_K
-        --n-gpu-layers 99
-        # --hf-repo-draft bartowski/alamios_Mistral-Small-3.1-DRAFT-0.5B-GGUF:Q8_0
-        # --n-gpu-layers-draft 99
-        --ctx-size 24000
-        --cache-type-k q8_0
-        # --cache-type-v q8_0
-        # --flash-attn
-        --samplers "min_p;dry;xtc;temperature"
-        --min-p 0.03
-        --dry-multiplier 1.0
-        --dry-allowed-length 3
-        --dry-penalty-last-n 256
-        --temp 0.15
-
-    proxy: http://127.0.0.1:8005
-    ttl: 3600
-
         
   llamacpp-DeepCoder-14B:
     cmd: >
