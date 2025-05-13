@@ -131,6 +131,7 @@
         --log-file /logs/llamacpp-Qwen3-14B.log
         --port 8707
         --hf-repo unsloth/Qwen3-14B-GGUF:Q6_K_XL
+        #--hf-repo bartowski/Qwen_Qwen3-14B-GGUF:Q6_K_L
         --n-gpu-layers 999
         --jinja
         --cache-type-k q8_0

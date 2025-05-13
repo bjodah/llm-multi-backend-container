@@ -13,6 +13,7 @@ model:
   model_name: /root/.cache/huggingface/hub/models--bartowski--Qwen2.5-Coder-7B-Instruct-exl2/snapshots/12f1435bed0acd3038ca5faddb4e85291e666dbe
   max_seq_len: 8192
   cache_mode: Q8
+  prompt_template: qwen2.5
   
 
 # draft_model:

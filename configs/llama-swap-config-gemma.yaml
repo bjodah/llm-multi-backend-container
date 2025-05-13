@@ -3,10 +3,11 @@
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-gemma-3-27b-it.log
         --port 8003
-        --hf-repo unsloth/gemma-3-12b-it-GGUF:Q4_K_XL
+        --hf-repo unsloth/gemma-3-12b-it-GGUF:Q6_K_XL
         --n-gpu-layers 999
         # --hf-repo-draft google/gemma-3-1b-it-qat-q4_0-gguf
         # --n-gpu-layers-draft 999
+        --jinja
         --ctx-size 21000
         --cache-type-k q8_0
         --cache-type-v q8_0
@@ -30,6 +31,7 @@
         --n-gpu-layers 999
         # --hf-repo-draft google/gemma-3-1b-it-qat-q4_0-gguf
         # --n-gpu-layers-draft 999
+        --jinja
         --ctx-size 21000
         --cache-type-k q8_0
         --cache-type-v q8_0
@@ -54,6 +56,7 @@
         --cache-type-v q4_0
         --flash-attn
         --n-gpu-layers 999
+        --jinja
         --ctx-size 16000
         --temp 1.0
         --prio 2
@@ -72,6 +75,7 @@
         --port 8012
         --hf-repo unsloth/gemma-3-1b-it-GGUF:Q8_0
         --n-gpu-layers 999
+        --jinja
         --ctx-size 16000
         --cache-type-k q8_0
         --cache-type-v q5_1
