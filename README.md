@@ -32,6 +32,12 @@ $ curl -s localhost:8686/logs/stream/upstream
 $ curl -s localhost:8686/logs/stream/proxy
 ```
 
+## Working directly with underlying end-point:
+```console
+$ curl -H "Authorization: Bearer sk-empty" http://localhost:8686/upstream/llamacpp-Qwen3-30B-A3B/health
+$ curl -H "Authorization: Bearer sk-empty" http://localhost:8686/upstream/llamacpp-Qwen3-30B-A3B/slots | jq
+```
+
 ## Notes
 - For customization, you might want to grep for a few keywords:
 ```console

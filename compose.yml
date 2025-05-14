@@ -41,6 +41,7 @@ services:
       - HF_HUB_ENABLE_HF_TRANSFER=1
       - LLAMA_ARG_THREADS=16
       - LLAMA_ARG_ENDPOINT_METRICS=1
+      - LLAMA_ARG_ENDPOINT_SLOTS=1
       - LLAMA_API_KEY=sk-empty
       - LLAMA_ARG_NO_CONTEXT_SHIFT=1
       - VLLM_API_KEY=sk-empty
