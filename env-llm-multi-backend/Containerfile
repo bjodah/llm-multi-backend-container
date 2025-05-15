@@ -16,7 +16,7 @@ FROM docker.io/vllm/vllm-openai:latest
 # install llama.cpp
 RUN \
     --mount=type=cache,target=/root/.cache,sharing=locked \
-    apt-get update --quiet && apt-get install --assume-yes libcurl4-openssl-dev ccache git \
+    apt-get update --quiet && apt-get install --assume-yes libcurl4-openssl-dev ccache inotify-tools \
     && git clone --recursive --depth 1 --branch master https://github.com/ggml-org/llama.cpp /opt/llama.cpp \
     && cmake \
          -DGGML_RPC=ON \
@@ -35,36 +35,40 @@ RUN \
 
 # install exllamav2
 RUN \
+    --mount=type=cache,target=/root/.cache,sharing=locked \
     git clone https://github.com/turboderp/exllamav2 /opt/exllamav2 \
     && cd /opt/exllamav2 \
-    && TORCH_CUDA_ARCH_LIST="8.6" pip install -e .
+    && env MAX_JOBS=4 TORCH_CUDA_ARCH_LIST="8.6" python3 -m pip install flash-attn --no-build-isolation \
+    && TORCH_CUDA_ARCH_LIST="8.6" python3 -m pip install -e .
 
 #python setup.py build_ext -i \
 #    && pip install -e .
 
 RUN \
+    --mount=type=cache,target=/root/.cache,sharing=locked \
     git clone https://github.com/theroyallab/tabbyAPI /opt/tabbyAPI \
     && cd /opt/tabbyAPI \
-    && pip install -e .
+    && python3 -m pip install -e .
 
 # RUN curl -Ls https://github.com/mostlygeek/llama-swap/releases/download/v100/llama-swap_100_linux_amd64.tar.gz \
 #     | tar xz -C /usr/local/bin
 
-RUN curl -Ls https://go.dev/dl/go1.24.2.linux-amd64.tar.gz | tar xz -C /usr/local \
+RUN \
+    --mount=type=cache,target=/root/.cache,sharing=locked \
+    curl -Ls https://go.dev/dl/go1.24.2.linux-amd64.tar.gz | tar xz -C /usr/local \
     && cp -s /usr/local/go/bin/* /usr/local/bin \
     && cd /tmp \
     && git clone https://github.com/mostlygeek/llama-swap \
     && cd llama-swap \
-    && make clean all
+    && make clean all \
+    && cp /tmp/llama-swap/build/llama-swap-linux-amd64 /usr/local/bin/llama-swap \
+    && go install github.com/go-delve/delve/cmd/dlv@latest \
+    && ln -s /root/go/bin/dlv /usr/local/bin/dlv
 
 #    && git checkout 1f7aa359b1f70a80c9ddf051af79f9ab463ce2e2 \
 
 
 
-RUN apt-get update --quiet && apt-get install --quiet --assume-yes inotify-tools \
-    && cp /tmp/llama-swap/build/llama-swap-linux-amd64 /usr/local/bin/llama-swap \
-    && go install github.com/go-delve/delve/cmd/dlv@latest \
-    && ln -s /root/go/bin/dlv /usr/local/bin/dlv
 
 
 # ENV PIP_ROOT_USER_ACTION=ignore

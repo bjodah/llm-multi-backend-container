@@ -85,9 +85,16 @@ models:
     proxy: http://127.0.0.1:8017
     ttl: 3600
 
+  exllamav2-gemma-3-27b:
+    cmd: >
+      env --chdir /opt/tabbyAPI python3 main.py
+        --config /configs/tabby-config-gemma-3-27b.yml
+    proxy: http://127.0.0.1:7567
+    ttl: 3600
+
   exllamav2-QwQ-32B:
     cmd: >
-      python3 /opt/tabbyAPI/main.py
+      env --chdir /opt/tabbyAPI python3 main.py
         --config /configs/tabby-config-qwq32b.yml
     proxy: http://127.0.0.1:8007
     ttl: 3600

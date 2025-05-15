@@ -102,7 +102,7 @@
 
   exllamav2-Qwen2.5-Coder-14B:
     cmd: >
-      python3 /opt/tabbyAPI/main.py
+      env --chdir /opt/tabbyAPI python3 main.py
         --config /configs/tabby-config-qwen25-coder-14b.yml
     proxy: http://127.0.0.1:8008
     ttl: 3600

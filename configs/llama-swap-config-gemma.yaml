@@ -8,9 +8,9 @@
         # --hf-repo-draft google/gemma-3-1b-it-qat-q4_0-gguf
         # --n-gpu-layers-draft 999
         --jinja
-        --ctx-size 21000
-        --cache-type-k q8_0
-        --cache-type-v q8_0
+        --ctx-size 28000
+        #--cache-type-k q8_0
+        # --cache-type-v q8_0  https://github.com/ggml-org/llama.cpp/issues/12352#issuecomment-2727452955
         --flash-attn
         --samplers "min_p;dry;temperature;top_p" # xtc;
         --min-p 0.03
@@ -32,9 +32,9 @@
         # --hf-repo-draft google/gemma-3-1b-it-qat-q4_0-gguf
         # --n-gpu-layers-draft 999
         --jinja
-        --ctx-size 21000
+        --ctx-size 28000
         --cache-type-k q8_0
-        --cache-type-v q8_0
+        --cache-type-v q5_1
         --flash-attn
         --samplers "min_p;dry;temperature;top_p" # xtc;
         --min-p 0.03
@@ -51,13 +51,14 @@
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-gemma-3-4b-it.log
         --port 8004
-        --hf-repo google/gemma-3-4b-it-qat-q4_0-gguf # unsloth/gemma-3-4b-it-GGUF:Q4_K_M
-        --cache-type-k q4_0
-        --cache-type-v q4_0
+        #--hf-repo google/gemma-3-4b-it-qat-q4_0-gguf
+        --hf-repo unsloth/gemma-3-4b-it-GGUF:Q8_0
+        --cache-type-k q8_0
+        --cache-type-v q8_0
         --flash-attn
         --n-gpu-layers 999
         --jinja
-        --ctx-size 16000
+        --ctx-size 32000
         --temp 1.0
         --prio 2
         --temp 1.0
@@ -76,9 +77,9 @@
         --hf-repo unsloth/gemma-3-1b-it-GGUF:Q8_0
         --n-gpu-layers 999
         --jinja
-        --ctx-size 16000
+        --ctx-size 32768
         --cache-type-k q8_0
-        --cache-type-v q5_1
+        --cache-type-v q8_0
         --flash-attn
         --temp 1.0
         --min-p 0.01

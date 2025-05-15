@@ -1,0 +1,34 @@
+network:
+  host: 0.0.0.0  # change to 127.0.0.1 if podman uses --net host
+  port: 7567
+
+# Options for logging
+logging:
+  # Enable prompt logging (default: False).
+  log_prompt: false
+
+  # Enable generation parameter logging (default: False).
+  log_generation_params: true
+
+  # Enable request logging (default: False).
+  # NOTE: Only use this for debugging!
+  log_requests: true
+
+model:
+  # env HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download turboderp/gemma-3-27b-it-exl2 --revision 4.0bpw
+  #model_name: /root/.cache/huggingface/hub/models--turboderp--gemma-3-27b-it-exl2/snapshots/d975c70a6798b0c8af49c1e822c5be11798e51af
+
+  # env HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download Apel-sin/gemma-3-27b-it-qat-exl2 --revision 4_0
+  model_name: /root/.cache/huggingface/hub/models--Apel-sin--gemma-3-27b-it-qat-exl2/snapshots/74af7424746142dfd255f5404d906214e9fea7ce
+
+
+  max_seq_len: 31000  # for turboderp 4.0bpw, I can run 32768 with cache_mode Q6
+  cache_mode: Q8
+  
+
+# draft_model:
+#   draft_model_name: /root/.cache/huggingface/hub/models--LatentWanderer--Qwen_Qwen2.5-Coder-1.5B-Instruct-6.5bpw-h8-exl2/snapshots/5904487d2dc0e0303b2a345eba57dbf920d53053
+#   draft_cache_mode: Q4
+
+sampling:
+  override_preset: sampling-gemma-3

@@ -1,5 +1,5 @@
 # llama.cpp server flags:
-#   https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md
+#   https://github.com/ggml-org/llama.cpp/tree/master/tools/server
 # vLLM serve flags:
 #   https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html
 # TabbyAPI config:
@@ -26,7 +26,8 @@ services:
       - ${HOST_CACHE_LLAMACPP:-~/.cache/llama.cpp}:/root/.cache/llama.cpp
       - ./logs:/logs
       - ./configs:/configs
-      - ./configs/tabby-api_tokens.yml:/api_tokens.yml
+      - ./configs/tabby-api_tokens.yml:/opt/tabbyAPI/api_tokens.yml
+      - ./configs/tabby-sampler_overrides:/opt/tabbyAPI/sampler_overrides
       - ./qwen2.5-VL-inference-openai:/phildougherty-qwen-vl-api
       - /opt/gguf-unsloth-maverick:/opt/gguf-unsloth-maverick  # my machine only...
     working_dir: "/"
