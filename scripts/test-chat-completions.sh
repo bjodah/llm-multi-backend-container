@@ -15,6 +15,7 @@ query_chat() {
 if [ $# -eq 0 ]; then
     query_chat exllamav2-gemma-3-27b "What't the captial of Sweden?"
     exit
+    query_chat llamacpp-Phi-4 "What't the captial of Sweden?"
     query_chat llamacpp-gemma-3-1b-it "What't the captial of Sweden?"
     query_chat llamacpp-Qwen3-30B-A3B "/no_think Answer only with the missing word: The capital of Greece is"
     query_chat llamacpp-Qwen3-1.7B "/no_think What't the captial of Sweden?"

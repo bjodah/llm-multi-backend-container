@@ -33,13 +33,23 @@ RUN \
          -B /opt/llama.cpp/build \
     && cmake --build /opt/llama.cpp/build --config Release --parallel
 
+ENV TORCH_CUDA_ARCH_LIST="8.6"
+
 # install exllamav2
 RUN \
     --mount=type=cache,target=/root/.cache,sharing=locked \
     git clone https://github.com/turboderp/exllamav2 /opt/exllamav2 \
     && cd /opt/exllamav2 \
-    && env MAX_JOBS=4 TORCH_CUDA_ARCH_LIST="8.6" python3 -m pip install flash-attn --no-build-isolation \
-    && TORCH_CUDA_ARCH_LIST="8.6" python3 -m pip install -e .
+    && env MAX_JOBS=4 python3 -m pip install --no-build-isolation flash-attn \
+    && python3 -m pip install --no-build-isolation pandas ninja torch fastparquet safetensors sentencepiece pygments websockets regex numpy rich pillow \
+    && python3 setup.py build_ext -i \
+    && python3 -m pip install --no-build-isolation -e .
+
+RUN \
+    --mount=type=cache,target=/root/.cache,sharing=locked \
+    cd /opt/exllamav2 \
+    && env HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download turboderp/gpt2-exl2 --revision 3.0bpw \
+    && python3 test_inference.py -m /root/.cache/huggingface/hub/models--turboderp--gpt2-exl2/snapshots/b5411192023974a0c481c71ebda557e3bf9c7ca9 -p "A short limmerick: The bear" || echo "If you see this, and a complain about no CUDA enabled GPUs, make sure you pass podman build the flag: --device nvidia.com/gpu=all"
 
 #python setup.py build_ext -i \
 #    && pip install -e .
