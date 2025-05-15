@@ -60,12 +60,12 @@ RUN \
     && cd /tmp \
     && git clone https://github.com/mostlygeek/llama-swap \
     && cd llama-swap \
+    && git checkout 5025c2f1f312703e6810457a20070e5681b264b5 \
     && make clean all \
     && cp /tmp/llama-swap/build/llama-swap-linux-amd64 /usr/local/bin/llama-swap \
     && go install github.com/go-delve/delve/cmd/dlv@latest \
     && ln -s /root/go/bin/dlv /usr/local/bin/dlv
 
-#    && git checkout 1f7aa359b1f70a80c9ddf051af79f9ab463ce2e2 \
 
 
 
