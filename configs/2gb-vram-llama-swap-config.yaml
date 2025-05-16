@@ -122,11 +122,13 @@ models:
   #unsloth/Qwen3-0.6B-GGUF:Q8_0
   llamacpp-Qwen3-30B-A3B-draft:  # yoga720-15ikb: 16tps pp, 7tps tg
     cmd: >
-      /build/llama.cpp/bin/llama-server
+      /build/llama.cpp-debug/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-30B-A3B.log
         --port 8708
         --hf-repo bartowski/Qwen_Qwen3-30B-A3B-GGUF:IQ3_XXS  # 12.2 GB
-        --hf-repo-draft bartowski/Qwen_Qwen3-0.6B-GGUF:Q4_K_L  # 0.6 GB
+        #--hf-repo-draft bartowski/Qwen_Qwen3-0.6B-GGUF:Q4_K_L  # 0.6 GB
+        #--hf-repo-draft unsloth/Qwen_Qwen3-0.6B-GGUF:Q4_K_XL  # 0.4 GB
+        --hf-repo-draft unsloth/Qwen_Qwen3-0.6B-GGUF:Q8_0  # 0.6 GB
         --n-gpu-layers-draft 99
         --threads 4
         --no-mmap
@@ -134,6 +136,8 @@ models:
         --ctx-size 4096 # <-- I wonder if llama_kv_cache_unified reporting f16 for k and v is the culprit, yup:
         --cache-type-k q5_1       # https://github.com/ggml-org/llama.cpp/issues/11200#issuecomment-2585822315
         --cache-type-v q4_0
+        --cache-type-k-draft q5_1
+        --cache-type-v-draft q4_0
         --flash-attn
         --samplers "top_k;dry;min_p;temperature;top_p"  # vain attempt to capture both thinking/non-thinking
         --min-p 0.005
