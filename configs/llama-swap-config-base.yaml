@@ -20,12 +20,14 @@ models:
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-mistral-small-24b-2501.log
         --port 8005
-        --hf-repo unsloth/Mistral-Small-24B-Instruct-2501-GGUF:Q6_K
+        #--hf-repo unsloth/Mistral-Small-24B-Instruct-2501-GGUF:Q6_K 19.3 GB, 24k ctx
+        --hf-repo bartowski/Mistral-Small-24B-Instruct-2501-GGUF:Q5_K_M
+        # ^---- 16.8GB
         --n-gpu-layers 99
         --jinja
         # --hf-repo-draft bartowski/alamios_Mistral-Small-3.1-DRAFT-0.5B-GGUF:Q8_0
         # --n-gpu-layers-draft 99
-        --ctx-size 24000
+        --ctx-size 32768
         --cache-type-k q8_0
         # --cache-type-v q8_0
         # --flash-attn
