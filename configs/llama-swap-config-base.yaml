@@ -22,13 +22,14 @@ models:
         --port 8005
         --hf-repo unsloth/Mistral-Small-24B-Instruct-2501-GGUF:Q6_K
         --n-gpu-layers 99
+        --jinja
         # --hf-repo-draft bartowski/alamios_Mistral-Small-3.1-DRAFT-0.5B-GGUF:Q8_0
         # --n-gpu-layers-draft 99
         --ctx-size 24000
         --cache-type-k q8_0
         # --cache-type-v q8_0
         # --flash-attn
-        --samplers "min_p;dry;xtc;temperature"
+        --samplers 'min_p;dry;xtc;temperature'
         --min-p 0.03
         --dry-multiplier 1.0
         --dry-allowed-length 3
@@ -52,7 +53,7 @@ models:
         --cache-type-k q8_0
         --cache-type-v q5_1
         --flash-attn
-        --samplers "top_k;dry;top_p;min_p;temperature;typ_p;xtc"
+        --samplers 'top_k;dry;top_p;min_p;temperature;typ_p;xtc'
         --top-k 50
         --dry-multiplier 0.25
         --dry-allowed-length 5
@@ -73,6 +74,7 @@ models:
         --hf-repo bartowski/agentica-org_DeepCoder-14B-Preview-GGUF:Q4_K_L
         # :Q8_0
         --n-gpu-layers 999
+        --jinja
         --ctx-size 65536
         --cache-type-k q8_0
         --cache-type-v q8_0
@@ -195,7 +197,7 @@ models:
         --jinja
         --override-kv llama4.expert_used_count=int:1
         --ctx-size 16384
-        --samplers "min_p;dry;xtc;temperature"
+        --samplers 'min_p;dry;xtc;temperature'
         --min-p 0.03
         --dry-multiplier 1.0
         --dry-allowed-length 3
@@ -212,14 +214,17 @@ models:
         --port 8024
         --hf-repo bartowski/open-thoughts_OpenThinker2-32B-GGUF
         --n-gpu-layers 999
+        --jinja
         --ctx-size 16000
         --cache-type-k q8_0
         --cache-type-v q8_0
         --flash-attn
-        --samplers "min_p;dry;xtc;temperature"
+        --samplers 'min_p;dry;xtc;temperature'
         --min-p 0.01
-        --dry-multiplier 1.1 # 1.0
-        --dry-allowed-length 4  # 3
+        --dry-multiplier 1.1
+        # 1.0
+        --dry-allowed-length 4
+        # 3
         --dry-penalty-last-n 1024
         --temp 0.6
     proxy: http://127.0.0.1:8024
@@ -240,7 +245,7 @@ models:
         --cache-type-k q8_0
         --cache-type-v q8_0
         --flash-attn
-        --samplers "min_p;dry;xtc;temperature"
+        --samplers 'min_p;dry;xtc;temperature'
         --min-p 0.02
         --dry-multiplier 0.5
         --dry-allowed-length 3

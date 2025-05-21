@@ -6,6 +6,7 @@
         --hf-repo unsloth/phi-4-GGUF:Q6_K
         # Q2_K_L, bartowski/phi-4-GGUF:Q8_0
         --n-gpu-layers 999
+        --jinja
         --ctx-size 32768
         --cache-type-k q8_0
         # --cache-type-v q8_0
