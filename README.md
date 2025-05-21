@@ -68,7 +68,7 @@ $ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/DeepSeek-V3-0324-
   #      - https://huggingface.co/ubergarm/DeepSeek-V3-0324-GGUF
   #      - https://github.com/ikawrakow/ik_llama.cpp/discussions/258
   llamacpp-deepseek-v3-0324:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --port 8017
         --ctx-size 16384
@@ -92,7 +92,7 @@ $ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/DeepSeek-V3-0324-
 
 ```
   llamacpp-Qwen2.5-VL-32B:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --port 8013
         --ctx-size 4096
@@ -113,7 +113,7 @@ $ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/DeepSeek-V3-0324-
 
 ```
   phildougherty-Qwen2.5-VL-7B:
-    cmd: >
+    cmd: |
       python3 /phildougherty-qwen-vl-api/app.py
           --model Qwen2.5-VL-7B-Instruct
           --port 8015

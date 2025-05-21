@@ -1,5 +1,5 @@
   llamacpp-gemma-3-12b:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-gemma-3-27b.log
         --port 8003
@@ -23,8 +23,10 @@
     proxy: http://127.0.0.1:8003
     ttl: 3600
 
+  # https://www.reddit.com/r/LocalLLaMA/comments/1krr7hn/how_to_get_the_most_from_llamacpps_iswa_support/
+  # TODO: add --mmproj flag for enabling multimodal input?
   llamacpp-gemma-3-27b:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-gemma-3-27b.log
         --port 8003
@@ -33,7 +35,7 @@
         # --hf-repo-draft google/gemma-3-1b-it-qat-q4_0-gguf
         # --n-gpu-layers-draft 999
         --jinja
-        --ctx-size 28000
+        --ctx-size 55000
         # --cache-type-k q8_0
         # --cache-type-v q5_1
         --flash-attn
@@ -49,7 +51,7 @@
     ttl: 3600
 
   llamacpp-gemma-3-4b:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-gemma-3-4b.log
         --port 8004
@@ -72,7 +74,7 @@
     ttl: 3600
 
   llamacpp-gemma-3-1b:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-gemma-3-1b.log
         --port 8012

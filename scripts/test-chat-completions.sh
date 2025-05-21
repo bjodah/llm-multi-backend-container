@@ -13,10 +13,11 @@ query_chat() {
     echo "Full log found in: $logfile"
 }
 if [ $# -eq 0 ]; then
-    query_chat exllamav2-gemma-3-27b "What't the captial of Sweden?"
+    query_chat llamacpp-gemma-3-27b "Answer only with the missing word: The capital of Norway is"
     exit
+    query_chat exllamav2-gemma-3-27b "What't the captial of Sweden?"
     query_chat llamacpp-Phi-4 "What't the captial of Sweden?"
-    query_chat llamacpp-gemma-3-1b-it "What't the captial of Sweden?"
+    query_chat llamacpp-gemma-3-1b"What't the captial of Sweden?"
     query_chat llamacpp-Qwen3-30B-A3B "/no_think Answer only with the missing word: The capital of Greece is"
     query_chat llamacpp-Qwen3-1.7B "/no_think What't the captial of Sweden?"
     query_chat llamacpp-Qwen3-32B "/nothink Answer only with the missing word: The capital of Italy is"
@@ -30,12 +31,11 @@ if [ $# -eq 0 ]; then
     query_chat llamacpp-llama4-maverick "Answer only with the missing word: The capital of Estonia is"
     query_chat vllm-Qwen-QwQ-32B "Answer only with the missing word: The capital of Latvia is"
     query_chat llamacpp-Ling-Coder-lite "Answer only with the missing word: The capital of the Netherlands is"
-    query_chat vllm-SmolLM2-1.7B-Instruct "Answer only with the missing word: The capital of Poland is"
-    query_chat llamacpp-gemma-3-4b-it "Answer only with the missing word: The capital of Belgium is"
-    query_chat llamacpp-Qwen2.5-Coder-32B-Instruct "Answer only with the missing word: The capital of Sweden is"
+    query_chat vllm-SmolLM2-1.7B"Answer only with the missing word: The capital of Poland is"
+    query_chat llamacpp-gemma-3-4b"Answer only with the missing word: The capital of Belgium is"
+    query_chat llamacpp-Qwen2.5-Coder-32B"Answer only with the missing word: The capital of Sweden is"
     query_chat llamacpp-QwQ-32B "Answer only with the missing word: The capital of Germany is"
-    query_chat llamacpp-gemma-3-27b-it "Answer only with the missing word: The capital of Norway is"
-    query_chat llamacpp-Mistral-Small-3.1-24B-Instruct-2503 "Answer only with the missing word: The capital of Finland is"
+    query_chat llamacpp-Mistral-Small-3.1-24B-2503 "Answer only with the missing word: The capital of Finland is"
 else
     query_chat "${@}"
 fi

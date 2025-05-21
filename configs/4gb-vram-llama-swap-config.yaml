@@ -9,7 +9,7 @@ logLevel: debug # info warn
 models:
 
   llamacpp-gemma-3-4b: # 33 pp, 10 tg
-    cmd: >
+    cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-gemma-3-4b-it.log
         --port 8012
@@ -31,7 +31,7 @@ models:
     ttl: 3600
 
   llamacpp-Qwen3-0.6B: # 23 pp, 8.5 tg
-    cmd: >
+    cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-0.6B.log
         --port 8703
@@ -59,7 +59,7 @@ models:
     ttl: 3600
 
   llamacpp-Qwen3-1.7B: # 20.2pp, 6.8tg
-    cmd: >
+    cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-1.7B.log
         --port 8703
@@ -86,7 +86,7 @@ models:
     ttl: 3600
 
   llamacpp-Qwen3-4B: # yoga720-15ikb: 500tps pp, 15tps tg
-    cmd: >
+    cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-4B.log
         --port 8703
@@ -114,7 +114,7 @@ models:
     ttl: 3600
 
   llamacpp-Qwen3-30B-A3B:  # yoga720-15ikb: 16tps pp, 7tps tg
-    cmd: >
+    cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-30B-A3B.log
         --port 8708
@@ -146,7 +146,7 @@ models:
     ttl: 3600
 
   llamacpp-Qwen3-30B-A3B-draft:
-    cmd: >
+    cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-30B-A3B.log
         --port 8708
@@ -180,7 +180,7 @@ models:
 
 
   llamacpp-Qwen2.5-Coder-3B:
-    cmd: >
+    cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen2.5-Coder-3B-Instruct.log
         --port 8013
@@ -202,7 +202,7 @@ models:
     ttl: 3600
 
   llamacpp-Phi-4-mini:
-    cmd: >
+    cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Phi-4.log
         --port 8006
@@ -226,7 +226,7 @@ models:
 
 
   llamacpp-Ling-Coder-lite:
-    cmd: >
+    cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Ling-Coder-lite.log
         --port 8011
@@ -253,7 +253,7 @@ models:
     ttl: 3600
 
   llamacpp-ling-lite-0415:
-    cmd: >
+    cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-ling-lite-0415.log
         --port 8022

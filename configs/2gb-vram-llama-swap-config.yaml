@@ -10,7 +10,7 @@ models:
 
   # yoga720-15ikb: 252tps pp, 28tps tg
   llamacpp-gemma-3-1b:
-    cmd: >
+    cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-gemma-3-1b-it.log
         --port 8012
@@ -36,7 +36,7 @@ models:
 
   # yoga720-15ikb: 846tps pp, 22.2tps tg
   llamacpp-Qwen3-0.6B:
-    cmd: >
+    cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-0.6B.log
         --port 8703
@@ -67,7 +67,7 @@ models:
 
   # yoga720-15ikb: 500tps pp, 15tps tg
   llamacpp-Qwen3-1.7B:
-    cmd: >
+    cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-1.7B.log
         --port 8703
@@ -100,7 +100,7 @@ models:
   #--hf-repo unsloth/Qwen3-30B-A3B-GGUF:IQ1_S
   # yoga720-15ikb: 79 pp, 4.5 tg
   llamacpp-Qwen3-30B-A3B:
-    cmd: >
+    cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-30B-A3B.log
         --port 8708
@@ -136,7 +136,7 @@ models:
   #unsloth/Qwen3-0.6B-GGUF:Q8_0
   # yoga720-15ikb: 16tps pp, 7tps tg
   llamacpp-Qwen3-30B-A3B-draft:
-    cmd: >
+    cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-30B-A3B.log
         --port 8708
@@ -173,7 +173,7 @@ models:
 
   # 259 pp, 31 tg
   llamacpp-Qwen2.5-Coder-1.5B:
-    cmd: >
+    cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen2.5-Coder-1.5B-Instruct.log
         --port 8013
@@ -202,7 +202,7 @@ models:
   # Q2_K (1.68GB) does not fit on gpu with 4096 ctx (k4,v4). Trying partial offloading:
   # yoga720-15ikb: 65pp, 13tg
   llamacpp-Phi-4-mini: 
-    cmd: >
+    cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Phi-4.log
         --port 8006
@@ -228,7 +228,7 @@ models:
 
   # yoga720-15ikb: 33 pp, 13 tg
   llamacpp-Ling-Coder-lite:
-    cmd: >
+    cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Ling-Coder-lite.log
         --port 8011
@@ -256,7 +256,7 @@ models:
     ttl: 3600
 
   llamacpp-ling-lite-0415:
-    cmd: >
+    cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-ling-lite-0415.log
         --port 8022

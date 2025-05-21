@@ -1,5 +1,5 @@
   llamacpp-Qwen3-0.6B:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-0.6B.log
         --port 8702
@@ -25,7 +25,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-1.7B:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-1.7B.log
         --port 8703
@@ -51,7 +51,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-4B:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-4B.log
         --port 8704
@@ -77,7 +77,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-4B-128K:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-4B-128K.log
         --port 8705
@@ -105,7 +105,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-8B:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-8B.log
         --port 8706
@@ -131,7 +131,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-14B:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-14B.log
         --port 8707
@@ -157,7 +157,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-30B-A3B:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-30B-A3B.log
         --port 8708
@@ -185,7 +185,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-32B:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-32B.log
         --port 8709
@@ -213,7 +213,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-30B-A3B-Q6_K:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-30B-A3B-Q6_K.log
         --port 8710
@@ -239,7 +239,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-30B-A3B-bartowski:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-30B-A3B-bartowski.log
         --port 8711
@@ -267,7 +267,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-32B-bartowski:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-32B-bartowski.log
         --port 8712
@@ -295,7 +295,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-0.6B-thinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-0.6B-thinking.log
         --port 8713
@@ -316,7 +316,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-1.7B-thinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-1.7B-thinking.log
         --port 8714
@@ -337,7 +337,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-4B-thinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-4B-thinking.log
         --port 8715
@@ -358,7 +358,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-4B-128K-thinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-4B-128K-thinking.log
         --port 8716
@@ -381,7 +381,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-8B-thinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-8B-thinking.log
         --port 8717
@@ -402,7 +402,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-14B-thinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-14B-thinking.log
         --port 8718
@@ -423,7 +423,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-30B-A3B-thinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-30B-A3B-thinking.log
         --port 8719
@@ -446,7 +446,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-32B-thinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-32B-thinking.log
         --port 8720
@@ -469,7 +469,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-30B-A3B-Q6_K-thinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-30B-A3B-Q6_K-thinking.log
         --port 8721
@@ -490,7 +490,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-30B-A3B-bartowski-thinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-30B-A3B-bartowski-thinking.log
         --port 8722
@@ -513,7 +513,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-32B-bartowski-thinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-32B-bartowski-thinking.log
         --port 8723
@@ -536,7 +536,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-0.6B-nonthinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-0.6B-nonthinking.log
         --port 8724
@@ -559,7 +559,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-1.7B-nonthinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-1.7B-nonthinking.log
         --port 8725
@@ -582,7 +582,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-4B-nonthinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-4B-nonthinking.log
         --port 8726
@@ -605,7 +605,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-4B-128K-nonthinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-4B-128K-nonthinking.log
         --port 8727
@@ -630,7 +630,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-8B-nonthinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-8B-nonthinking.log
         --port 8728
@@ -653,7 +653,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-14B-nonthinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-14B-nonthinking.log
         --port 8729
@@ -676,7 +676,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-30B-A3B-nonthinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-30B-A3B-nonthinking.log
         --port 8730
@@ -701,7 +701,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-32B-nonthinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-32B-nonthinking.log
         --port 8731
@@ -726,7 +726,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-30B-A3B-Q6_K-nonthinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-30B-A3B-Q6_K-nonthinking.log
         --port 8732
@@ -749,7 +749,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-30B-A3B-bartowski-nonthinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-30B-A3B-bartowski-nonthinking.log
         --port 8733
@@ -774,7 +774,7 @@
     ttl: 3600
 
   llamacpp-Qwen3-32B-bartowski-nonthinking:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-32B-bartowski-nonthinking.log
         --port 8734

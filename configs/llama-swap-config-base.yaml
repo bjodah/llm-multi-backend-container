@@ -16,7 +16,7 @@ models:
   # Mistral-3.1-2503 has vision support, for which text generation suffers?
   # Neither is is it particularly good at coding either (Qwen2.5-Coder is better)
   llamacpp-mistral-small-24b-2501:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-mistral-small-24b-2501.log
         --port 8005
@@ -41,7 +41,7 @@ models:
   # the name below works with aider, thanks to:
   # https://github.com/Aider-AI/aider/blob/8f15269bd063a3c720ced514303b9efcc03fe29f/aider/models.py#L429
   llamacpp-QwQ-32B:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-QwQ-32B.log
         --port 8001
@@ -66,7 +66,7 @@ models:
     ttl: 3600
         
   llamacpp-DeepCoder-14B:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-DeepCoder-14B.log
         --port 8017
@@ -88,14 +88,14 @@ models:
     ttl: 3600
 
   exllamav2-gemma-3-27b:
-    cmd: >
+    cmd: |
       env --chdir /opt/tabbyAPI python3 main.py
         --config /configs/tabby-config-gemma-3-27b.yml
     proxy: http://127.0.0.1:7567
     ttl: 3600
 
   exllamav2-QwQ-32B:
-    cmd: >
+    cmd: |
       env --chdir /opt/tabbyAPI python3 main.py
         --config /configs/tabby-config-qwq32b.yml
     proxy: http://127.0.0.1:8007
@@ -103,7 +103,7 @@ models:
 
 
   vllm-SmolLM2-1.7B-Instruct:
-    cmd: >
+    cmd: |
       python3 -m vllm.entrypoints.openai.api_server
         --port 8009
         --served-model-name vllm-SmolLM2-1.7B-Instruct
@@ -114,7 +114,7 @@ models:
     ttl: 3600
 
   vllm-Qwen-QwQ-32B:
-    cmd: >
+    cmd: |
       env VLLM_ATTENTION_BACKEND=FLASHINFER python3
         -m vllm.entrypoints.openai.api_server
         --port 8010
@@ -141,7 +141,7 @@ models:
     # --enable-auto-tool-choice
 
   vllm-Qwen3-14B:  # ~30 tps for 3090@250W
-    cmd: >
+    cmd: |
       env VLLM_ATTENTION_BACKEND=FLASHINFER python3
         -m vllm.entrypoints.openai.api_server
         --port 8015
@@ -163,7 +163,7 @@ models:
     ttl: 3600
 
   vllm-Qwen2.5-VL-7B:
-    cmd: >
+    cmd: |
       python3 -m vllm.entrypoints.openai.api_server
           --api-key sk-empty
           --port 8014
@@ -184,7 +184,7 @@ models:
   # I'm not yet sure what Maverick is good at. Hopefully it could be useful as an offline knowledge base
   # for any other tasks, there are better models (for local inference).
   llamacpp-llama4-maverick:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-llama4-maverick.log
         --port 8016
@@ -206,7 +206,7 @@ models:
     ttl: 3600
   
   llamacpp-openthinker2-32b:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-openthinker2-32b.log
         --port 8024
@@ -228,7 +228,7 @@ models:
 
   # see https://github.com/LG-AI-EXAONE/EXAONE-Deep
   llamacpp-exaone-deep-32b:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-exaone-deep-32b
         --port 8028

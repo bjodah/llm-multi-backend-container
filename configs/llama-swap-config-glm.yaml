@@ -1,5 +1,5 @@
   llamacpp-glm-4-32b-0414:  # ~16 tps TG
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-glm-4-32b-0414.log
         --port 8018
@@ -27,7 +27,7 @@
 
   # Thinking version of glm-4
   llamacpp-glm-z1-32b-0414:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-glm-z1-32b-0414.log
         --port 8019
@@ -52,7 +52,7 @@
 
   # I haven't had too much success with this, I prefer non-rumination
   llamacpp-glm-z1-rumination-32b-0414:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-glm-z1-rumination-32b-0414.log
         --port 8020

@@ -1,5 +1,5 @@
   llamacpp-Ling-Coder-lite:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Ling-Coder-lite.log
         --port 8011
@@ -21,7 +21,7 @@
     ttl: 3600
 
   llamacpp-ling-lite-0415:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-ling-lite-0415.log
         --port 8022

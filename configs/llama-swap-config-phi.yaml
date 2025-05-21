@@ -1,5 +1,5 @@
   llamacpp-Phi-4:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Phi-4.log
         --port 8006
@@ -21,7 +21,7 @@
     ttl: 3600
 
   llamacpp-Phi-4-reasoning-plus:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Phi-4-reasoning-plus.log
         --port 8633

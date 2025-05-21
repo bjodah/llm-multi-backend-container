@@ -1,5 +1,5 @@
   llamacpp-Qwen3-30B-A3B-cpu:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen3-30B-A3B-Q8_K_XL.log
         --port 8710
