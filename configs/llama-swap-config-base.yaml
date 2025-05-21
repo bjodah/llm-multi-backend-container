@@ -15,10 +15,10 @@ models:
 
   # Mistral-3.1-2503 has vision support, for which text generation suffers?
   # Neither is is it particularly good at coding either (Qwen2.5-Coder is better)
-  llamacpp-mistral-small-24b-it-2501:
+  llamacpp-mistral-small-24b-2501:
     cmd: >
       /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-mistral-small-24b-it-2501.log
+        --log-file /logs/llamacpp-mistral-small-24b-2501.log
         --port 8005
         --hf-repo unsloth/Mistral-Small-24B-Instruct-2501-GGUF:Q6_K
         --n-gpu-layers 99
@@ -58,7 +58,8 @@ models:
         --dry-allowed-length 5
         --top-p 0.92
         --min-p 0.01
-        --temp 0.5  # was 0.6
+        --temp 0.5
+        # was 0.6
         #--verbose
 
     proxy: http://127.0.0.1:8001
@@ -69,7 +70,8 @@ models:
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-DeepCoder-14B.log
         --port 8017
-        --hf-repo bartowski/agentica-org_DeepCoder-14B-Preview-GGUF:Q4_K_L  # :Q8_0
+        --hf-repo bartowski/agentica-org_DeepCoder-14B-Preview-GGUF:Q4_K_L
+        # :Q8_0
         --n-gpu-layers 999
         --ctx-size 65536
         --cache-type-k q8_0
@@ -113,7 +115,7 @@ models:
 
   vllm-Qwen-QwQ-32B:
     cmd: >
-      env TORCH_CUDA_ARCH_LIST=8.6 VLLM_ATTENTION_BACKEND=FLASHINFER python3
+      env VLLM_ATTENTION_BACKEND=FLASHINFER python3
         -m vllm.entrypoints.openai.api_server
         --port 8010
         --served-model-name vllm-Qwen-QwQ-32B
@@ -140,7 +142,7 @@ models:
 
   vllm-Qwen3-14B:  # ~30 tps for 3090@250W
     cmd: >
-      env TORCH_CUDA_ARCH_LIST=8.6 VLLM_ATTENTION_BACKEND=FLASHINFER python3
+      env VLLM_ATTENTION_BACKEND=FLASHINFER python3
         -m vllm.entrypoints.openai.api_server
         --port 8015
         --served-model-name vllm-Qwen3-14B
@@ -230,7 +232,8 @@ models:
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-exaone-deep-32b
         --port 8028
-        --hf-repo bartowski/LGAI-EXAONE_EXAONE-Deep-32B-GGUF:Q4_K_M # 19.3GB
+        --hf-repo bartowski/LGAI-EXAONE_EXAONE-Deep-32B-GGUF:Q4_K_M
+        # 19.3GB
         --n-gpu-layers 99
         --jinja
         --ctx-size 32768
@@ -242,6 +245,7 @@ models:
         --dry-multiplier 0.5
         --dry-allowed-length 3
         --dry-penalty-last-n 4096
-        --temp 0.7  # 0.6 recommended, with top_p=0.95
+        --temp 0.7
+        # 0.6 recommended, with top_p=0.95
     proxy: http://127.0.0.1:8028
     ttl: 3600
