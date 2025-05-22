@@ -10,6 +10,7 @@ logLevel: debug # info warn
 #         `--prio` flag (need to figure out what does values do, responsible for spinning 1 thread 100%?)
 #         - No longer setting `--seed "-1"`, default and respawning llama-swap for setting deterministic is not practical.
 
+startPort: 11000
 
 models:
 
@@ -40,6 +41,32 @@ models:
 
     proxy: http://127.0.0.1:8005
     ttl: 3600
+
+  llamacpp-mistral-small-3.1-24b-2503:
+    cmd: |
+      /opt/llama.cpp/build/bin/llama-server
+        --log-file /logs/llamacpp-mistral-small-3.1-24b-2503.log
+        --port 8005
+        --hf-repo unsloth/Mistral-Small-3.1-24B-Instruct-2503-GGUF:Q5_K_XL
+        # ^---- 16.8GB
+        --n-gpu-layers 99
+        --jinja
+        # --hf-repo-draft bartowski/alamios_Mistral-Small-3.1-DRAFT-0.5B-GGUF:Q8_0
+        # --n-gpu-layers-draft 99
+        --ctx-size 32768
+        --cache-type-k q8_0
+        # --cache-type-v q8_0
+        # --flash-attn
+        --samplers 'min_p;dry;temperature;xtc'
+        --min-p 0.01
+        --dry-multiplier 0.3
+        --dry-allowed-length 3
+        --dry-penalty-last-n 256
+        --temp 0.15
+
+    proxy: http://127.0.0.1:8005
+    ttl: 3600
+    
 
   # the name below works with aider, thanks to:
   # https://github.com/Aider-AI/aider/blob/8f15269bd063a3c720ced514303b9efcc03fe29f/aider/models.py#L429
