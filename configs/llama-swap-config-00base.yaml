@@ -20,7 +20,7 @@ models:
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-mistral-small-24b-2501.log
-        --port 8005
+        --port ${PORT}
         #--hf-repo unsloth/Mistral-Small-24B-Instruct-2501-GGUF:Q6_K 19.3 GB, 24k ctx
         --hf-repo bartowski/Mistral-Small-24B-Instruct-2501-GGUF:Q5_K_M
         # ^---- 16.8GB
@@ -39,14 +39,14 @@ models:
         --dry-penalty-last-n 256
         --temp 0.15
 
-    proxy: http://127.0.0.1:8005
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-mistral-small-3.1-24b-2503:
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-mistral-small-3.1-24b-2503.log
-        --port 8005
+        --port ${PORT}
         --hf-repo unsloth/Mistral-Small-3.1-24B-Instruct-2503-GGUF:Q5_K_XL
         # ^---- 16.8GB
         --n-gpu-layers 99
@@ -64,7 +64,7 @@ models:
         --dry-penalty-last-n 256
         --temp 0.15
 
-    proxy: http://127.0.0.1:8005
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
     
 
@@ -74,7 +74,7 @@ models:
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-QwQ-32B.log
-        --port 8001
+        --port ${PORT}
         --hf-repo unsloth/QwQ-32B-GGUF:Q4_K_XL
         --n-gpu-layers 99
         --jinja
@@ -92,14 +92,14 @@ models:
         # was 0.6
         #--verbose
 
-    proxy: http://127.0.0.1:8001
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
         
   llamacpp-DeepCoder-14B:
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-DeepCoder-14B.log
-        --port 8017
+        --port ${PORT}
         --hf-repo bartowski/agentica-org_DeepCoder-14B-Preview-GGUF:Q4_K_L
         # :Q8_0
         --n-gpu-layers 999
@@ -115,40 +115,40 @@ models:
         # --dry-multiplier 1.0
         # --dry-allowed-length 3
         # --dry-penalty-last-n 256
-    proxy: http://127.0.0.1:8017
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   exllamav2-gemma-3-27b:
     cmd: |
       env --chdir /opt/tabbyAPI python3 main.py
         --config /configs/tabby-config-gemma-3-27b.yml
-    proxy: http://127.0.0.1:7567
+    proxy: http://127.0.0.1:11904
     ttl: 3600
 
   exllamav2-QwQ-32B:
     cmd: |
       env --chdir /opt/tabbyAPI python3 main.py
         --config /configs/tabby-config-qwq32b.yml
-    proxy: http://127.0.0.1:8007
+    proxy: http://127.0.0.1:11901
     ttl: 3600
 
 
   vllm-SmolLM2-1.7B-Instruct:
     cmd: |
       python3 -m vllm.entrypoints.openai.api_server
-        --port 8009
+        --port ${PORT}
         --served-model-name vllm-SmolLM2-1.7B-Instruct
         --model HuggingFaceTB/SmolLM2-1.7B-Instruct
         --gpu-memory-utilization 0.5
         --max-model-len 2048
-    proxy: http://127.0.0.1:8009
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   vllm-Qwen-QwQ-32B:
     cmd: |
       env VLLM_ATTENTION_BACKEND=FLASHINFER python3
         -m vllm.entrypoints.openai.api_server
-        --port 8010
+        --port ${PORT}
         --served-model-name vllm-Qwen-QwQ-32B
         --model Qwen/QwQ-32B-AWQ
         --trust-remote-code
@@ -164,7 +164,7 @@ models:
         --reasoning-parser deepseek_r1
         --tool-call-parser hermes 
         --kv-cache-dtype fp8_e5m2
-    proxy: http://127.0.0.1:8010
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
     # 
     # --max-model-len 32768
@@ -175,7 +175,7 @@ models:
     cmd: |
       env VLLM_ATTENTION_BACKEND=FLASHINFER python3
         -m vllm.entrypoints.openai.api_server
-        --port 8015
+        --port ${PORT}
         --served-model-name vllm-Qwen3-14B
         --model Qwen/Qwen3-14B-AWQ
         --trust-remote-code
@@ -190,21 +190,21 @@ models:
         --enable-reasoning
         --reasoning-parser deepseek_r1
         --kv-cache-dtype fp8_e5m2
-    proxy: http://127.0.0.1:8015
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   vllm-Qwen2.5-VL-7B:
     cmd: |
       python3 -m vllm.entrypoints.openai.api_server
           --api-key sk-empty
-          --port 8014
+          --port ${PORT}
           --served-model-name vllm-Qwen2.5-VL-7B
           --model Qwen/Qwen2.5-VL-7B-Instruct-AWQ
           --trust-remote-code
           --gpu-memory-utilization 0.954330
           --max-model-len 8192
           --max-num-batched-tokens 32768
-    proxy: http://127.0.0.1:8014
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
     # --kv-cache-dtype fp8_e5m2
     # (--max-model-len) 32768
@@ -218,7 +218,7 @@ models:
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-llama4-maverick.log
-        --port 8016
+        --port ${PORT}
         --model /root/.cache/huggingface/hub/models--unsloth--Llama-4-Maverick-17B-128E-Instruct-GGUF/snapshots/d68803567c756664117d0de7da050bf0ec1bb092/UD-Q2_K_XL/Llama-4-Maverick-17B-128E-Instruct-UD-Q2_K_XL-00001-of-00004.gguf
         --n-gpu-layers 99
         --override-tensor '([0-9]+).ffn_.*_exps.=CPU'
@@ -233,14 +233,14 @@ models:
         --dry-penalty-last-n 256
         --temp 0.6
     # --override-kv llama4.expert_used_count=int:2
-    proxy: http://127.0.0.1:8016
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
   
   llamacpp-openthinker2-32b:
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-openthinker2-32b.log
-        --port 8024
+        --port ${PORT}
         --hf-repo bartowski/open-thoughts_OpenThinker2-32B-GGUF
         --n-gpu-layers 999
         --jinja
@@ -256,7 +256,7 @@ models:
         # 3
         --dry-penalty-last-n 1024
         --temp 0.6
-    proxy: http://127.0.0.1:8024
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
 
@@ -265,7 +265,7 @@ models:
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-exaone-deep-32b
-        --port 8028
+        --port ${PORT}
         --hf-repo bartowski/LGAI-EXAONE_EXAONE-Deep-32B-GGUF:Q4_K_M
         # 19.3GB
         --n-gpu-layers 99
@@ -281,5 +281,5 @@ models:
         --dry-penalty-last-n 4096
         --temp 0.7
         # 0.6 recommended, with top_p=0.95
-    proxy: http://127.0.0.1:8028
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600

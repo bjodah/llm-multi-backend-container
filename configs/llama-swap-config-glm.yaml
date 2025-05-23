@@ -2,7 +2,7 @@
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-glm-4-32b-0414.log
-        --port 8018
+        --port ${PORT}
         --hf-repo bartowski/THUDM_GLM-4-32B-0414-GGUF:Q4_K_M
         # Q5_K_M
         #--hf-repo unsloth/GLM-4-32B-0414-GGUF:Q4_K_XL
@@ -22,7 +22,7 @@
         --dry-penalty-last-n 2048
         --min-p 0.02
         --temp 0.6
-    proxy: http://127.0.0.1:8018
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # Thinking version of glm-4
@@ -30,7 +30,7 @@
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-glm-z1-32b-0414.log
-        --port 8019
+        --port ${PORT}
         --hf-repo bartowski/THUDM_GLM-Z1-32B-0414-GGUF:Q3_K_XL
         # IQ4_XS # Q4_K_L, Q5_K_S
         --n-gpu-layers 999
@@ -47,7 +47,7 @@
         --dry-multiplier 0.5
         --dry-allowed-length 3
         --temp 0.4 # 0.6
-    proxy: http://127.0.0.1:8019
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # I haven't had too much success with this, I prefer non-rumination
@@ -55,7 +55,7 @@
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-glm-z1-rumination-32b-0414.log
-        --port 8020
+        --port ${PORT}
         --hf-repo bartowski/THUDM_GLM-Z1-Rumination-32B-0414-GGUF:Q3_K_XL
         #IQ4_XS  # Q4_K_L, Q5_K_S
         --n-gpu-layers 999
@@ -76,5 +76,5 @@
         --dry-penalty-last-n 1024
         --temp 0.4
         # 0.6
-    proxy: http://127.0.0.1:8020
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600

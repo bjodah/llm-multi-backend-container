@@ -2,7 +2,7 @@
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-gemma-3-27b.log
-        --port 8003
+        --port ${PORT}
         --hf-repo unsloth/gemma-3-12b-it-GGUF:Q6_K_XL
         --n-gpu-layers 999
         # --hf-repo-draft google/gemma-3-1b-it-qat-q4_0-gguf
@@ -20,7 +20,7 @@
         --dry-penalty-last-n 256
         --temp 1.0
         --top-p 0.95
-    proxy: http://127.0.0.1:8003
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # https://www.reddit.com/r/LocalLLaMA/comments/1krr7hn/how_to_get_the_most_from_llamacpps_iswa_support/
@@ -29,13 +29,13 @@
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-gemma-3-27b.log
-        --port 8003
+        --port ${PORT}
         --hf-repo google/gemma-3-27b-it-qat-q4_0-gguf
         --n-gpu-layers 999
         # --hf-repo-draft google/gemma-3-1b-it-qat-q4_0-gguf
         # --n-gpu-layers-draft 999
         --jinja
-        --ctx-size 55000
+        --ctx-size 52000
         # --cache-type-k q8_0
         # --cache-type-v q5_1
         --flash-attn
@@ -47,14 +47,14 @@
         --dry-penalty-last-n 256
         --temp 1.0
         --top-p 0.95
-    proxy: http://127.0.0.1:8003
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-gemma-3-4b:
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-gemma-3-4b.log
-        --port 8004
+        --port ${PORT}
         #--hf-repo google/gemma-3-4b-it-qat-q4_0-gguf
         --hf-repo unsloth/gemma-3-4b-it-GGUF:Q8_0
         # --cache-type-k q8_0
@@ -70,14 +70,14 @@
         --min-p 0.01
         --top-k 64
         --top-p 0.95
-    proxy: http://127.0.0.1:8004
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-gemma-3-1b:
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-gemma-3-1b.log
-        --port 8012
+        --port ${PORT}
         --hf-repo unsloth/gemma-3-1b-it-GGUF:Q8_0
         --n-gpu-layers 999
         --jinja
@@ -89,5 +89,5 @@
         --min-p 0.01
         --top-k 64
         --top-p 0.95
-    proxy: http://127.0.0.1:8012
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600

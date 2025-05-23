@@ -13,7 +13,7 @@ models:
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-gemma-3-1b-it.log
-        --port 8012
+        --port ${PORT}
         # Q8_0: 1.05 GB
         --hf-repo unsloth/gemma-3-1b-it-GGUF:Q8_0
         --n-gpu-layers 99
@@ -27,7 +27,7 @@ models:
         --min-p 0.01
         --top-k 64
         --top-p 0.95
-    proxy: http://127.0.0.1:8012
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # Nope, IQ1_M=1.24GB, IQ1_S=1.18GB, IQ2_XXS=1.34, tried with ~k4,v4 4-8k ctx
@@ -39,7 +39,7 @@ models:
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-0.6B.log
-        --port 8703
+        --port ${PORT}
         # Q4_K_XL: 1.13 GB
         --hf-repo unsloth/Qwen3-0.6B-GGUF:Q4_K_XL
         --threads 4
@@ -62,7 +62,7 @@ models:
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
-    proxy: http://127.0.0.1:8703
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # yoga720-15ikb: 500tps pp, 15tps tg
@@ -70,7 +70,7 @@ models:
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-1.7B.log
-        --port 8703
+        --port ${PORT}
         # Q4_K_XL: 1.13 GB
         --hf-repo unsloth/Qwen3-1.7B-GGUF:Q4_K_XL
         --threads 2
@@ -94,7 +94,7 @@ models:
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
-    proxy: http://127.0.0.1:8703
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   #--hf-repo unsloth/Qwen3-30B-A3B-GGUF:IQ1_S
@@ -103,7 +103,7 @@ models:
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-30B-A3B.log
-        --port 8708
+        --port ${PORT}
         --hf-repo bartowski/Qwen_Qwen3-30B-A3B-GGUF:IQ3_XXS
         # 12.2 GB
         #--n-gpu-layers 99                       # \_ with gpu + cpu:   79 pp,  4.5 tg
@@ -130,7 +130,7 @@ models:
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
-    proxy: http://127.0.0.1:8708
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   #unsloth/Qwen3-0.6B-GGUF:Q8_0
@@ -139,7 +139,7 @@ models:
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-30B-A3B.log
-        --port 8708
+        --port ${PORT}
         --hf-repo bartowski/Qwen_Qwen3-30B-A3B-GGUF:IQ3_XXS
         # 12.2 GB
         --hf-repo-draft bartowski/Qwen_Qwen3-0.6B-GGUF:Q4_K_L
@@ -167,7 +167,7 @@ models:
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
-    proxy: http://127.0.0.1:8708
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
 
@@ -176,7 +176,7 @@ models:
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen2.5-Coder-1.5B-Instruct.log
-        --port 8013
+        --port ${PORT}
         --hf-repo unsloth/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q5_K_M
         # 1.13GB
         --n-gpu-layers 99
@@ -191,7 +191,7 @@ models:
         --temp 0.1
         --dry-multiplier 0.1
         --dry-allowed-length 3
-    proxy: http://127.0.0.1:8013
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # Nope, Q2_K quant is completely broken:
@@ -205,7 +205,7 @@ models:
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Phi-4.log
-        --port 8006
+        --port ${PORT}
         --hf-repo bartowski/microsoft_Phi-4-mini-instruct-GGUF:Q2_K
         # 1.68GB
         --n-gpu-layers 24
@@ -222,7 +222,7 @@ models:
         --dry-allowed-length 3
         --dry-penalty-last-n 256
         --temp 0.5
-    proxy: http://127.0.0.1:8006
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
 
@@ -231,7 +231,7 @@ models:
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Ling-Coder-lite.log
-        --port 8011
+        --port ${PORT}
         --hf-repo mradermacher/Ling-Coder-lite-GGUF:IQ4_XS
         # 9.19GB
         --n-gpu-layers 99
@@ -252,14 +252,14 @@ models:
         --min-p 0.01 
         --temp 0.8 
 
-    proxy: http://127.0.0.1:8011
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-ling-lite-0415:
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-ling-lite-0415.log
-        --port 8022
+        --port ${PORT}
         --hf-repo bartowski/inclusionAI_Ling-lite-0415-GGUF:IQ4_XS
         # 9.19GB
         --n-gpu-layers 28                       
@@ -282,6 +282,6 @@ models:
         --dry-penalty-last-n 1024
         --temp 0.6
         #--verbose
-    proxy: http://127.0.0.1:8022
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 

@@ -2,7 +2,7 @@
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Ling-Coder-lite.log
-        --port 8011
+        --port ${PORT}
         --hf-repo mradermacher/Ling-Coder-lite-GGUF:Q4_K_M
         --n-gpu-layers 99 
         --ctx-size 32768
@@ -17,14 +17,14 @@
         --min-p 0.01 
         --temp 0.8 
 
-    proxy: http://127.0.0.1:8011
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-ling-lite-0415:
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-ling-lite-0415.log
-        --port 8022
+        --port ${PORT}
         --hf-repo bartowski/inclusionAI_Ling-lite-0415-GGUF:Q6_K_L
         --ctx-size 32768
         --n-gpu-layers 99 
@@ -40,5 +40,5 @@
         --dry-penalty-last-n 1024
         --temp 0.6
         #--verbose
-    proxy: http://127.0.0.1:8022
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600

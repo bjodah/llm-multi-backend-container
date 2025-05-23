@@ -5,7 +5,7 @@
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen2.5-Coder-32B.log
-        --port 8002
+        --port ${PORT}
         --hf-repo unsloth/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M
         #--hf-repo-draft unsloth/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q4_K_M
         --n-gpu-layers 999 
@@ -21,7 +21,7 @@
         --temp 0.3
         --dry-multiplier 0.5
         --dry-allowed-length 5
-    proxy: http://127.0.0.1:8002
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # I use this model for "tab-completion" in emacs (minuet.el), hence small context window.
@@ -29,7 +29,7 @@
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen2.5-Coder-7B.log
-        --port 8013
+        --port ${PORT}
         --hf-repo bartowski/Qwen2.5.1-Coder-7B-Instruct-GGUF:Q8_0
         --hf-repo-draft bartowski/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q8_0
         --n-gpu-layers 999
@@ -46,7 +46,7 @@
         --temp 0.1
         --dry-multiplier 0.1
         --dry-allowed-length 3
-    proxy: http://127.0.0.1:8013
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # As I've understood it Qwen2.5-Coder-32B was not trained with FIM and tool calling?
@@ -54,7 +54,7 @@
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen2.5-Coder-14B.log
-        --port 8013
+        --port ${PORT}
         --hf-repo bartowski/Qwen2.5-Coder-14B-Instruct-GGUF:Q8_0
         --hf-repo-draft bartowski/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q8_0
         --n-gpu-layers 999
@@ -71,7 +71,7 @@
         --temp 0.1
         --dry-multiplier 0.1
         --dry-allowed-length 3
-    proxy: http://127.0.0.1:8013
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
 
@@ -80,7 +80,7 @@
     cmd: |
       /opt/llama.cpp/build/bin/llama-server
         --log-file /logs/llamacpp-Qwen2.5-Coder-3B.log
-        --port 8013
+        --port ${PORT}
         --hf-repo bartowski/Qwen2.5-Coder-3B-Instruct-GGUF:Q8_0
         --hf-repo-draft bartowski/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q8_0
         --n-gpu-layers 999
@@ -97,21 +97,28 @@
         --temp 0.1
         --dry-multiplier 0.1
         --dry-allowed-length 3
-    proxy: http://127.0.0.1:8013
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 3600
+
+  exllamav2-Qwen2.5-Coder-7B:
+    cmd: |
+      env --chdir /opt/tabbyAPI python3 main.py
+        --config /configs/tabby-config-qwen25-coder-7b.yml
+    proxy: http://127.0.0.1:11902
     ttl: 3600
 
   exllamav2-Qwen2.5-Coder-14B:
     cmd: |
       env --chdir /opt/tabbyAPI python3 main.py
         --config /configs/tabby-config-qwen25-coder-14b.yml
-    proxy: http://127.0.0.1:8008
+    proxy: http://127.0.0.1:11903
     ttl: 3600
 
   vllm-Qwen2.5-Coder-7B:
     cmd: |
       env TORCH_CUDA_ARCH_LIST=8.6 VLLM_ATTENTION_BACKEND=FLASHINFER python3
         -m vllm.entrypoints.openai.api_server
-        --port 7999
+        --port ${PORT}
         --served-model-name vllm-Qwen2.5-Coder-7B
         --model Qwen/Qwen2.5-Coder-7B-Instruct-AWQ
         --enable-auto-tool-choice
@@ -123,14 +130,14 @@
         --max-model-len 32768
         --disable-sliding-window
         --kv-cache-dtype fp8_e5m2
-    proxy: http://127.0.0.1:7999
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
     
   vllm-Qwen2.5-Coder-14B:
     cmd: |
       env TORCH_CUDA_ARCH_LIST=8.6 VLLM_ATTENTION_BACKEND=FLASHINFER python3
         -m vllm.entrypoints.openai.api_server
-        --port 7998
+        --port ${PORT}
         --served-model-name vllm-Qwen2.5-Coder-14B
         --model Qwen/Qwen2.5-Coder-14B-Instruct-AWQ
         --enable-auto-tool-choice
@@ -142,6 +149,6 @@
         --max-model-len 32768
         --disable-sliding-window
         --kv-cache-dtype fp8_e5m2
-    proxy: http://127.0.0.1:7998
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
     
