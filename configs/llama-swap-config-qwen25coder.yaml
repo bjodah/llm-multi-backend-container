@@ -3,8 +3,7 @@
   # https://github.com/Aider-AI/aider/blob/8f15269bd063a3c720ced514303b9efcc03fe29f/aider/models.py#L418
   llamacpp-Qwen2.5-Coder-32B:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen2.5-Coder-32B.log
+      /configs/llama-serve /logs/llamacpp-Qwen2.5-Coder-32B.log
         --port ${PORT}
         --hf-repo unsloth/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M
         #--hf-repo-draft unsloth/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q4_K_M
@@ -27,8 +26,7 @@
   # I use this model for "tab-completion" in emacs (minuet.el), hence small context window.
   llamacpp-Qwen2.5-Coder-7B:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen2.5-Coder-7B.log
+      /configs/llama-serve /logs/llamacpp-Qwen2.5-Coder-7B.log
         --port ${PORT}
         --hf-repo bartowski/Qwen2.5.1-Coder-7B-Instruct-GGUF:Q8_0
         --hf-repo-draft bartowski/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q8_0
@@ -52,8 +50,7 @@
   # As I've understood it Qwen2.5-Coder-32B was not trained with FIM and tool calling?
   llamacpp-Qwen2.5-Coder-14B:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen2.5-Coder-14B.log
+      /configs/llama-serve /logs/llamacpp-Qwen2.5-Coder-14B.log
         --port ${PORT}
         --hf-repo bartowski/Qwen2.5-Coder-14B-Instruct-GGUF:Q8_0
         --hf-repo-draft bartowski/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q8_0
@@ -78,8 +75,7 @@
   # The 3B model is too dumb in my experience...
   llamacpp-Qwen2.5-Coder-3B:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen2.5-Coder-3B.log
+      /configs/llama-serve /logs/llamacpp-Qwen2.5-Coder-3B.log
         --port ${PORT}
         --hf-repo bartowski/Qwen2.5-Coder-3B-Instruct-GGUF:Q8_0
         --hf-repo-draft bartowski/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q8_0

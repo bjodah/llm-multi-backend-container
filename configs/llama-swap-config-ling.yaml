@@ -1,7 +1,6 @@
   llamacpp-Ling-Coder-lite:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Ling-Coder-lite.log
+      /configs/llama-serve /logs/llamacpp-Ling-Coder-lite.log
         --port ${PORT}
         --hf-repo mradermacher/Ling-Coder-lite-GGUF:Q4_K_M
         --n-gpu-layers 99 
@@ -22,8 +21,7 @@
 
   llamacpp-ling-lite-0415:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-ling-lite-0415.log
+      /configs/llama-serve /logs/llamacpp-ling-lite-0415.log
         --port ${PORT}
         --hf-repo bartowski/inclusionAI_Ling-lite-0415-GGUF:Q6_K_L
         --ctx-size 32768

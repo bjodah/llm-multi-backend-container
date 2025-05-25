@@ -1,7 +1,6 @@
   llamacpp-Phi-4:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Phi-4.log
+      /configs/llama-serve /logs/llamacpp-Phi-4.log
         --port ${PORT}
         --hf-repo unsloth/phi-4-GGUF:Q6_K
         # Q2_K_L, bartowski/phi-4-GGUF:Q8_0
@@ -23,8 +22,7 @@
 
   llamacpp-Phi-4-reasoning-plus:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Phi-4-reasoning-plus.log
+      /configs/llama-serve /logs/llamacpp-Phi-4-reasoning-plus.log
         --port ${PORT}
         --hf-repo unsloth/Phi-4-reasoning-plus-GGUF:Q6_K_XL
         --n-gpu-layers 99

@@ -1,7 +1,6 @@
   llamacpp-Qwen3-0.6B:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-0.6B.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-0.6B.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-0.6B-GGUF:Q8_0
         --n-gpu-layers 999
@@ -51,8 +50,7 @@
 
   llamacpp-Qwen3-4B:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-4B.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-4B.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-4B-GGUF:Q8_0
         --n-gpu-layers 999
@@ -77,8 +75,7 @@
 
   llamacpp-Qwen3-4B-128K:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-4B-128K.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-4B-128K.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-4B-128K-GGUF:Q8_0
         --n-gpu-layers 999
@@ -105,8 +102,7 @@
 
   llamacpp-Qwen3-8B:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-8B.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-8B.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-8B-GGUF:Q8_0
         --n-gpu-layers 999
@@ -131,8 +127,7 @@
 
   llamacpp-Qwen3-14B:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-14B.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-14B.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-14B-GGUF:Q6_K_XL
         --n-gpu-layers 999
@@ -157,8 +152,7 @@
 
   llamacpp-Qwen3-30B-A3B:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-30B-A3B.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-30B-A3B.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-30B-A3B-GGUF:Q4_K_M
         --n-gpu-layers 999
@@ -185,8 +179,7 @@
 
   llamacpp-Qwen3-32B:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-32B.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-32B.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-32B-GGUF:Q4_K_M
         --n-gpu-layers 999
@@ -213,8 +206,7 @@
 
   llamacpp-Qwen3-30B-A3B-Q6_K:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-30B-A3B-Q6_K.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-30B-A3B-Q6_K.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-30B-A3B-GGUF:Q6_K
         --n-gpu-layers 32
@@ -239,8 +231,7 @@
 
   llamacpp-Qwen3-30B-A3B-bartowski:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-30B-A3B-bartowski.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-30B-A3B-bartowski.log
         --port ${PORT}
         --hf-repo bartowski/Qwen_Qwen3-30B-A3B-GGUF:Q4_K_L
         --n-gpu-layers 999
@@ -267,8 +258,7 @@
 
   llamacpp-Qwen3-32B-bartowski:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-32B-bartowski.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-32B-bartowski.log
         --port ${PORT}
         --hf-repo bartowski/Qwen_Qwen3-32B-GGUF:Q4_K_M
         --n-gpu-layers 999
@@ -295,8 +285,7 @@
 
   llamacpp-Qwen3-0.6B-thinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-0.6B-thinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-0.6B-thinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-0.6B-GGUF:Q8_0
         --n-gpu-layers 999
@@ -316,8 +305,7 @@
 
   llamacpp-Qwen3-1.7B-thinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-1.7B-thinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-1.7B-thinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-1.7B-GGUF:Q8_0
         --n-gpu-layers 999
@@ -337,8 +325,7 @@
 
   llamacpp-Qwen3-4B-thinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-4B-thinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-4B-thinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-4B-GGUF:Q8_0
         --n-gpu-layers 999
@@ -358,8 +345,7 @@
 
   llamacpp-Qwen3-4B-128K-thinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-4B-128K-thinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-4B-128K-thinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-4B-128K-GGUF:Q8_0
         --n-gpu-layers 999
@@ -381,8 +367,7 @@
 
   llamacpp-Qwen3-8B-thinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-8B-thinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-8B-thinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-8B-GGUF:Q8_0
         --n-gpu-layers 999
@@ -402,8 +387,7 @@
 
   llamacpp-Qwen3-14B-thinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-14B-thinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-14B-thinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-14B-GGUF:Q6_K_XL
         --n-gpu-layers 999
@@ -423,8 +407,7 @@
 
   llamacpp-Qwen3-30B-A3B-thinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-30B-A3B-thinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-30B-A3B-thinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-30B-A3B-GGUF:Q4_K_M
         --n-gpu-layers 999
@@ -446,8 +429,7 @@
 
   llamacpp-Qwen3-32B-thinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-32B-thinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-32B-thinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-32B-GGUF:Q4_K_M
         --n-gpu-layers 999
@@ -469,8 +451,7 @@
 
   llamacpp-Qwen3-30B-A3B-Q6_K-thinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-30B-A3B-Q6_K-thinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-30B-A3B-Q6_K-thinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-30B-A3B-GGUF:Q6_K
         --n-gpu-layers 32
@@ -490,8 +471,7 @@
 
   llamacpp-Qwen3-30B-A3B-bartowski-thinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-30B-A3B-bartowski-thinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-30B-A3B-bartowski-thinking.log
         --port ${PORT}
         --hf-repo bartowski/Qwen_Qwen3-30B-A3B-GGUF:Q4_K_L
         --n-gpu-layers 999
@@ -513,8 +493,7 @@
 
   llamacpp-Qwen3-32B-bartowski-thinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-32B-bartowski-thinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-32B-bartowski-thinking.log
         --port ${PORT}
         --hf-repo bartowski/Qwen_Qwen3-32B-GGUF:Q4_K_M
         --n-gpu-layers 999
@@ -536,8 +515,7 @@
 
   llamacpp-Qwen3-0.6B-nonthinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-0.6B-nonthinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-0.6B-nonthinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-0.6B-GGUF:Q8_0
         --n-gpu-layers 999
@@ -559,8 +537,7 @@
 
   llamacpp-Qwen3-1.7B-nonthinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-1.7B-nonthinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-1.7B-nonthinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-1.7B-GGUF:Q8_0
         --n-gpu-layers 999
@@ -582,8 +559,7 @@
 
   llamacpp-Qwen3-4B-nonthinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-4B-nonthinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-4B-nonthinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-4B-GGUF:Q8_0
         --n-gpu-layers 999
@@ -605,8 +581,7 @@
 
   llamacpp-Qwen3-4B-128K-nonthinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-4B-128K-nonthinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-4B-128K-nonthinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-4B-128K-GGUF:Q8_0
         --n-gpu-layers 999
@@ -630,8 +605,7 @@
 
   llamacpp-Qwen3-8B-nonthinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-8B-nonthinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-8B-nonthinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-8B-GGUF:Q8_0
         --n-gpu-layers 999
@@ -653,8 +627,7 @@
 
   llamacpp-Qwen3-14B-nonthinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-14B-nonthinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-14B-nonthinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-14B-GGUF:Q6_K_XL
         --n-gpu-layers 999
@@ -676,8 +649,7 @@
 
   llamacpp-Qwen3-30B-A3B-nonthinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-30B-A3B-nonthinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-30B-A3B-nonthinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-30B-A3B-GGUF:Q4_K_M
         --n-gpu-layers 999
@@ -701,8 +673,7 @@
 
   llamacpp-Qwen3-32B-nonthinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-32B-nonthinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-32B-nonthinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-32B-GGUF:Q4_K_M
         --n-gpu-layers 999
@@ -726,8 +697,7 @@
 
   llamacpp-Qwen3-30B-A3B-Q6_K-nonthinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-30B-A3B-Q6_K-nonthinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-30B-A3B-Q6_K-nonthinking.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-30B-A3B-GGUF:Q6_K
         --n-gpu-layers 32
@@ -749,8 +719,7 @@
 
   llamacpp-Qwen3-30B-A3B-bartowski-nonthinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-30B-A3B-bartowski-nonthinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-30B-A3B-bartowski-nonthinking.log
         --port ${PORT}
         --hf-repo bartowski/Qwen_Qwen3-30B-A3B-GGUF:Q4_K_L
         --n-gpu-layers 999
@@ -774,8 +743,7 @@
 
   llamacpp-Qwen3-32B-bartowski-nonthinking:
     cmd: |
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen3-32B-bartowski-nonthinking.log
+      /configs/llama-serve /logs/llamacpp-Qwen3-32B-bartowski-nonthinking.log
         --port ${PORT}
         --hf-repo bartowski/Qwen_Qwen3-32B-GGUF:Q4_K_M
         --n-gpu-layers 999
