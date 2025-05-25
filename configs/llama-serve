@@ -1,0 +1,27 @@
+#!/bin/bash
+# -*- mode: shellscript -*-
+print_usage() {
+    echo "llama-serve mymodel.log --port 1234 --hf-repo someone/somemodel:Q9_K_XXXL --n-gpu-layers ...."
+}
+if [ $# -lt 2 ]; then
+    print_usage
+    exit 1
+fi
+echo $1
+if [[ $1 != *.log ]]; then
+    >&2 echo "Expected .log suffix"
+    exit 1
+fi
+if [ ! -w $(dirname $1)/ ]; then
+    >&2 echo "Cannot write to folder of log file?"
+    exit 1
+fi
+mv --backup=numbered $1 $1.bak 
+date
+if [ -e /tmp/llama-server-stdout-stderr.log ]; then
+    mv /tmp/llama-server-stdout-stderr.log /tmp/llama-server-stdout-stderr.log.bak
+fi
+set -x
+/opt/llama.cpp/build/bin/llama-server \
+    --log-file $1 \
+    "${@:2}" 2>/tmp/llama-server-stdout-stderr.log

@@ -46,6 +46,7 @@ services:
       - LLAMA_ARG_ENDPOINT_SLOTS=1
       - LLAMA_API_KEY=sk-empty
       - LLAMA_ARG_NO_CONTEXT_SHIFT=1
+      - LLAMA_LOG_VERBOSITY=1
       - VLLM_API_KEY=sk-empty
     ipc: host
     entrypoint:
