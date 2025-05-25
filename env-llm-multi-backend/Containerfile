@@ -1,6 +1,9 @@
 #FROM ghcr.io/ggml-org/llama.cpp:server-cuda
 FROM docker.io/vllm/vllm-openai:latest
 
+ARG TORCH_CUDA_ARCH_LIST="8.6"
+ARG CUDA_ARCHITECTURES="86"
+
 #          -DCMAKE_LINKER_TYPE=MOLD 
 # RUN \
 #     curl -Ls -o /tmp/cmake.sh https://github.com/Kitware/CMake/releases/download/v4.0.2/cmake-4.0.2-linux-x86_64.sh \
@@ -25,7 +28,7 @@ RUN \
          -DGGML_CUDA_FA_ALL_QUANTS=ON \
          -DGGML_CUDA_FORCE_MMQ=ON \
          -DGGML_SCHED_MAX_COPIES=1 \
-         -DCMAKE_CUDA_ARCHITECTURES="86" \
+         -DCMAKE_CUDA_ARCHITECTURES="${CUDA_ARCHITECTURES}" \
          -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache" \
          -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
          -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
@@ -33,29 +36,29 @@ RUN \
          -B /opt/llama.cpp/build \
     && cmake --build /opt/llama.cpp/build --config Release --parallel
 
-ENV TORCH_CUDA_ARCH_LIST="8.6"
+ENV TORCH_CUDA_ARCH_LIST=${TORCH_CUDA_ARCH_LIST}
 
 # install exllamav2
+# /root/.cache/torch_extensions/py312_cu124/exllamav2_ext/exllamav2_ext.so
 RUN \
-    --mount=type=cache,target=/root/.cache,sharing=locked \
+    --mount=type=cache,target=/root/.cache/pip,sharing=locked \
+    --mount=type=cache,target=/root/.cache/huggingface,sharing=locked \
     git clone https://github.com/turboderp/exllamav2 /opt/exllamav2 \
     && cd /opt/exllamav2 \
     && env MAX_JOBS=4 python3 -m pip install --no-build-isolation flash-attn \
     && python3 -m pip install --no-build-isolation pandas ninja torch fastparquet safetensors sentencepiece pygments websockets regex numpy rich pillow \
     && python3 setup.py build_ext -i \
-    && python3 -m pip install --no-build-isolation -e .
+    && python3 -m pip install --no-build-isolation -e . \
+    && if [ ! -d /root/.cache/huggingface/hub/models--turboderp--gpt2-exl2/snapshots/b5411192023974a0c481c71ebda557e3bf9c7ca9 ]; then \
+        env HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download turboderp/gpt2-exl2 --revision 3.0bpw; fi \
+    && python3 test_inference.py -m /root/.cache/huggingface/hub/models--turboderp--gpt2-exl2/snapshots/b5411192023974a0c481c71ebda557e3bf9c7ca9 -p "A short limmerick: The bear" #|| echo "If you see this, and a complain about no CUDA enabled GPUs, make sure you pass podman build the flag: --device nvidia.com/gpu=all"
 
-RUN \
-    --mount=type=cache,target=/root/.cache,sharing=locked \
-    cd /opt/exllamav2 \
-    && env HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download turboderp/gpt2-exl2 --revision 3.0bpw \
-    && python3 test_inference.py -m /root/.cache/huggingface/hub/models--turboderp--gpt2-exl2/snapshots/b5411192023974a0c481c71ebda557e3bf9c7ca9 -p "A short limmerick: The bear" || echo "If you see this, and a complain about no CUDA enabled GPUs, make sure you pass podman build the flag: --device nvidia.com/gpu=all"
 
 #python setup.py build_ext -i \
 #    && pip install -e .
 
 RUN \
-    --mount=type=cache,target=/root/.cache,sharing=locked \
+    --mount=type=cache,target=/root/.cache/pip,sharing=locked \
     git clone https://github.com/theroyallab/tabbyAPI /opt/tabbyAPI \
     && cd /opt/tabbyAPI \
     && python3 -m pip install -e .
@@ -65,7 +68,7 @@ RUN \
 
     # && git checkout 5025c2f1f312703e6810457a20070e5681b264b5 \
 RUN \
-    --mount=type=cache,target=/root/.cache,sharing=locked \
+    --mount=type=cache,target=/root/.cache/go-build,sharing=locked \
     curl -Ls https://go.dev/dl/go1.24.2.linux-amd64.tar.gz | tar xz -C /usr/local \
     && cp -s /usr/local/go/bin/* /usr/local/bin \
     && cd /tmp \

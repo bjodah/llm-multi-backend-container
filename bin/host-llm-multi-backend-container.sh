@@ -27,8 +27,16 @@ if [ ! -v HUGGING_FACE_HUB_TOKEN ]; then
     exit 1
 fi
 declare -a srcs
-
+set -e
 $repo_root/scripts/regenerate-llama-swap-conf.sh
+
+( set -x; cd $repo_root; \
+  podman build \
+         --device nvidia.com/gpu=all \
+         --build-arg="TORCH_CUDA_ARCH_LIST=${TORCH_CUDA_ARCH_LIST:-8.6}" \
+         --build-arg="CUDA_ARCHITECTURES=${CUDA_ARCHITECTURES:-86}" \
+         env-llm-multi-backend/
+  )
 
 echo "You can view open-webui: $ xdg-open http://localhost:33033/"
 ( set -x; env \
