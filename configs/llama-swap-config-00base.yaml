@@ -18,7 +18,7 @@ models:
   # Neither is is it particularly good at coding either (Qwen2.5-Coder is better)
   llamacpp-mistral-small-24b-2501:
     cmd: |
-      /configs/llama-serve /logs/llamacpp-mistral-small-24b-2501.log
+      llama-serve-wrap /logs/llamacpp-mistral-small-24b-2501.log
         --port ${PORT}
         #--hf-repo unsloth/Mistral-Small-24B-Instruct-2501-GGUF:Q6_K 19.3 GB, 24k ctx
         --hf-repo bartowski/Mistral-Small-24B-Instruct-2501-GGUF:Q5_K_M
@@ -43,7 +43,7 @@ models:
 
   llamacpp-mistral-small-3.1-24b-2503:
     cmd: |
-      /configs/llama-serve /logs/llamacpp-mistral-small-3.1-24b-2503.log
+      llama-serve-wrap /logs/llamacpp-mistral-small-3.1-24b-2503.log
         --port ${PORT}
         --hf-repo unsloth/Mistral-Small-3.1-24B-Instruct-2503-GGUF:Q5_K_XL
         # ^---- 16.8GB
@@ -67,7 +67,7 @@ models:
     
   llamacpp-devstral-small-2505:
     cmd: |
-      /configs/llama-serve /logs/llamacpp-devstral-small-2505.log
+      llama-serve-wrap /logs/llamacpp-devstral-small-2505.log
         --port ${PORT}
         --hf-repo unsloth/Devstral-Small-2505-GGUF:Q5_K_XL
         --ctx-size 32768
@@ -92,7 +92,7 @@ models:
   # https://github.com/Aider-AI/aider/blob/8f15269bd063a3c720ced514303b9efcc03fe29f/aider/models.py#L429
   llamacpp-QwQ-32B:
     cmd: |
-      /configs/llama-serve /logs/llamacpp-QwQ-32B.log
+      llama-serve-wrap /logs/llamacpp-QwQ-32B.log
         --port ${PORT}
         --hf-repo unsloth/QwQ-32B-GGUF:Q4_K_XL
         --n-gpu-layers 99
@@ -116,7 +116,7 @@ models:
         
   llamacpp-DeepCoder-14B:
     cmd: |
-      /configs/llama-serve /logs/llamacpp-DeepCoder-14B.log
+      llama-serve-wrap /logs/llamacpp-DeepCoder-14B.log
         --port ${PORT}
         --hf-repo bartowski/agentica-org_DeepCoder-14B-Preview-GGUF:Q4_K_L
         # :Q8_0
@@ -234,7 +234,7 @@ models:
   # for any other tasks, there are better models (for local inference).
   llamacpp-llama4-maverick:
     cmd: |
-      /configs/llama-serve /logs/llamacpp-llama4-maverick.log
+      llama-serve-wrap /logs/llamacpp-llama4-maverick.log
         --port ${PORT}
         --model /root/.cache/huggingface/hub/models--unsloth--Llama-4-Maverick-17B-128E-Instruct-GGUF/snapshots/d68803567c756664117d0de7da050bf0ec1bb092/UD-Q2_K_XL/Llama-4-Maverick-17B-128E-Instruct-UD-Q2_K_XL-00001-of-00004.gguf
         --n-gpu-layers 99
@@ -255,7 +255,7 @@ models:
   
   llamacpp-openthinker2-32b:
     cmd: |
-      /configs/llama-serve /logs/llamacpp-openthinker2-32b.log
+      llama-serve-wrap /logs/llamacpp-openthinker2-32b.log
         --port ${PORT}
         --hf-repo bartowski/open-thoughts_OpenThinker2-32B-GGUF
         --n-gpu-layers 999
@@ -279,7 +279,7 @@ models:
   # see https://github.com/LG-AI-EXAONE/EXAONE-Deep
   llamacpp-exaone-deep-32b:
     cmd: |
-      /configs/llama-serve /logs/llamacpp-exaone-deep-32b
+      llama-serve-wrap /logs/llamacpp-exaone-deep-32b
         --port ${PORT}
         --hf-repo bartowski/LGAI-EXAONE_EXAONE-Deep-32B-GGUF:Q4_K_M
         # 19.3GB

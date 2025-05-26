@@ -82,3 +82,5 @@ RUN \
 
 # ENV PIP_ROOT_USER_ACTION=ignore
 # RUN python3 -m pip install flash-attn qwen-vl-utils[decord] torchvision fastapi uvicorn torch pillow gputil 
+
+ENV PATH=/configs:/opt/llama.cpp/build/bin:$PATH

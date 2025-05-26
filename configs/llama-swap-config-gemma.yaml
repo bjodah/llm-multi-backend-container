@@ -1,6 +1,6 @@
   llamacpp-gemma-3-12b:
     cmd: |
-      /configs/llama-serve /logs/llamacpp-gemma-3-12b.log
+      llama-serve-wrap /logs/llamacpp-gemma-3-12b.log
         --port ${PORT}
         --hf-repo unsloth/gemma-3-12b-it-GGUF:Q6_K_XL
         --n-gpu-layers 999
@@ -26,7 +26,7 @@
   # TODO: add --mmproj flag for enabling multimodal input?
   llamacpp-gemma-3-27b:
     cmd: |
-      /configs/llama-serve /logs/llamacpp-gemma-3-27b.log
+      llama-serve-wrap /logs/llamacpp-gemma-3-27b.log
         --port ${PORT}
         --hf-repo google/gemma-3-27b-it-qat-q4_0-gguf
         --n-gpu-layers 999
@@ -50,7 +50,7 @@
 
   llamacpp-gemma-3-4b:
     cmd: |
-      /configs/llama-serve /logs/llamacpp-gemma-3-4b.log
+      llama-serve-wrap /logs/llamacpp-gemma-3-4b.log
         --port ${PORT}
         #--hf-repo google/gemma-3-4b-it-qat-q4_0-gguf
         --hf-repo unsloth/gemma-3-4b-it-GGUF:Q8_0
@@ -72,7 +72,7 @@
 
   llamacpp-gemma-3-1b:
     cmd: |
-      /configs/llama-serve /logs/llamacpp-gemma-3-1b.log
+      llama-serve-wrap /logs/llamacpp-gemma-3-1b.log
         --port ${PORT}
         --hf-repo unsloth/gemma-3-1b-it-GGUF:Q8_0
         --n-gpu-layers 999

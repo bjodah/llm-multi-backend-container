@@ -43,6 +43,10 @@ kill_llama_cpp() {
 }
 set -x
 #/opt/llama.cpp/build/bin/
+if ! which llama-server >&2; then
+    >&2 echo "llama-server not on path?"
+    exit 1
+fi
 llama-server \
     --log-file $1 \
     "${@:2}" 2>/tmp/llama-server-stdout-stderr.log &

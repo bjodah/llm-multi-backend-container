@@ -29,7 +29,7 @@ fi
 declare -a srcs
 set -e
 $repo_root/scripts/regenerate-llama-swap-conf.sh
-( set -x; rm -i "$repo_root"/logs/*.log.bak.~*~ )
+( set -x; rm "$repo_root"/logs/*.log.bak.~*~ )
 ( set -x; cd $repo_root; \
   podman build \
          --device nvidia.com/gpu=all \
