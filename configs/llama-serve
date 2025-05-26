@@ -21,7 +21,38 @@ date
 if [ -e /tmp/llama-server-stdout-stderr.log ]; then
     mv /tmp/llama-server-stdout-stderr.log /tmp/llama-server-stdout-stderr.log.bak
 fi
+kill_llama_cpp() {
+    if ! kill -0 $1 2>/dev/null; then
+        echo "PID=$PID no longer exists, cannot kill llama.cpp"
+        return 0
+    fi
+    kill -SIGINT $1
+    kill -SIGINT $1
+    echo "Sent SIGINT x2 to PID=$PID"
+    sleep 0.050s
+    if kill -0 $1 2>/dev/null; then
+        sleep 0.250s
+    else
+        echo "Successfully killed llama.cpp"
+        return 0
+    fi
+    if kill -0 $1 2>/dev/null; then
+        echo "Sent SIGKILL to $PID"
+        kill -SIGKILL $1
+    fi
+}
 set -x
 /opt/llama.cpp/build/bin/llama-server \
     --log-file $1 \
-    "${@:2}" 2>/tmp/llama-server-stdout-stderr.log
+    "${@:2}" 2>/tmp/llama-server-stdout-stderr.log &
+PID=$!
+set +x
+if kill -0 $PID 2>/dev/null; then
+    echo "llama-server started as PID=$PID"
+else
+    >&2 echo "failed to start llama-server"
+    exit 1
+fi
+
+trap "kill_llama_cpp $PID" TERM INT EXIT
+wait $PID
