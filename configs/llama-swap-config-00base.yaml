@@ -298,3 +298,31 @@ models:
         # 0.6 recommended, with top_p=0.95
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
+
+  # tool use might not work until fixed: https://huggingface.co/unsloth/Qwen3-4B-GGUF/discussions/4
+  llamacpp-Qwen3-4B-128K:
+    cmd: |
+      llama-serve-wrap /logs/llamacpp-Qwen3-4B-128K.log
+        --port ${PORT}
+        --hf-repo unsloth/Qwen3-4B-128K-GGUF:Q8_0
+        --n-gpu-layers 999
+        --jinja
+        --cache-type-k q8_0
+        --cache-type-v q4_0
+        --flash-attn
+        --ctx-size 131072
+        --samplers 'top_k;dry;min_p;temperature;top_p'
+        # ^-- vain attempt to capture both thinking/non-thinking
+        --min-p 0.005
+        --top-p 0.97
+        --top-k 40
+        --temp 0.7
+        --dry-multiplier 0.7
+        --dry-allowed-length 4
+        --dry-penalty-last-n 2048
+        --presence-penalty 0.05
+        --frequency-penalty 0.005
+        --repeat-penalty 1.01
+        --repeat-last-n 16
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 3600
