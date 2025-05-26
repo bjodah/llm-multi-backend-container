@@ -42,7 +42,8 @@ kill_llama_cpp() {
     fi
 }
 set -x
-/opt/llama.cpp/build/bin/llama-server \
+#/opt/llama.cpp/build/bin/
+llama-server \
     --log-file $1 \
     "${@:2}" 2>/tmp/llama-server-stdout-stderr.log &
 PID=$!
