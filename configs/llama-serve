@@ -23,12 +23,12 @@ if [ -e /tmp/llama-server-stdout-stderr.log ]; then
 fi
 kill_llama_cpp() {
     if ! kill -0 $1 2>/dev/null; then
-        echo "PID=$PID no longer exists, cannot kill llama.cpp"
+        echo "PID=$1 no longer exists, cannot kill llama.cpp"
         return 0
     fi
     kill -SIGINT $1
     kill -SIGINT $1
-    echo "Sent SIGINT x2 to PID=$PID"
+    echo "Sent SIGINT x2 to PID=$1"
     sleep 0.050s
     if kill -0 $1 2>/dev/null; then
         sleep 0.250s
@@ -37,7 +37,7 @@ kill_llama_cpp() {
         return 0
     fi
     if kill -0 $1 2>/dev/null; then
-        echo "Sent SIGKILL to $PID"
+        echo "Sent SIGKILL to $1"
         kill -SIGKILL $1
     fi
 }
