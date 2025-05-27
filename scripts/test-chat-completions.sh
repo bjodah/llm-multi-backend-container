@@ -1,14 +1,15 @@
 #!/bin/bash
-OPENAI_API_BASE=http://localhost:8686/v1 #${OPENAI_API_BASE:-http://localhost:8686/v1}
-OPENAI_API_KEY=sk-empty # ${OPENAI_API_KEY:-sk-empty}
+#set -x
+MB_OPENAI_API_BASE=${MB_OPENAI_API_BASE:-"http://localhost:8686/v1"}
+MB_OPENAI_API_KEY=${MB_OPENAI_API_KEY:-"sk-empty"}
 query_chat() {
     logfile="/tmp/$(echo $1 | tr -d '/').log"
     if [ -e "$logfile" ]; then
         rm "$logfile"
     fi
-    curl -s -X POST "$OPENAI_API_BASE/chat/completions" \
+    curl -s -X POST "$MB_OPENAI_API_BASE/chat/completions" \
          -H "Content-Type: application/json" \
-         -H "Authorization: Bearer $OPENAI_API_KEY" \
+         -H "Authorization: Bearer $MB_OPENAI_API_KEY" \
          -d '{"model": "'"$1"'", "messages": [{"role": "user", "content": "'"$2"'"}]}' | tee $logfile | jq '.choices[0].message.content'
     echo "Full log found in: $logfile"
 }
