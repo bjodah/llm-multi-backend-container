@@ -279,7 +279,7 @@ models:
   # see https://github.com/LG-AI-EXAONE/EXAONE-Deep
   llamacpp-exaone-deep-32b:
     cmd: |
-      llama-serve-wrap /logs/llamacpp-exaone-deep-32b
+      llama-serve-wrap /logs/llamacpp-exaone-deep-32b.log
         --port ${PORT}
         --hf-repo bartowski/LGAI-EXAONE_EXAONE-Deep-32B-GGUF:Q4_K_M
         # 19.3GB

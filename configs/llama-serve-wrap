@@ -16,6 +16,7 @@ if [ ! -w $(dirname $1)/ ]; then
     >&2 echo "Cannot write to folder of log file?"
     exit 1
 fi
+
 mv --backup=numbered $1 $1.bak 
 date
 if [ -e /tmp/llama-server-stdout-stderr.log ]; then
@@ -61,3 +62,6 @@ fi
 
 trap "kill_llama_cpp $PID" TERM INT EXIT
 wait $PID
+# If we reached this line, llama-server has crashed, and we need to reload llama-swap,
+# killing llama-swap is fine, since `autorestart-llama-swap.sh` simply respawns it:
+pkill llama-swap

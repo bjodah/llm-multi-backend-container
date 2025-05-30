@@ -38,17 +38,36 @@ RUN \
 
 ENV TORCH_CUDA_ARCH_LIST=${TORCH_CUDA_ARCH_LIST}
 
+# MAX_JOBS=1 because OOM crashes whole system... (even then usage peaks around 30GB...)
+RUN \
+    --mount=type=cache,target=/root/.ccache,sharing=locked \
+    --mount=type=cache,target=/root/.cache/pip,sharing=locked \
+    --mount=type=cache,target=/root/.cache/huggingface,sharing=locked \
+    python3 -m pip install --no-build-isolation pandas ninja torch fastparquet safetensors pygments websockets regex numpy rich pillow pytest \
+    && git clone https://github.com/Dao-AILab/flash-attention /opt/flash-attention \
+    && cd /opt/flash-attention \
+    && bash -c 'ulimit -v 52000000; env MAX_JOBS=2 FLASH_ATTN_CUDA_ARCHS=80 PYTORCH_NVCC="ccache nvcc" python3 -m pip install --no-build-isolation .'
+
 # install exllamav2
+# sentencepiece
 # /root/.cache/torch_extensions/py312_cu124/exllamav2_ext/exllamav2_ext.so
 RUN \
     --mount=type=cache,target=/root/.cache/pip,sharing=locked \
     --mount=type=cache,target=/root/.cache/huggingface,sharing=locked \
     git clone https://github.com/turboderp/exllamav2 /opt/exllamav2 \
     && cd /opt/exllamav2 \
-    && env MAX_JOBS=4 python3 -m pip install --no-build-isolation flash-attn \
-    && python3 -m pip install --no-build-isolation pandas ninja torch fastparquet safetensors sentencepiece pygments websockets regex numpy rich pillow \
     && python3 setup.py build_ext -i \
-    && python3 -m pip install --no-build-isolation -e . \
+    && python3 -m pip install --no-build-isolation -e .
+
+    # cd /opt/flash-attention \
+    # && python3 -m pytest -s -q tests/test_flash_attn.py \
+    # && 
+
+
+RUN \
+    --mount=type=cache,target=/root/.cache/pip,sharing=locked \
+    --mount=type=cache,target=/root/.cache/huggingface,sharing=locked \
+    cd /opt/exllamav2 \
     && if [ ! -d /root/.cache/huggingface/hub/models--turboderp--gpt2-exl2/snapshots/b5411192023974a0c481c71ebda557e3bf9c7ca9 ]; then \
         env HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download turboderp/gpt2-exl2 --revision 3.0bpw; fi \
     && python3 test_inference.py -m /root/.cache/huggingface/hub/models--turboderp--gpt2-exl2/snapshots/b5411192023974a0c481c71ebda557e3bf9c7ca9 -p "A short limmerick: The bear" #|| echo "If you see this, and a complain about no CUDA enabled GPUs, make sure you pass podman build the flag: --device nvidia.com/gpu=all"

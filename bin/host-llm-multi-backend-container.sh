@@ -29,13 +29,13 @@ fi
 declare -a srcs
 set -e
 $repo_root/scripts/regenerate-llama-swap-conf.sh
-( set -x; rm "$repo_root"/logs/*.log.bak.~*~ )
+( if [[ $(compgen -G "$repo_root"/logs/*.log.bak.~*~) != "" ]]; then set -x; rm "$repo_root"/logs/*.log.bak.~*~; fi )
 ( set -x; cd $repo_root; \
   podman build \
          --device nvidia.com/gpu=all \
          --build-arg="TORCH_CUDA_ARCH_LIST=${TORCH_CUDA_ARCH_LIST:-8.6}" \
          --build-arg="CUDA_ARCHITECTURES=${CUDA_ARCHITECTURES:-86}" \
-         env-llm-multi-backend/
+         env-llm-multi-backend/ 2>&1 | tee ./logs/image-build.log
   )
 
 echo "You can view open-webui: $ xdg-open http://localhost:33033/"
@@ -45,5 +45,3 @@ echo "You can view open-webui: $ xdg-open http://localhost:33033/"
     $COMPOSE_CMD \
     --file "$repo_root"/compose.yml \
     up "$@" )
-
-
