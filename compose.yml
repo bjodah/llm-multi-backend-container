@@ -56,6 +56,21 @@ services:
       /configs/llama-swap-config.yaml
       /logs/llama-swap.log
 
+  logging-proxy:
+    name: llm-mb_logging-proxy
+    build:
+      context: openai-proxy
+      dockerfile: Containerfile
+    ports:
+      - "8687:8687"
+    restart: unless-stopped
+    volumes:
+      - ./logs:/logs
+    environment:
+      - OPENAI_PROXY_UNDERLYING=http://llama-swapper:8686
+      - OPENAI_PROXY_SQLITE_DB_PATH=/logs/logging-proxy.db
+    command: "--host 0.0.0.0 --port 8687"
+
   open-webui-demo:
     name: llm-mb_open-webui
     image: ghcr.io/open-webui/open-webui:main

@@ -63,5 +63,9 @@ fi
 trap "kill_llama_cpp $PID" TERM INT EXIT
 wait $PID
 # If we reached this line, llama-server has crashed, and we need to reload llama-swap,
-# killing llama-swap is fine, since `autorestart-llama-swap.sh` simply respawns it:
+# killing llama-swap is fine, since `autorestart-llama-swap.sh` simply respawns it.
+# But first we stash away a copy of the logs and a .json file of the request
+curl http://host.docker.internal:8000/lastlog | jq '.request_content | fromjson' >/tmp/llama-server-stdout-stderr.log.json
+cp --backup=numbered /tmp/llama-server-stdout-stderr.log      /logs/llama-swap-crash-logs/
+cp --backup=numbered /tmp/llama-server-stdout-stderr.log.json /logs/llama-swap-crash-logs/
 pkill llama-swap

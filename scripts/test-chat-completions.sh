@@ -1,6 +1,7 @@
 #!/bin/bash
 #set -x
-MB_OPENAI_API_BASE=${MB_OPENAI_API_BASE:-"http://localhost:8686/v1"}
+#MB_OPENAI_API_BASE=${MB_OPENAI_API_BASE:-"http://localhost:8686/v1"}
+MB_OPENAI_API_BASE=${MB_OPENAI_API_BASE:-"http://localhost:8687/v1"} # <-- 8687 is a logging version
 MB_OPENAI_API_KEY=${MB_OPENAI_API_KEY:-"sk-empty"}
 query_chat() {
     logfile="/tmp/$(echo $1 | tr -d '/').log"
@@ -14,10 +15,12 @@ query_chat() {
     echo "Full log found in: $logfile"
 }
 if [ $# -eq 0 ]; then
+    curl -s http://localhost:8687/lastlog | jq '.'
     query_chat llamacpp-Qwen3-0.6B "What's the captial of Scandinavia? /no_think"
+    curl -s http://localhost:8687/lastlog | jq '.'
+    exit
     query_chat llamacpp-Qwen3-1.7B "What's the captial of Scandinavia? /no_think"
     query_chat llamacpp-Qwen3-4B   "What's the captial of Scandinavia? /no_think"
-    exit
     query_chat llamacpp-devstral-small-2505 "Answer only with the missing word: The capital of Norway is"
     query_chat exllamav2-gemma-3-27b "What't the captial of Sweden?"
     query_chat llamacpp-gemma-3-27b "Answer only with the missing word: The capital of Norway is"
