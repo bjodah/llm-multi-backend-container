@@ -15,8 +15,8 @@ query_chat() {
     echo "Full log found in: $logfile"
 }
 if [ $# -eq 0 ]; then
-    curl -s http://localhost:8687/lastlog | jq '.'
-    query_chat llamacpp-Qwen3-0.6B "What's the captial of Scandinavia? /no_think"
+    #curl -s http://localhost:8687/lastlog | jq '.'
+    query_chat llamacpp-Qwen3-30B-A3B "What's the captial of Scandinavia? todays date is $(date --iso-8601) /no_think"
     curl -s http://localhost:8687/lastlog | jq '.'
     exit
     query_chat llamacpp-Qwen3-1.7B "What's the captial of Scandinavia? /no_think"

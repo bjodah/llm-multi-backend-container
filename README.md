@@ -26,10 +26,11 @@ $ bash -x scripts/test-chat-completions.sh
 
 ## Monitoring
 ```console
-$ watch "ps aux | grep -E '(vllm|llama-|tabbyAPI)' | grep -v emacs | grep -v 'grep -E'"
+$ ./scripts/enter-container-llama-swap.sh watch "ps aux | grep -E '(vllm|llama-|tabbyAPI)' | grep -v emacs | grep -v 'grep -E'"
 $ while true; do clear; date; echo -n "currently loaded model: "; curl -s localhost:8686/running | jq -r '.running[0].model';  echo '...sleeping for 60 seconds'; sleep 60; done
 $ curl -s localhost:8686/logs/stream/upstream
 $ curl -s localhost:8686/logs/stream/proxy
+$ ./scripts/enter-container-llama-swap.sh tail -F /tmp/llama-server-stdout-stderr.log
 ```
 
 ## Working directly with underlying end-point:

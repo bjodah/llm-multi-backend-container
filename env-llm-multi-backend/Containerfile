@@ -102,4 +102,8 @@ RUN \
 # ENV PIP_ROOT_USER_ACTION=ignore
 # RUN python3 -m pip install flash-attn qwen-vl-utils[decord] torchvision fastapi uvicorn torch pillow gputil 
 
+RUN \
+    --mount=type=cache,target=/root/.cache,sharing=locked \
+    apt-get update --quiet && apt-get install --assume-yes jq
+
 ENV PATH=/configs:/opt/llama.cpp/build/bin:$PATH
