@@ -18,7 +18,7 @@ class EmacsConfigElispExporter:
 
     def gptel(self, port: int=DEFAULT_PORT) -> str:
         """See https://github.com/karthink/gptel"""
-        return f"""
+        return f"""\
 (gptel-make-openai "llm-multi-backend"
   :stream t
   :protocol "http"

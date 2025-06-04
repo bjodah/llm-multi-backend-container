@@ -6,3 +6,7 @@
 	path = openai-proxy
 	url = https://github.com/bjodah/openai-proxy
 	branch = retrieve-logs-endpoint
+[submodule "cot_proxy"]
+	path = cot_proxy
+	url = github.com:bjodah/cot_proxy
+        branch = yaml-config-file

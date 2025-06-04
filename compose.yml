@@ -71,6 +71,22 @@ services:
       - OPENAI_PROXY_SQLITE_DB_PATH=/logs/logging-proxy.db
     command: "--host 0.0.0.0 --port 8687"
 
+  chain-of-thought-proxy:
+    name: llm-mb_cot-proxy
+    build:
+      context: cot_proxy
+      dockerfile: Dockerfile
+    ports:
+      - "8688:8688"
+    restart: unless-stopped
+    volumes:
+      - ./logs:/logs
+      - ./configs:/configs
+    environment:
+      - COT_PORT=8688
+      - COT_TARGET_BASE_URL="http://logging-proxy:8687/"
+      - COT_CONFIG="/configs/cot_proxy.yaml"
+
   open-webui-demo:
     name: llm-mb_open-webui
     image: ghcr.io/open-webui/open-webui:main
