@@ -86,6 +86,12 @@ services:
       - COT_PORT=8688
       - COT_TARGET_BASE_URL="http://logging-proxy:8687/"
       - COT_CONFIG="/configs/cot_proxy.yaml"
+    command: >
+      --bind 0.0.0.0:5000
+      --workers 4
+      --timeout 3000
+      --access-logfile /logs/cot-access.log
+      --error-logfile /logs/cot-err.log cot_proxy:app
 
   open-webui-demo:
     name: llm-mb_open-webui
