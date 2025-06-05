@@ -1,7 +1,8 @@
 #!/bin/bash
 #set -x
 #MB_OPENAI_API_BASE=${MB_OPENAI_API_BASE:-"http://localhost:8686/v1"}
-MB_OPENAI_API_BASE=${MB_OPENAI_API_BASE:-"http://localhost:8687/v1"} # <-- 8687 is a logging version
+#MB_OPENAI_API_BASE=${MB_OPENAI_API_BASE:-"http://localhost:8687/v1"} # <-- 8687 is a logging version
+MB_OPENAI_API_BASE=${MB_OPENAI_API_BASE:-"http://localhost:8688/v1"} # <-- 8688 also intercepts @no-think in model name
 MB_OPENAI_API_KEY=${MB_OPENAI_API_KEY:-"sk-empty"}
 query_chat() {
     logfile="/tmp/$(echo $1 | tr -d '/').log"
@@ -12,12 +13,17 @@ query_chat() {
          -H "Content-Type: application/json" \
          -H "Authorization: Bearer $MB_OPENAI_API_KEY" \
          -d '{"model": "'"$1"'", "messages": [{"role": "user", "content": "'"$2"'"}]}' | tee $logfile | jq '.choices[0].message.content'
-    echo "Full log found in: $logfile"
+    retcode=${PIPESTATUS[0]}
+    echo "curl's retcode=$retcode Full log found in: $logfile"
+    return $retcode
 }
 if [ $# -eq 0 ]; then
     #curl -s http://localhost:8687/lastlog | jq '.'
-    query_chat llamacpp-Qwen3-30B-A3B "What's the captial of Scandinavia? todays date is $(date --iso-8601) /no_think"
-    curl -s http://localhost:8687/lastlog | jq '.'
+    query_chat llamacpp-QwQ-32B@think-less "Answer only with the missing word: The capital of Germany is" \
+    && curl -s http://localhost:8687/lastlog | jq '.'
+    exit
+    query_chat llamacpp-Qwen3-30B-A3B@think "What's the captial of Scandinavia? todays date is $(date --iso-8601)" \
+    && curl -s http://localhost:8687/lastlog | jq '.'
     exit
     query_chat llamacpp-Qwen3-1.7B "What's the captial of Scandinavia? /no_think"
     query_chat llamacpp-Qwen3-4B   "What's the captial of Scandinavia? /no_think"
@@ -41,7 +47,6 @@ if [ $# -eq 0 ]; then
     query_chat vllm-SmolLM2-1.7B"Answer only with the missing word: The capital of Poland is"
     query_chat llamacpp-gemma-3-4b"Answer only with the missing word: The capital of Belgium is"
     query_chat llamacpp-Qwen2.5-Coder-32B"Answer only with the missing word: The capital of Sweden is"
-    query_chat llamacpp-QwQ-32B "Answer only with the missing word: The capital of Germany is"
     query_chat llamacpp-Mistral-Small-3.1-24B-2503 "Answer only with the missing word: The capital of Finland is"
 else
     query_chat "${@}"

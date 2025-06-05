@@ -75,19 +75,18 @@ services:
     name: llm-mb_cot-proxy
     build:
       context: cot_proxy
-      dockerfile: Dockerfile
+      dockerfile: Containerfile
     ports:
       - "8688:8688"
     restart: unless-stopped
     volumes:
       - ./logs:/logs
-      - ./configs:/configs
+      - ./cot_proxy/examples:/configs
     environment:
-      - COT_PORT=8688
-      - COT_TARGET_BASE_URL="http://logging-proxy:8687/"
-      - COT_CONFIG="/configs/cot_proxy.yaml"
+      - COT_TARGET_BASE_URL=http://logging-proxy:8687/
+      - COT_CONFIG=/configs/cot_proxy.yaml
     command: >
-      --bind 0.0.0.0:5000
+      --bind 0.0.0.0:8688
       --workers 4
       --timeout 3000
       --access-logfile /logs/cot-access.log
