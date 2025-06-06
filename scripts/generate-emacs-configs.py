@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import sys
 import dataclasses as dcs
 import yaml
 from pathlib import Path
@@ -11,10 +12,10 @@ class EmacsConfigElispExporter:
     models: list[str]
     api_key: str = DEFAULT_API_KEY
 
-    def _endpoint(self, *, trailing, port, protocol: str='http'):
+    def _endpoint(self, *, trailing, port, protocol: str='http://'):
         if port is not None:
             port = f':{port}'
-        return f'(concat (if (string= (getenv "container") "podman") "{protocol}://host.docker.internal" "{protocol}://localhost") "{port}{trailing}")'
+        return f'(concat (if (string= (getenv "container") "podman") "{protocol}host.docker.internal" "{protocol}localhost") "{port}{trailing}")'
 
     def gptel(self, port: int=DEFAULT_PORT) -> str:
         """See https://github.com/karthink/gptel"""
@@ -22,7 +23,7 @@ class EmacsConfigElispExporter:
 (gptel-make-openai "llm-multi-backend"
   :stream t
   :protocol "http"
-  :host {self._endpoint(trailing="", port=port)}
+  :host {self._endpoint(trailing="", port=port, protocol='')}
   :key "{self.api_key}"
   :models '({' '.join(self.models)})
 )
@@ -86,7 +87,14 @@ class EmacsConfigElispExporter:
 
 if __name__ == '__main__':
     import argh
-    with open(Path(__file__).parent / '../configs/llama-swap-config.yaml') as ifh:
-        conf = yaml.safe_load(ifh)
-    ecee = EmacsConfigElispExporter(models=list(conf['models'].keys()))
+    if '--port' in sys.argv:
+        import requests
+        port = sys.argv[sys.argv.index('--port')+1]
+        r = requests.request("get", f"http://localhost:{port}/v1/models", headers=dict(Authorization=f"Bearer {DEFAULT_API_KEY}"))
+        models = [m['id'] for m in r.json()['data']]
+    else:
+        with open(Path(__file__).parent / '../configs/llama-swap-config.yaml') as ifh:
+            conf = yaml.safe_load(ifh)
+        models = list(conf['models'].keys())
+    ecee = EmacsConfigElispExporter(models=models)
     argh.dispatch_commands([ecee.gptel, ecee.minuet, ecee.semext])

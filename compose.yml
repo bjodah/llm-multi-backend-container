@@ -78,7 +78,7 @@ services:
       dockerfile: Containerfile
     ports:
       - "8688:8688"
-    restart: unless-stopped
+    restart: on-failure:2
     volumes:
       - ./logs:/logs
       - ./cot_proxy/examples:/configs
