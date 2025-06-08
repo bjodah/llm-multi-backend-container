@@ -56,41 +56,41 @@ services:
       /configs/llama-swap-config.yaml
       /logs/llama-swap.log
 
-  chain-of-thought-proxy:
-    name: llm-mb_cot-proxy
-    build:
-      context: cot_proxy
-      dockerfile: Containerfile
-    ports:
-      - "8687:8687"
-    restart: on-failure:2
-    volumes:
-      - ./logs:/logs
-      - ./cot_proxy/examples:/configs
-    environment:
-      - COT_TARGET_BASE_URL=http://llama-swapper:8686/
-      - COT_CONFIG=/configs/cot_proxy.yaml
-    command: >
-      --bind 0.0.0.0:8687
-      --workers 4
-      --timeout 3000
-      --access-logfile /logs/cot-access.log
-      --error-logfile /logs/cot-err.log cot_proxy:app
-
   logging-proxy:
     name: llm-mb_logging-proxy
     build:
       context: openai-proxy
       dockerfile: Containerfile
     ports:
-      - "8688:8688"
+      - "8687:8687"
     restart: unless-stopped
     volumes:
       - ./logs:/logs
     environment:
-      - OPENAI_PROXY_UNDERLYING=http://chain-of-thought-proxy:8687
+      - OPENAI_PROXY_UNDERLYING=http://llama-swapper:8686
       - OPENAI_PROXY_SQLITE_DB_PATH=/logs/logging-proxy.db
-    command: "--host 0.0.0.0 --port 8688"
+    command: "--host 0.0.0.0 --port 8687"
+
+  chain-of-thought-proxy:
+    name: llm-mb_cot-proxy
+    build:
+      context: cot_proxy
+      dockerfile: Containerfile
+    ports:
+      - "8688:8688"
+    restart: unless-stopped
+    volumes:
+      - ./logs:/logs
+      - ./cot_proxy/examples:/configs
+    environment:
+      - COT_TARGET_BASE_URL=http://logging-proxy:8687/
+      - COT_CONFIG=/configs/cot_proxy.yaml
+    command: >
+      --bind 0.0.0.0:8688
+      --workers 4
+      --timeout 3000
+      --access-logfile /logs/cot-access.log
+      --error-logfile /logs/cot-err.log cot_proxy:app
 
   open-webui-demo:
     name: llm-mb_open-webui

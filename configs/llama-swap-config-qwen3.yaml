@@ -14,8 +14,7 @@
         --jinja
         --cache-type-k q8_0
         --ctx-size 32768
-        --samplers 'top_k;dry;min_p;temperature;top_p'
-        # ^-- vain attempt to capture both thinking/non-thinking
+        --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
         --top-k 40
@@ -39,8 +38,7 @@
         --jinja
         --cache-type-k q8_0
         --ctx-size 32768
-        --samplers 'top_k;dry;min_p;temperature;top_p'
-        # ^-- vain attempt to capture both thinking/non-thinking
+        --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
         --top-k 40
@@ -64,8 +62,7 @@
         --jinja
         --cache-type-k q8_0
         --ctx-size 32768
-        --samplers 'top_k;dry;min_p;temperature;top_p'
-        # ^-- vain attempt to capture both thinking/non-thinking
+        --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
         --top-k 40
@@ -89,8 +86,7 @@
         --jinja
         --cache-type-k q8_0
         --ctx-size 32768
-        --samplers 'top_k;dry;min_p;temperature;top_p'
-        # ^-- vain attempt to capture both thinking/non-thinking
+        --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
         --top-k 40
@@ -116,8 +112,7 @@
         --cache-type-v q8_0
         --flash-attn
         --ctx-size 32768
-        --samplers 'top_k;dry;min_p;temperature;top_p'
-        # ^-- vain attempt to capture both thinking/non-thinking
+        --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
         --top-k 40
@@ -143,8 +138,7 @@
         --cache-type-v q8_0
         --flash-attn
         --ctx-size 32768
-        --samplers 'top_k;dry;min_p;temperature;top_p'
-        # ^-- vain attempt to capture both thinking/non-thinking
+        --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
         --top-k 40
@@ -170,8 +164,7 @@
         --cache-type-v q4_0
         --flash-attn
         --ctx-size 32768
-        --samplers 'top_k;dry;min_p;temperature;top_p'
-        # ^-- vain attempt to capture both thinking/non-thinking
+        --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
         --top-k 40
