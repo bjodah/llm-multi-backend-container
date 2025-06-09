@@ -16,7 +16,11 @@ main () {
 n_decoded_old=0
 while true; do
     model_name=$(curl -s localhost:8686/running | jq -r ".running[0].model")
-    PORT=$(ps aux | grep ' llama-server' | grep -v 'grep ' | sed -E 's/.*--port ([^ ]+).*/\1/')
+    PORT=$(ps aux | grep ' llama-server' | grep -vE '(grep |tail -F)' | sed -E 's/.*--port ([^ ]+).*/\1/')
+    if ! echo $PORT | grep -E '^[0-9]+$'>/dev/null; then
+        sleep 1.0s
+        continue
+    fi
     n_decoded=$(curl -sH "Authorization: Bearer sk-empty" http://localhost:${PORT}/slots | jq ".[0].next_token.n_decoded")
     echo -ne "${model_name}   ${n_decoded}                     \r"
     sleep 1.0s

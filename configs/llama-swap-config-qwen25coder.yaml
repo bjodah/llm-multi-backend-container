@@ -9,17 +9,22 @@
         #--hf-repo-draft unsloth/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q4_K_M
         --n-gpu-layers 999 
         #--n-gpu-layers-draft 999
+        --jinja
         --ctx-size 32768 
         --cache-type-k q8_0 
         --cache-type-v q5_1 
         --flash-attn
-        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
+        --samplers "penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature" 
         --top-k 40 
         --top-p 0.95 
-        --min-p 0.01 
-        --temp 0.3
+        --min-p 0.005
+        --temp 0.15
         --dry-multiplier 0.5
-        --dry-allowed-length 5
+        --dry-allowed-length 3
+        --presence-penalty 0.05
+        --frequency-penalty 0.005
+        --repeat-penalty 1.01
+        --repeat-last-n 16
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
@@ -37,11 +42,11 @@
         --cache-type-k q8_0 
         --cache-type-v q8_0 
         --flash-attn
-        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
+        --samplers "dry;top_k;top_p;min_p;temperature;typ_p;xtc" 
         --top-k 40 
         --top-p 0.95
         --min-p 0.0 
-        --temp 0.1
+        --temp 0.10
         --dry-multiplier 0.1
         --dry-allowed-length 3
     proxy: http://127.0.0.1:${PORT}
@@ -61,11 +66,11 @@
         --cache-type-k q8_0 
         --cache-type-v q8_0 
         --flash-attn
-        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
+        --samplers "dry;top_k;top_p;min_p;temperature;typ_p;xtc" 
         --top-k 40 
         --top-p 0.95
         --min-p 0.0 
-        --temp 0.1
+        --temp 0.10
         --dry-multiplier 0.1
         --dry-allowed-length 3
     proxy: http://127.0.0.1:${PORT}
@@ -86,7 +91,7 @@
         --cache-type-k q8_0 
         --cache-type-v q8_0 
         --flash-attn
-        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
+        --samplers "dry;top_k;top_p;min_p;temperature;typ_p;xtc" 
         --top-k 40 
         --top-p 0.95
         --min-p 0.0 

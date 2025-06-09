@@ -47,7 +47,7 @@ services:
       - LLAMA_ARG_ENDPOINT_SLOTS=1
       - LLAMA_API_KEY=sk-empty
       - LLAMA_ARG_NO_CONTEXT_SHIFT=1
-#      - LLAMA_LOG_VERBOSITY=1
+      - LLAMA_LOG_VERBOSITY=1
       - VLLM_API_KEY=sk-empty
     ipc: host
     entrypoint:
@@ -82,6 +82,7 @@ services:
     volumes:
       - ./logs:/logs
       - ./cot_proxy/examples:/configs
+      - ./cot_proxy/cot_proxy.py:/app/cot_proxy.py
     environment:
       - COT_TARGET_BASE_URL=http://logging-proxy:8687/
       - COT_CONFIG=/configs/cot_proxy.yaml
