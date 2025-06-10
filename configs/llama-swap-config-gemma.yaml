@@ -33,7 +33,7 @@
         # --hf-repo-draft google/gemma-3-1b-it-qat-q4_0-gguf
         # --n-gpu-layers-draft 999
         --jinja
-        --ctx-size 52000
+        --ctx-size 49000
         # --cache-type-k q8_0
         # --cache-type-v q5_1
         --flash-attn
