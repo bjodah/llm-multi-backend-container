@@ -383,38 +383,47 @@ def delerium(
         model='llamacpp-gemma-3-1b',
         key: str="the long and winding road",
         threshold: float = -15.0,
-        seed: int=42
+        seed: int=42,
+        max_n_bits: int=4
 ):
-    assert -25.0 <= threshold <= 0
+    assert -50.0 <= threshold <= 0
+    import sys
     import bitarray
     import bitarray.util
     b = bitarray.bitarray(key.encode('utf-8'))
     nbits = len(b)
+    n_probs = 1<<max_n_bits
     print(f"{nbits=}")
     c = LlamaCppClient(model=model)
     i = 0
-    _chat = Chat.from_text("Write whimsical poem, aboid using formatting characters, unicode or other mark-up:")
+    #_chat = Chat.from_text("Write whimsical poem, avoid using formatting characters, unicode or other mark-up:")
+    _chat = Chat.from_text("Skriv en vacker dikt, unvik formateringstecken, unicode eller annan mark-up:")
     resp_t = c.apply_template(**_chat.model_dump())
     p = resp_t.json()['prompt']
+    p_len_0 = len(p)
     while i < nbits:
-        resp_c = c.completion(prompt=p, n_probs=64, cache_prompt=True, n_predict=1, seed=seed, ignore_eos=True)
+        resp_c = c.completion(prompt=p, n_probs=n_probs, cache_prompt=True, n_predict=1, seed=seed, ignore_eos=True)
         tlp = sorted(top_log_probs(resp_c.json()).items(), key=lambda kv: kv[1])
-        for n_bits in range(1, 6):
+        print(tlp[:2])
+        for n_bits in range(1, max_n_bits):
             j = 1 << n_bits
-            print(f"{j=}")
-            if tlp[j][1] < threshold:
+            if j >= len(tlp):
                 break
-        print(f"{n_bits=}")
+            if tlp[j-1][1] < threshold:
+                break
+        sys.stdout.write('%d, ' % n_bits)
+        sys.stdout.flush()
         idx = bitarray.util.ba2int(b[i:i+n_bits])
-        print(f"{idx=}")
+        #print(f"{idx=}")
         tok = tlp[idx][0]
-        if len(tok.strip()) == 0 and tok not in [" ", "\n"]:
+        if len(tok.strip()) == 0 and tok not in [" ", "\n", "\n\n"]:
             p += '\n'
             continue
         p = p + tok
         i += n_bits
-        print(f"{tok=}")
-    print(p)
+        #print(f"{tok=}")
+    print('\b\b ')
+    print(p[p_len_0:])
 
 if __name__ == '__main__':
     import argh
