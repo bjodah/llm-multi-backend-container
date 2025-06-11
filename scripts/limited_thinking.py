@@ -345,9 +345,11 @@ class ModeratorQwen3(Moderator):
         raise NotImplementedError(...)
 
 
+def top_log_probs(body: dict[str, Any]) -> dict[str, float]:
+    return {tlp['token']: tlp['logprob']  for tlp in body['completion_probabilities'][0]['top_logprobs']}
 
 
-def main(
+def prompt(
         model='llamacpp-Qwen3-8B',
         user_prompt: str="What's the capital of France? A) Paris B) Lyon C) Marseille. Answer with a single letter.",
         thinking_budget_tokens: int=50,
@@ -371,12 +373,49 @@ def main(
         print(f"{body['reasoning_content']=}")
 
     if op_mode.n_probs:
-        tlps = {tlp['token']: tlp['logprob']  for tlp in body['completion_probabilities'][0]['top_logprobs']}
+        tlps = top_log_probs(body)
         print(tlps)
     else:
         print(f"{body['response_content']=}")
 
 
+def delerium(
+        model='llamacpp-gemma-3-1b',
+        key: str="the long and winding road",
+        threshold: float = -15.0,
+        seed: int=42
+):
+    assert -25.0 <= threshold <= 0
+    import bitarray
+    import bitarray.util
+    b = bitarray.bitarray(key.encode('utf-8'))
+    nbits = len(b)
+    print(f"{nbits=}")
+    c = LlamaCppClient(model=model)
+    i = 0
+    _chat = Chat.from_text("Write whimsical poem, aboid using formatting characters, unicode or other mark-up:")
+    resp_t = c.apply_template(**_chat.model_dump())
+    p = resp_t.json()['prompt']
+    while i < nbits:
+        resp_c = c.completion(prompt=p, n_probs=64, cache_prompt=True, n_predict=1, seed=seed, ignore_eos=True)
+        tlp = sorted(top_log_probs(resp_c.json()).items(), key=lambda kv: kv[1])
+        for n_bits in range(1, 6):
+            j = 1 << n_bits
+            print(f"{j=}")
+            if tlp[j][1] < threshold:
+                break
+        print(f"{n_bits=}")
+        idx = bitarray.util.ba2int(b[i:i+n_bits])
+        print(f"{idx=}")
+        tok = tlp[idx][0]
+        if len(tok.strip()) == 0 and tok not in [" ", "\n"]:
+            p += '\n'
+            continue
+        p = p + tok
+        i += n_bits
+        print(f"{tok=}")
+    print(p)
+
 if __name__ == '__main__':
     import argh
-    argh.dispatch_command(main, output_file=None)
+    argh.dispatch_commands([prompt, delerium], output_file=None)
