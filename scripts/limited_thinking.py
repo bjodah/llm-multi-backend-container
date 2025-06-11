@@ -22,6 +22,89 @@ class _Client:
             headers=self.headers
         )
 
+
+class LlamaCppCompletionOptTypes:
+    # see llama.cpp/tools/server/README.md
+    prompt: str | list[str|int]
+    cache_prompt: bool = True
+
+    seed: int = -1
+    temperature: float = 0.8
+    top_k: int = 40
+    top_p: float = 0.95
+    min_p: float = 0.05
+    typical_p: float = 1.0
+    repeat_penalty: float = 1.1
+    repeat_last_n: int = 64
+    presence_penalty: float = 0.0
+    frequency_penalty: float = 0.0
+    dry_multiplier: float = 0.0
+    dry_base: float = 1.75
+    dry_allowed_length: int = 2
+    dry_penalty_last_n: int = -1
+    dry_sequence_breakers: list[str] = ['\n', ':', '"', '*']
+    xtc_probability: float = 0.0
+    xtc_threshold: float = 0.1
+    mirostat: int = 0
+    mirostat_tau: float = 5.0
+    mirostat_eta: float = 0.1
+
+    grammar: None = None  # ?
+    json_schema: dict | None = None
+
+    ignore_eos: bool = False
+    logit_bias: list[list] = []
+    n_probs: int = 0
+    min_keep: int = 0
+    t_max_predict_ms: float = 0.0
+
+    image_data: str | None = None
+    id_slot: int = -1
+    return_tokens: bool = False
+    samplers: list[str] = ["dry", "top_k", "typ_p", "top_p", "min_p", "xtc", "temperature"]
+    timings_per_token: bool = False
+    post_sampling_probs: bool = False
+    response_fields: list[str] | None = None
+    lora: list[dict] = []
+
+    n_predict: int = -1  # infinity
+    stop: list[str] = []
+    stream: bool = False
+
+    dynatemp_range: float = 0.0  # disabled
+    dynatemp_exponent: float = 1.0
+    n_indent: int = 0  # for code completion?
+    n_keep: int = 0
+
+class LlamaCppCompletionResponseStreamDelta:
+    content: str
+    tokens: str
+    stop: bool
+
+class LlamaCppCompletionResponse:
+    completion_probabilities: list | None = None
+            # {"index",               index},
+            # {"content",             stream ? "" : content}, // in stream mode, content is already in last partial chunk
+            # {"tokens",              stream ? llama_tokens {} : tokens},
+            # {"id_slot",             id_slot},
+            # {"stop",                true},
+            # {"model",               oaicompat_model},
+            # {"tokens_predicted",    n_decoded},
+            # {"tokens_evaluated",    n_prompt_tokens},
+            # {"generation_settings", generation_params.to_json()},
+            # {"prompt",              prompt},
+            # {"has_new_line",        has_new_line},
+            # {"truncated",           truncated},
+            # {"stop_type",           stop_type_to_str(stop)},
+            # {"stopping_word",       stopping_word},
+            # {"tokens_cached",       n_tokens_cached},
+            # {"timings",             timings.to_json()},
+
+
+class LlamaCppCompletionResponseStreamLast:
+    pass
+
+
 class LlamaCppClient(_Client):
 
     def __post_init__(self):
