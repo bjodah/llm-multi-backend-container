@@ -1,8 +1,11 @@
 import dataclasses as dcs
 import requests
 import json
+import typing
 from typing import Any
+import warnings
 from pydantic import BaseModel
+
 
 
 @dcs.dataclass
@@ -54,7 +57,7 @@ class LlamaCppCompletionOptTypes:
 
     ignore_eos: bool = False
     logit_bias: list[list] = []
-    n_probs: int = 0
+    n_probs: int = 0  #
     min_keep: int = 0
     t_max_predict_ms: float = 0.0
 
@@ -67,7 +70,7 @@ class LlamaCppCompletionOptTypes:
     response_fields: list[str] | None = None
     lora: list[dict] = []
 
-    n_predict: int = -1  # infinity
+    n_predict: int = -1  # infinity,
     stop: list[str] = []
     stream: bool = False
 
@@ -76,29 +79,71 @@ class LlamaCppCompletionOptTypes:
     n_indent: int = 0  # for code completion?
     n_keep: int = 0
 
+    max_tokens: int = -1  # weaker than n_predict, used for its default
+
+    @classmethod
+    def find_invalid(cls, opts: dict[str, Any], /) -> list[str]:
+        invalid = []
+        for k, v in opts.items():
+            t = cls.__annotations__[k]
+            origin = typing.get_origin(t) or t
+            if not isinstance(v, origin):
+                invalid.append(k)
+        return invalid
+
+
 class LlamaCppCompletionResponseStreamDelta:
     content: str
     tokens: str
     stop: bool
 
-class LlamaCppCompletionResponse:
-    completion_probabilities: list | None = None
-            # {"index",               index},
-            # {"content",             stream ? "" : content}, // in stream mode, content is already in last partial chunk
-            # {"tokens",              stream ? llama_tokens {} : tokens},
-            # {"id_slot",             id_slot},
-            # {"stop",                true},
-            # {"model",               oaicompat_model},
-            # {"tokens_predicted",    n_decoded},
-            # {"tokens_evaluated",    n_prompt_tokens},
-            # {"generation_settings", generation_params.to_json()},
-            # {"prompt",              prompt},
-            # {"has_new_line",        has_new_line},
-            # {"truncated",           truncated},
-            # {"stop_type",           stop_type_to_str(stop)},
-            # {"stopping_word",       stopping_word},
-            # {"tokens_cached",       n_tokens_cached},
-            # {"timings",             timings.to_json()},
+class LlamaCppProbBase(BaseModel):
+    id: int
+    token: str
+    bytes: list[int]
+
+class LlamaCppLogprob(LlamaCppProbBase):
+    logprob: float
+
+class LlamaCppProbsPreSampling(LlamaCppLogprob):
+    top_logprobs: list[LlamaCppLogprob]
+
+
+class LlamaCppProb(LlamaCppProbBase):
+    prob: float
+
+class LlamaCppProbsPostSampling(LlamaCppProb):
+    top_probs: list[LlamaCppProb]
+
+class LlamaCppTimings(BaseModel):
+    prompt_n: int
+    prompt_ms: float
+    prompt_per_token_ms: float
+    prompt_per_second: float
+    predicted_n: int
+    predicted_ms: float
+    predicted_per_token_ms: float
+    predicted_per_second: float
+
+class LlamaCppCompletionResponse(BaseModel):
+    completion_probabilities: list[LlamaCppProbsPreSampling|LlamaCppProbsPostSampling] | None = None
+    index: int
+    content: str  # empty for stream
+    tokens: list[int]  # empty for stream
+    id_slot: int
+    stop: bool
+    model: str
+    tokens_predicted: int  # n_decoded
+    tokens_evaluated: int  # n_prompt_tokens
+    generation_settings: dict
+    #{'n_predict': 50, 'seed': 4294967295, 'temperature': 0.699999988079071, 'dynatemp_range': 0.0, 'dynatemp_exponent': 1.0, 'top_k': 40, 'top_p': 0.9700000286102295, 'min_p': 0.004999999888241291, 'top_n_sigma': -1.0, 'xtc_probability': 0.0, 'xtc_threshold': 0.10000000149011612, 'typical_p': 1.0, 'repeat_last_n': 16, 'repeat_penalty': 1.0099999904632568, 'presence_penalty': 0.05000000074505806, 'frequency_penalty': 0.004999999888241291, 'dry_multiplier': 0.699999988079071, 'dry_base': 1.75, 'dry_allowed_length': 4, 'dry_penalty_last_n': 2048, 'dry_sequence_breakers': ['\n', ':', '"', '*'], 'mirostat': 0, 'mirostat_tau': 5.0, 'mirostat_eta': 0.10000000149011612, 'stop': [], 'max_tokens': 50, 'n_keep': 0, 'n_discard': 0, 'ignore_eos': False, 'stream': False, 'logit_bias': [], 'n_probs': 0, 'min_keep': 0, 'grammar': '', 'grammar_lazy': False, 'grammar_triggers': [], 'preserved_tokens': [], 'chat_format': 'Content-only', 'reasoning_format': 'deepseek', 'reasoning_in_content': False, 'thinking_forced_open': False, 'samplers': ['penalties', 'dry', 'top_n_sigma', 'top_k', 'typ_p', 'top_p', 'min_p', 'xtc', 'temperature'], 'speculative.n_max': 16, 'speculative.n_min': 0, 'speculative.p_min': 0.75, 'timings_per_token': False, 'post_sampling_probs': False, 'lora': []}
+    prompt: str
+    has_new_line: bool
+    truncated: bool
+    stop_type: str # "eos", "word", "limit", "none"
+    stopping_word: str
+    tokens_cached: int
+    timings: LlamaCppTimings
 
 
 class LlamaCppCompletionResponseStreamLast:
@@ -120,10 +165,12 @@ class LlamaCppClient(_Client):
         return self._post('apply-template', messages=messages, **kwargs)
 
     def completion(self, *, prompt: str, **kwargs):
+        if (invalid := LlamaCppCompletionOptTypes.find_invalid(kwargs)):
+            warnings.warn(f"Invalid values for keys: {invalid}")
         return self._post('completion', prompt=prompt, **kwargs)
 
     # def prompt_text(self, txt: str, **kwargs) -> dict:
-    #     resp = self._completions(prompt=txt, **kwargs)
+    #     resp = self._completion(prompt=txt, **kwargs)
     #     return resp.json()
 
 
@@ -145,30 +192,42 @@ class Chat(BaseModel):
     def from_text(cls, arg: str, /) -> "Chat":
         return cls(messages=[Message(role="user", content=arg)])
 
+@dcs.dataclass
+class OperationalMode:
+    n_probs: int = 0
+
 
 @dcs.dataclass
 class Moderator:
     client: LlamaCppClient
+    operational_mode: OperationalMode
+
 
     def _pre_process_chat(self, chat: Chat) -> Chat:
         return chat
 
-    def _post_process_completions_response(self, resp_c: requests.Response, *, prompt: str) -> dict:
-        return resp_c.json()
+    def _post_process_completion_response(self, resp_c: requests.Response, *, prompt: str) -> dict:
+        body = resp_c.json()
+        body['response_content'] = body.pop('content')  # we're unifying thinking and non-thinking models here...
+        return body
 
-    def _kw_completions(self, prompt: str) -> dict[str, Any]:
-        return {'prompt': prompt}
+    def _kw_completion(self, prompt: str) -> dict[str, Any]:
+        kw = {'prompt': prompt}
+        if self.operational_mode.n_probs:
+            kw['n_probs'] = self.operational_mode.n_probs
+            kw['n_predict'] = 1
+        return kw
 
     def prompt_chat(self, chat: Chat, **kwargs) -> dict:
         _chat = self._pre_process_chat(chat)
         resp_t = self.client.apply_template(**_chat.model_dump())
         resp_t_j = resp_t.json()
-        resp_c = self.client.completion(**self._kw_completions(**resp_t_j), **kwargs)
-        return self._post_process_completions_response(resp_c, **resp_t_j)
+        resp_c = self.client.completion(**self._kw_completion(**resp_t_j), **kwargs)
+        return self._post_process_completion_response(resp_c, **resp_t_j)
 
 
 @dcs.dataclass
-class Qwen3Mode:
+class ThinkingMode:
     thinking_budget_tokens: int=-1
 
     @property
@@ -176,35 +235,53 @@ class Qwen3Mode:
         return self.thinking_budget_tokens != 0
 
     @classmethod
-    def never_think(cls) -> "Qwen3Mode":
+    def never_think(cls) -> "ThinkingMode":
         return cls(0)
 
     @classmethod
-    def think_indefinitely(cls) -> "Qwen3Mode":
+    def think_indefinitely(cls) -> "ThinkingMode":
         return cls(-1)
 
     @classmethod
-    def think_limited(cls, *, token_limit: int) -> "Qwen3Mode":
+    def think_limited(cls, *, token_limit: int) -> "ThinkingMode":
         return cls(token_limit)
 
 
-
-
-_cut_thinking_short = "... Considering the limited time by the user, I have to give the solution based on the thinking directly now.\n</think>\n\n"
+_cut_thinking_short_pre = "... Considering the limited time by the user, I have to give the solution based on the thinking directly now."
 
 @dcs.dataclass
 class ModeratorQwen3(Moderator):
-    mode: Qwen3Mode
+    thinking_mode: ThinkingMode
 
     @property
     def think_tags(self) -> tuple[str, str]:
         return ("<think>", "</think>")
 
-    def _strip_leading_empty_thinking_tags(self, content: str):
-        _, resp_content = content.split(self.think_tags[1], 1)
-        a, b = _.split(self.think_tags[0])
-        assert len(a.strip()) == 0 and len(b.strip()) == 0
-        return resp_content
+    @property
+    def think_tags_full(self) -> tuple[str, str]:
+        "For adding to *stripped* strings"
+        return ("<think>\n", "\n</think>\n\n")
+
+    def _cut_thinking_short_full(self):
+        return _cut_thinking_short_pre + self.think_tags_full[1]
+
+    def _extract_reasoning(self, content: str) -> tuple[str, str]:
+        a, _ = content.split(self.think_tags[0], 1)
+        b, c = _.split(self.think_tags[1], 1)
+        assert len(a.strip()) == 0
+        return b.lstrip(), c.lstrip()
+
+    # def _strip_leading_empty_thinking_tags(self, content: str) -> str:
+    #     _, resp_content = content.split(self.think_tags[1], 1)
+    #     a, b = _.split(self.think_tags[0])
+    #     assert len(a.strip()) == 0 and len(b.strip()) == 0
+    #     return resp_content
+
+    # def _strip_thinking_tags(self, arg: str) -> str:
+    #     arg = arg.lstrip('\n')
+    #     if body['reasoning_content'].startswith(self.think_tags[0]):
+    #         body['reasoning_content'] = body['reasoning_content'][len(self.think_tags[0]):]
+    #         body['reasoning_content'].lstrip('\n')
 
     def _pre_process_chat(self, chat: Chat) -> Chat:
         assert chat.messages[-1].role == 'user'
@@ -213,56 +290,93 @@ class ModeratorQwen3(Moderator):
         for imper in think_imperative.values():
             assert imper not in last_msg_cont
         return Chat(messages=chat.messages[:-1] + [
-            Message(role='user', content=last_msg_cont + ' ' + think_imperative[self.mode.do_think])
+            Message(role='user', content=last_msg_cont + ' ' + think_imperative[self.thinking_mode.do_think])
         ])
 
-    def _kw_completions(self, prompt: str) -> dict[str, Any]:
+    def _kw_completion(self, prompt: str) -> dict[str, Any]:
         kw = dict(prompt=prompt)
-        if self.mode.do_think:
-            kw['stop'] = '</think>'
-            if self.mode.thinking_budget_tokens > 0:
-                kw['max_tokens'] = self.mode.thinking_budget_tokens
+        if self.thinking_mode.do_think:
+            kw['stop'] = ['</think>']
+            if self.thinking_mode.thinking_budget_tokens > 0:
+                kw['max_tokens'] = self.thinking_mode.thinking_budget_tokens
+        else:
+            if self.operational_mode.n_probs:
+                kw['n_probs'] = self.operational_mode.n_probs
+                kw['n_predict'] = 1
         return kw
 
-    def _post_process_completions_response(self, resp_c: requests.Response, *, prompt: str) -> dict:
+    def _kw_completion2(self) -> dict[str, Any]:
+        assert self.thinking_mode.do_think  # only used for second phase of thinking
+        if self.operational_mode.n_probs:
+            return dict(n_probs=self.operational_mode.n_probs, n_predict=1)
+        else:
+            return {}
+
+    def _post_process_completion_response(self, resp_c: requests.Response, *, prompt: str) -> dict:
         body = resp_c.json()
         content = body.pop('content')
-        if not self.mode.do_think:
-            body['response_content'] = self._strip_leading_empty_thinking_tags(content)
+        if not self.thinking_mode.do_think:
+            reasoning, body['response_content'] = self._extract_reasoning(content)
+            assert len(reasoning) == 0
             return body
 
         if body['stop_type'] == 'eos':
             # extract thinking part into reasoning_content:
             assert content.count(self.think_tags[1]) == 1
             body['reasoning_content'], body['response_content'] = content.split(self.think_tags[1], 1)
-            body['reasoning_content'].lstrip('\n')
-            if body['reasoning_content'].startswith(self.think_tags[0]):
-                body['reasoning_content'] = body['reasoning_content'][len(self.think_tags[0]):]
-                body['reasoning_content'].lstrip('\n')
-        elif body['stop_type'] == 'limit':
-            resp_c2 = self.client.completion(prompt=prompt + content + _cut_thinking_short)
-            body['reasoning_content'] = content
-            body['response_content'] = resp_c2.json()['content']
-        return body
+            body['reasoning_content'] = self._strip_thinking_tags(body['reasoning_content'])
+            return body
+
+        if body['stop_type'] in ('limit', 'word'):
+            assert content.count(self.think_tags[1]) == 0
+            _, reasoning = map(str.lstrip, content.split(self.think_tags[0], 1))
+            assert self.think_tags[1] not in reasoning
+            if body['stop_type'] == 'limit':
+                reasoning = reasoning + _cut_thinking_short_pre
+                new_prompt = prompt + content + self._cut_thinking_short_full()
+            else:
+                new_prompt = prompt + content.strip() + self.think_tags_full[1]
+            resp_c2 = self.client.completion(prompt=new_prompt, **self._kw_completion2())
+            body2 = resp_c2.json()
+            body2['reasoning_content'] = reasoning
+            body2['response_content'] = body2.pop('content')
+            return body2
+
+        raise NotImplementedError(...)
+
+
 
 
 def main(
         model='llamacpp-Qwen3-8B',
-        user_prompt: str="What's the capital of France?",
+        user_prompt: str="What's the capital of France? A) Paris B) Lyon C) Marseille. Answer with a single letter.",
         thinking_budget_tokens: int=50,
-        max_tokens=2048
+        max_tokens=2048,
+        n_probs: int = 5
 ):
     assert max_tokens > thinking_budget_tokens
-    client = get_client(model)
-    assert 'Qwen3' in model
-    modr = ModeratorQwen3(client=client, mode=Qwen3Mode(thinking_budget_tokens))
+    client: LlamaCppClient = get_client(model)
+    op_mode=OperationalMode(n_probs)
+    if 'Qwen3' in model:
+        modr = ModeratorQwen3(
+            client=client,
+            operational_mode=op_mode,
+            thinking_mode=ThinkingMode(thinking_budget_tokens),
+        )
+    else:
+        modr = Moderator(client=client, operational_mode=op_mode)
     chat = Chat.from_text(user_prompt)
     body = modr.prompt_chat(chat)
-    print(body)
-    print("\n\n")
-    print(f"{body['reasoning_content']=}")
-    print(f"{body['response_content']=}")
+    if 'reasoning_content' in body:
+        print(f"{body['reasoning_content']=}")
+
+    if op_mode.n_probs:
+        tlps = {tlp['token']: tlp['logprob']  for tlp in body['completion_probabilities'][0]['top_logprobs']}
+        print(tlps)
+    else:
+        print(f"{body['response_content']=}")
 
 
 if __name__ == '__main__':
-    main()
+    import argh
+    argh.dispatch_command(main, output_file=None)
