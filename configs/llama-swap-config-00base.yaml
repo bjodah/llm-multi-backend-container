@@ -4,15 +4,28 @@ healthCheckTimeout: 900  # 15minutes, downloading models can take a while
 
 logLevel: debug # info warn
 
-# - meta-commentary
-#   - llama.cpp)
-#         - I'm now avoiding `--repeat-penalty`, preferring `--dry-multiplifer`
-#         `--prio` flag (need to figure out what does values do, responsible for spinning 1 thread 100%?)
-#         - No longer setting `--seed "-1"`, default and respawning llama-swap for setting deterministic is not practical.
-
 startPort: 11000
 
 models:
+
+  llamacpp-mistral-small-3.2-24b-2506:
+    cmd: |
+      llama-serve-wrap /logs/llamacpp-mistral-small-3.2-24b-2506.log
+        --port ${PORT}
+        --hf-repo bartowski/mistralai_Mistral-Small-3.2-24B-Instruct-2506-GGUF:Q6_K_L
+        #--hf-repo bartowski/mistralai_Mistral-Small-3.2-24B-Instruct-2506-GGUF:Q5_K_M
+        --n-gpu-layers 40
+        --no-mmproj-offload
+        --jinja
+        --ctx-size 32768
+        --cache-type-k q8_0
+        --cache-type-v q5_1
+        --flash-attn
+        --min-p 0.01
+        --temp 0.6
+  
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 3600
 
   # Mistral-3.1-2503 has vision support, for which text generation suffers?
   # Neither is is it particularly good at coding either (Qwen2.5-Coder is better)

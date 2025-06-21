@@ -18,6 +18,8 @@ query_chat() {
     return $retcode
 }
 if [ $# -eq 0 ]; then
+    query_chat llamacpp-mistral-small-3.2-24b-2506 "What's the captial of Scandinavia? /no_think"
+    exit
     #curl -s http://localhost:8687/lastlog | jq '.'
     query_chat llamacpp-QwQ-32B@think-less "Answer only with the missing word: The capital of Germany is" \
     && curl -s http://localhost:8687/lastlog | jq '.'
