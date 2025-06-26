@@ -17,12 +17,15 @@ models:
         --n-gpu-layers 40
         --no-mmproj-offload
         --jinja
+        --chat-template-file /configs/Mistral-Small-3.2-24B-Instruct-2506.jinja
         --ctx-size 32768
         --cache-type-k q8_0
         --cache-type-v q5_1
         --flash-attn
-        --min-p 0.01
-        --temp 0.6
+        --min-p 0.005
+        --top-p 0.995
+        --temp 0.15
+        --repeat-penalty 1.01
   
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
@@ -270,7 +273,7 @@ models:
     cmd: |
       llama-serve-wrap /logs/llamacpp-openthinker2-32b.log
         --port ${PORT}
-        --hf-repo bartowski/open-thoughts_OpenThinker2-32B-GGUF
+        --hf-repo bartowski/open-thoughts_OpenThinker2-32B-GGUF:Q4_K_M
         --n-gpu-layers 999
         --jinja
         --ctx-size 16000

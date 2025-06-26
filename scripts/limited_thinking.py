@@ -397,7 +397,7 @@ def delerium(
     c = LlamaCppClient(model=model)
     i = 0
     #_chat = Chat.from_text("Write whimsical poem, avoid using formatting characters, unicode or other mark-up:")
-    _chat = Chat.from_text("Skriv en vacker dikt, unvik formateringstecken, unicode eller annan mark-up:")
+    _chat = Chat.from_text("Skriv en vacker dikt, undvik formateringstecken, unicode eller annan mark-up:")
     resp_t = c.apply_template(**_chat.model_dump())
     p = resp_t.json()['prompt']
     p_len_0 = len(p)
