@@ -31,7 +31,7 @@ main() {
     set -e
     $repo_root/scripts/regenerate-llama-swap-conf.sh
     ( if [[ $(compgen -G "$repo_root"/logs/*.log.bak.~*~) != "" ]]; then set -x; rm "$repo_root"/logs/*.log.bak.~*~; fi )
-    ( set -x; cd $repo_root; \
+    ( set -xo pipefail; cd $repo_root; \
       podman build \
              --device nvidia.com/gpu=all \
              --build-arg="TORCH_CUDA_ARCH_LIST=${TORCH_CUDA_ARCH_LIST:-8.6}" \

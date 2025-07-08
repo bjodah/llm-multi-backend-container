@@ -13,6 +13,7 @@ main () {
     # could possibly reload the model if it just evicted (race-condition), instead, we figure out what
     # port llama-server is running on 
     podman exec -i llm-mb_llama-swapper /bin/bash <<-'EOF'
+set -e
 n_decoded_old=0
 while true; do
     model_name=$(curl -s localhost:8686/running | jq -r ".running[0].model")

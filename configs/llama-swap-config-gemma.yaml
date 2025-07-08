@@ -36,6 +36,7 @@
         --ctx-size 49000
         # --cache-type-k q8_0
         # --cache-type-v q5_1
+        --no-mmproj
         --flash-attn
         --samplers 'min_p;dry;temperature;top_p'
         # xtc;

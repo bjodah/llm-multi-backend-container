@@ -54,10 +54,12 @@ RUN \
 RUN \
     --mount=type=cache,target=/root/.cache/pip,sharing=locked \
     --mount=type=cache,target=/root/.cache/huggingface,sharing=locked \
-    git clone https://github.com/turboderp/exllamav2 /opt/exllamav2 \
+    python3 -m pip install --upgrade-strategy=eager --upgrade git+https://github.com/huggingface/transformers \
+    && python3 -m pip install --upgrade-strategy=eager --upgrade git+https://github.com/facebookresearch/xformers \
+    && git clone https://github.com/turboderp/exllamav2 /opt/exllamav2 \
     && cd /opt/exllamav2 \
     && python3 setup.py build_ext -i \
-    && python3 -m pip install --no-build-isolation -e .
+    && python3 -m pip install --no-deps --no-build-isolation -e .
 
     # cd /opt/flash-attention \
     # && python3 -m pytest -s -q tests/test_flash_attn.py \
@@ -88,7 +90,9 @@ RUN \
     # && git checkout 5025c2f1f312703e6810457a20070e5681b264b5 \
 RUN \
     --mount=type=cache,target=/root/.cache/go-build,sharing=locked \
-    curl -Ls https://go.dev/dl/go1.24.2.linux-amd64.tar.gz | tar xz -C /usr/local \
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash \
+    && bash -c ". /root/.nvm/nvm.sh && nvm install 20 && which npm \
+    && curl -Ls https://go.dev/dl/go1.24.4.linux-amd64.tar.gz | tar xz -C /usr/local \
     && cp -s /usr/local/go/bin/* /usr/local/bin \
     && cd /tmp \
     && git clone https://github.com/mostlygeek/llama-swap \
@@ -96,7 +100,7 @@ RUN \
     && make clean all \
     && cp /tmp/llama-swap/build/llama-swap-linux-amd64 /usr/local/bin/llama-swap \
     && go install github.com/go-delve/delve/cmd/dlv@latest \
-    && ln -s /root/go/bin/dlv /usr/local/bin/dlv
+    && ln -s /root/go/bin/dlv /usr/local/bin/dlv"
 
 
 # ENV PIP_ROOT_USER_ACTION=ignore
@@ -104,7 +108,7 @@ RUN \
 
 RUN \
     --mount=type=cache,target=/root/.cache,sharing=locked \
-    apt-get update --quiet && apt-get install --assume-yes jq \
+    apt-get update --quiet && apt-get install --assume-yes jq curl \
     && cd /opt/llama.cpp \
     && git pull \
     && cmake --build /opt/llama.cpp/build --parallel

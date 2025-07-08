@@ -137,7 +137,7 @@
         --cache-type-k q8_0
         --cache-type-v q8_0
         --flash-attn
-        --ctx-size 32768
+        --ctx-size 24000
         --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
