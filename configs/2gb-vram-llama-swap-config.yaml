@@ -2,7 +2,7 @@
 # the goal here is to add a few configs that works with that setup.
 # I've only bothered building llama.cpp on that mahcine, and I built for compute
 # capability 6.1 (pascal)
-healthCheckTimeout: 900  # 15minutes, downloading models can take a while
+healthCheckTimeout: 9900  # 15minutes, downloading models can take a while
 
 logLevel: debug # info warn
 
@@ -125,10 +125,12 @@ models:
       /build/llama.cpp-debug/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-30B-A3B.log
         --port 8708
+        # --model /home/bjorn/.cache/llama.cpp/unsloth_Qwen3-30B-A3B-GGUF_Qwen3-30B-A3B-UD-IQ1_S.gguf
+        # --model-draft /home/bjorn/~/.cache/llama.cpp/unsloth_Qwen3-0.6B-GGUF_Qwen3-0.6B-Q8_0.gguf
         --hf-repo bartowski/Qwen_Qwen3-30B-A3B-GGUF:IQ3_XXS  # 12.2 GB
-        #--hf-repo-draft bartowski/Qwen_Qwen3-0.6B-GGUF:Q4_K_L  # 0.6 GB
+        --hf-repo-draft bartowski/Qwen_Qwen3-0.6B-GGUF:Q8_0  # 0.805 GB
+        #--hf-repo-draft unsloth/Qwen_Qwen3-0.6B-GGUF:Q8_0  # 0.6 GB
         #--hf-repo-draft unsloth/Qwen_Qwen3-0.6B-GGUF:Q4_K_XL  # 0.4 GB
-        --hf-repo-draft unsloth/Qwen_Qwen3-0.6B-GGUF:Q8_0  # 0.6 GB
         --n-gpu-layers-draft 99
         --threads 4
         --no-mmap
@@ -152,7 +154,7 @@ models:
         --repeat-penalty 1.01
         --repeat-last-n 16
     proxy: http://127.0.0.1:8708
-    ttl: 3600
+    ttl: 36000
 
 
   llamacpp-Qwen2.5-Coder-1.5B:  # 259 pp, 31 tg
