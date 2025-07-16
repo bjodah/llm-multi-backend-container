@@ -26,16 +26,27 @@ if [ ! -v HUGGING_FACE_HUB_TOKEN ]; then
     >&2 echo "No environment variable HUGGING_FACE_HUB_TOKEN?"
     exit 1
 fi
-declare -a srcs
+main() {
+    declare -a srcs
+    set -e
+    $repo_root/scripts/regenerate-llama-swap-conf.sh
+    ( if [[ $(compgen -G "$repo_root"/logs/*.log.bak.~*~) != "" ]]; then set -x; rm "$repo_root"/logs/*.log.bak.~*~; fi )
+    ( set -xo pipefail; cd $repo_root; \
+      podman build \
+             --device nvidia.com/gpu=all \
+             --build-arg="TORCH_CUDA_ARCH_LIST=${TORCH_CUDA_ARCH_LIST:-8.6}" \
+             --build-arg="CUDA_ARCHITECTURES=${CUDA_ARCHITECTURES:-86}" \
+             env-llm-multi-backend/ 2>&1 | tee ./logs/image-build.log
+    )
 
-$repo_root/scripts/regenerate-llama-swap-conf.sh
-
-echo "You can view open-webui: $ xdg-open http://localhost:33033/"
-( set -x; env \
-    HOST_CACHE_HUGGINGFACE="$(realpath $HOME/.cache/huggingface)" \
-    HOST_CACHE_LLAMACPP="$(realpath $HOME/.cache/llama.cpp)" \
-    $COMPOSE_CMD \
-    --file "$repo_root"/compose.yml \
-    up "$@" )
-
-
+    trap "$COMPOSE_CMD --file ${repo_root}/compose.yml down" TERM INT
+    echo "You can view open-webui: $ xdg-open http://localhost:33033/"
+    ( set -x; env \
+                  HOST_CACHE_HUGGINGFACE="$(realpath $HOME/.cache/huggingface)" \
+                  HOST_CACHE_LLAMACPP="$(realpath $HOME/.cache/llama.cpp)" \
+                  $COMPOSE_CMD --file "$repo_root"/compose.yml up "$@" ) 
+}
+{
+    main "${@}"
+    exit 0;
+}

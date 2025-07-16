@@ -2,34 +2,37 @@
   # the name below works with aider, thanks to:
   # https://github.com/Aider-AI/aider/blob/8f15269bd063a3c720ced514303b9efcc03fe29f/aider/models.py#L418
   llamacpp-Qwen2.5-Coder-32B:
-    cmd: >
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen2.5-Coder-32B.log
-        --port 8002
+    cmd: |
+      llama-serve-wrap /logs/llamacpp-Qwen2.5-Coder-32B.log
+        --port ${PORT}
         --hf-repo unsloth/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M
         #--hf-repo-draft unsloth/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q4_K_M
         --n-gpu-layers 999 
         #--n-gpu-layers-draft 999
+        --jinja
         --ctx-size 32768 
         --cache-type-k q8_0 
         --cache-type-v q5_1 
         --flash-attn
-        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
+        --samplers "penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature" 
         --top-k 40 
         --top-p 0.95 
-        --min-p 0.01 
-        --temp 0.3
+        --min-p 0.005
+        --temp 0.15
         --dry-multiplier 0.5
-        --dry-allowed-length 5
-    proxy: http://127.0.0.1:8002
+        --dry-allowed-length 3
+        --presence-penalty 0.05
+        --frequency-penalty 0.005
+        --repeat-penalty 1.01
+        --repeat-last-n 16
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # I use this model for "tab-completion" in emacs (minuet.el), hence small context window.
-  llamacpp-Qwen2.5-Coder-7B:  # -Instruct
-    cmd: >
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen2.5-Coder-7B.log  # -Instruct
-        --port 8013
+  llamacpp-Qwen2.5-Coder-7B:
+    cmd: |
+      llama-serve-wrap /logs/llamacpp-Qwen2.5-Coder-7B.log
+        --port ${PORT}
         --hf-repo bartowski/Qwen2.5.1-Coder-7B-Instruct-GGUF:Q8_0
         --hf-repo-draft bartowski/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q8_0
         --n-gpu-layers 999
@@ -39,22 +42,21 @@
         --cache-type-k q8_0 
         --cache-type-v q8_0 
         --flash-attn
-        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
+        --samplers "dry;top_k;top_p;min_p;temperature;typ_p;xtc" 
         --top-k 40 
         --top-p 0.95
         --min-p 0.0 
-        --temp 0.1
+        --temp 0.10
         --dry-multiplier 0.1
         --dry-allowed-length 3
-    proxy: http://127.0.0.1:8013
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # As I've understood it Qwen2.5-Coder-32B was not trained with FIM and tool calling?
   llamacpp-Qwen2.5-Coder-14B:
-    cmd: >
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen2.5-Coder-14B.log  # -Instruct
-        --port 8013
+    cmd: |
+      llama-serve-wrap /logs/llamacpp-Qwen2.5-Coder-14B.log
+        --port ${PORT}
         --hf-repo bartowski/Qwen2.5-Coder-14B-Instruct-GGUF:Q8_0
         --hf-repo-draft bartowski/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q8_0
         --n-gpu-layers 999
@@ -64,23 +66,22 @@
         --cache-type-k q8_0 
         --cache-type-v q8_0 
         --flash-attn
-        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
+        --samplers "dry;top_k;top_p;min_p;temperature;typ_p;xtc" 
         --top-k 40 
         --top-p 0.95
         --min-p 0.0 
-        --temp 0.1
+        --temp 0.10
         --dry-multiplier 0.1
         --dry-allowed-length 3
-    proxy: http://127.0.0.1:8013
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
 
   # The 3B model is too dumb in my experience...
   llamacpp-Qwen2.5-Coder-3B:
-    cmd: >
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Qwen2.5-Coder-3B.log  # -Instruct
-        --port 8013
+    cmd: |
+      llama-serve-wrap /logs/llamacpp-Qwen2.5-Coder-3B.log
+        --port ${PORT}
         --hf-repo bartowski/Qwen2.5-Coder-3B-Instruct-GGUF:Q8_0
         --hf-repo-draft bartowski/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q8_0
         --n-gpu-layers 999
@@ -90,28 +91,35 @@
         --cache-type-k q8_0 
         --cache-type-v q8_0 
         --flash-attn
-        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
+        --samplers "dry;top_k;top_p;min_p;temperature;typ_p;xtc" 
         --top-k 40 
         --top-p 0.95
         --min-p 0.0 
         --temp 0.1
         --dry-multiplier 0.1
         --dry-allowed-length 3
-    proxy: http://127.0.0.1:8013
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 3600
+
+  exllamav2-Qwen2.5-Coder-7B:
+    cmd: |
+      env --chdir /opt/tabbyAPI python3 main.py
+        --config /configs/tabby-config-qwen25-coder-7b.yml
+    proxy: http://127.0.0.1:11902
     ttl: 3600
 
   exllamav2-Qwen2.5-Coder-14B:
-    cmd: >
+    cmd: |
       env --chdir /opt/tabbyAPI python3 main.py
         --config /configs/tabby-config-qwen25-coder-14b.yml
-    proxy: http://127.0.0.1:8008
+    proxy: http://127.0.0.1:11903
     ttl: 3600
 
   vllm-Qwen2.5-Coder-7B:
-    cmd: >
+    cmd: |
       env TORCH_CUDA_ARCH_LIST=8.6 VLLM_ATTENTION_BACKEND=FLASHINFER python3
         -m vllm.entrypoints.openai.api_server
-        --port 7999
+        --port ${PORT}
         --served-model-name vllm-Qwen2.5-Coder-7B
         --model Qwen/Qwen2.5-Coder-7B-Instruct-AWQ
         --enable-auto-tool-choice
@@ -123,14 +131,14 @@
         --max-model-len 32768
         --disable-sliding-window
         --kv-cache-dtype fp8_e5m2
-    proxy: http://127.0.0.1:7999
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
     
   vllm-Qwen2.5-Coder-14B:
-    cmd: >
+    cmd: |
       env TORCH_CUDA_ARCH_LIST=8.6 VLLM_ATTENTION_BACKEND=FLASHINFER python3
         -m vllm.entrypoints.openai.api_server
-        --port 7998
+        --port ${PORT}
         --served-model-name vllm-Qwen2.5-Coder-14B
         --model Qwen/Qwen2.5-Coder-14B-Instruct-AWQ
         --enable-auto-tool-choice
@@ -142,6 +150,6 @@
         --max-model-len 32768
         --disable-sliding-window
         --kv-cache-dtype fp8_e5m2
-    proxy: http://127.0.0.1:7998
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
     

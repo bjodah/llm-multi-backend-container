@@ -1,5 +1,10 @@
 #!/bin/bash
 repo_root="$(cd $(dirname $(realpath "$BASH_SOURCE")); git rev-parse --show-toplevel 2>/dev/null)"
 $repo_root/scripts/regenerate-llama-swap-conf.sh
-podman exec llm-mb_llama-swapper bash -c 'set -x; pkill -9 /opt/llama.cpp/build/bin/llama-server'
-podman exec llm-mb_llama-swapper bash -c 'set -x; pkill llama-swap'
+
+# to reload llama-swap's config we simply kill the process and rely on autorestart-llama-swap.sh to restart it.
+podman exec llm-mb_llama-swapper bash -c 'set -x; pkill llama-swap;'
+
+
+# llama.cpp often requires harsh killing when CUDA malloc fails etc.
+podman exec llm-mb_llama-swapper bash -c 'set -x; pkill -9 llama-server'

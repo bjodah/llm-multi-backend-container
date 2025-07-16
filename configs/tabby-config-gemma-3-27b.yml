@@ -1,6 +1,6 @@
 network:
   host: 0.0.0.0  # change to 127.0.0.1 if podman uses --net host
-  port: 7567
+  port: 11904
 
 # Options for logging
 logging:

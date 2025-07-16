@@ -1,37 +1,39 @@
   llamacpp-Phi-4:
-    cmd: >
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Phi-4.log
-        --port 8006
-        --hf-repo unsloth/phi-4-GGUF:Q6_K  # Q2_K_L, bartowski/phi-4-GGUF:Q8_0
+    cmd: |
+      llama-serve-wrap /logs/llamacpp-Phi-4.log
+        --port ${PORT}
+        --hf-repo unsloth/phi-4-GGUF:Q6_K
+        # Q2_K_L, bartowski/phi-4-GGUF:Q8_0
         --n-gpu-layers 999
+        --jinja
         --ctx-size 32768
         --cache-type-k q8_0
         # --cache-type-v q8_0
         # --flash-attn
-        --samplers "min_p;dry;temperature"  # xtc;
+        --samplers 'min_p;dry;temperature'
+        # xtc;
         --min-p 0.03
         --dry-multiplier 1.0
         --dry-allowed-length 3
         --dry-penalty-last-n 256
         --temp 0.5
-    proxy: http://127.0.0.1:8006
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-Phi-4-reasoning-plus:
-    cmd: >
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-Phi-4-reasoning-plus.log
-        --port 8633
+    cmd: |
+      llama-serve-wrap /logs/llamacpp-Phi-4-reasoning-plus.log
+        --port ${PORT}
         --hf-repo unsloth/Phi-4-reasoning-plus-GGUF:Q6_K_XL
         --n-gpu-layers 99
         --jinja
-        --special  # response will contain <think> </think> <|im_end|>
+        --special
+        # ^--- response will contain <think> </think> <|im_end|>
         --ctx-size 32768
         --cache-type-k q8_0
         --cache-type-v q8_0
         --flash-attn
-        --samplers "top_k;dry;top_p;min_p;temperature;typ_p;xtc"
+        --samplers 'top_k;dry;top_p;min_p;temperature;typ_p;xtc'
         --top-k 50
         --dry-multiplier 1.2
         --dry-allowed-length 3
@@ -44,5 +46,5 @@
         --repeat-last-n 16
         #--verbose
 
-    proxy: http://127.0.0.1:8633
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600

@@ -1,0 +1,99 @@
+#!/bin/bash
+# -*- mode: shellscript -*-
+print_usage() {
+    echo "llama-serve mymodel.log --port 1234 --hf-repo someone/somemodel:Q9_K_XXXL --n-gpu-layers ...."
+}
+if [ $# -lt 2 ]; then
+    print_usage
+    exit 1
+fi
+echo $1
+if [[ $1 != *.log ]]; then
+    >&2 echo "Expected .log suffix"
+    exit 1
+fi
+if [ ! -w $(dirname $1)/ ]; then
+    >&2 echo "Cannot write to folder of log file?"
+    exit 1
+fi
+
+mv --backup=numbered $1 $1.bak 
+date
+if [ -e /tmp/llama-server-stdout-stderr.log ]; then
+    mv /tmp/llama-server-stdout-stderr.log /tmp/llama-server-stdout-stderr.log.bak
+fi
+log_ok() {
+    echo "$(date +"%Y-%m-%d %H:%M:%S") $1"
+}
+log_bad() {
+    >&2 echo "$(date +"%Y-%m-%d %H:%M:%S") $1"
+}
+kill_llama_cpp() {
+    if ! kill -0 $1 2>/dev/null; then
+        log_bad "PID=$1 no longer exists, cannot kill llama.cpp"
+        return 1
+    fi
+    kill -SIGINT $1  # first interupt
+    sleep 0.050s
+    if kill -0 $1 2>/dev/null; then
+        kill -SIGINT $1  # second interupt (llama.cpp handles 2x SIGINT as "exit immediately")
+    else
+        log_ok "Successfully killed PID=$1 within 50ms, using 1x SIGINT"
+        exit 0
+    fi
+    for i in $(seq 1 100); do  # up to 5.0 seconds
+        sleep 0.050s
+        if ! kill -0 $1 2>/dev/null; then
+            log_ok "Successfully killed llama.cpp PID=$1 within $(( $i * 50 )) ms, using 2x SIGINT"
+            exit 0
+        fi
+    done
+    kill -SIGKILL $1
+    sleep 0.200s
+    if kill -0 $1 2>/dev/null; then
+        log_bad "Even failed to SIGKILL(!) PID=$1 within 200ms, using 1x SIGKILL"
+    else
+        log_bad "Had to resort to SIGKILL to have PID=$1 exit within 200ms"
+        exit 0;
+    fi
+}
+set -x
+#/opt/llama.cpp/build/bin/
+if ! which llama-server >&2; then
+    >&2 echo "llama-server not on path?"
+    exit 1
+fi
+
+main() {
+    llama-server \
+        --log-file $1 \
+        "${@:2}" 2>/tmp/llama-server-stdout-stderr.log &
+    PID=$!
+    set +x
+    if kill -0 $PID 2>/dev/null; then
+        log_ok "llama-server started as PID=$PID"
+    else
+        log_bad "failed to start llama-server"
+        exit 1
+    fi
+
+    trap "kill_llama_cpp $PID" TERM INT
+    wait $PID
+    if [ $? -eq 0 ]; then
+        log_ok "normal(?) exit of llama-server PID=$PID"
+        return 0
+    else
+        # If we reached this line, llama-server has crashed, and we need to reload llama-swap,
+        # killing llama-swap is fine, since `autorestart-llama-swap.sh` simply respawns it.
+        # But first we stash away a copy of the logs and a .json file of the request
+        curl http://host.docker.internal:8687/lastlog | jq '.request_content | fromjson' >/tmp/llama-server-stdout-stderr.log.json
+        cp --backup=numbered /tmp/llama-server-stdout-stderr.log      /logs/llama-swap-crash-logs/
+        cp --backup=numbered /tmp/llama-server-stdout-stderr.log.json /logs/llama-swap-crash-logs/
+        pkill llama-swap
+        return 1
+    fi
+}
+{
+    main "${@}"
+    exit $?
+}

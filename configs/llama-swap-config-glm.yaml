@@ -1,9 +1,9 @@
   llamacpp-glm-4-32b-0414:  # ~16 tps TG
-    cmd: >
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-glm-4-32b-0414.log
-        --port 8018
-        --hf-repo bartowski/THUDM_GLM-4-32B-0414-GGUF:Q4_K_M # Q5_K_M
+    cmd: |
+      llama-serve-wrap /logs/llamacpp-glm-4-32b-0414.log
+        --port ${PORT}
+        --hf-repo bartowski/THUDM_GLM-4-32B-0414-GGUF:Q4_K_M
+        # Q5_K_M
         #--hf-repo unsloth/GLM-4-32B-0414-GGUF:Q4_K_XL
         --n-gpu-layers 999
         --override-kv tokenizer.ggml.eos_token_id=int:151336
@@ -13,58 +13,65 @@
         --cache-type-k q8_0 
         # --cache-type-v q8_0  # TODO: try with q8_0, maybe lower context?
         # --flash-attn
-        --samplers "min_p;dry;temperature;xtc"
-        --dry-multiplier 1.2 # 1.0 1.1
-        --dry-allowed-length 4  # 3
+        --samplers 'min_p;dry;temperature;xtc'
+        --dry-multiplier 1.2
+        # 1.0 1.1
+        --dry-allowed-length 4
+        # 3
         --dry-penalty-last-n 2048
         --min-p 0.02
         --temp 0.6
-    proxy: http://127.0.0.1:8018
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # Thinking version of glm-4
   llamacpp-glm-z1-32b-0414:
-    cmd: >
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-glm-z1-32b-0414.log
-        --port 8019
-        --hf-repo bartowski/THUDM_GLM-Z1-32B-0414-GGUF:Q3_K_XL # IQ4_XS # Q4_K_L, Q5_K_S
+    cmd: |
+      llama-serve-wrap /logs/llamacpp-glm-z1-32b-0414.log
+        --port ${PORT}
+        --hf-repo bartowski/THUDM_GLM-Z1-32B-0414-GGUF:Q3_K_XL
+        # IQ4_XS # Q4_K_L, Q5_K_S
         --n-gpu-layers 999
         --override-kv tokenizer.ggml.eos_token_id=int:151336
         --override-kv glm4.rope.dimension_count=int:64
         --chat-template chatglm4
-        --ctx-size 22000  # 32768
+        --ctx-size 22000
+        # 32768
         --cache-type-k q8_0 
         # --cache-type-v q8_0
         # --flash-attn
-        --samplers "min_p;dry;xtc;temperature"
+        --samplers 'min_p;dry;xtc;temperature'
         --min-p 0.01
         --dry-multiplier 0.5
         --dry-allowed-length 3
         --temp 0.4 # 0.6
-    proxy: http://127.0.0.1:8019
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # I haven't had too much success with this, I prefer non-rumination
   llamacpp-glm-z1-rumination-32b-0414:
-    cmd: >
-      /opt/llama.cpp/build/bin/llama-server
-        --log-file /logs/llamacpp-glm-z1-rumination-32b-0414.log
-        --port 8020
-        --hf-repo bartowski/THUDM_GLM-Z1-Rumination-32B-0414-GGUF:Q3_K_XL #IQ4_XS  # Q4_K_L, Q5_K_S
+    cmd: |
+      llama-serve-wrap /logs/llamacpp-glm-z1-rumination-32b-0414.log
+        --port ${PORT}
+        --hf-repo bartowski/THUDM_GLM-Z1-Rumination-32B-0414-GGUF:Q3_K_XL
+        #IQ4_XS  # Q4_K_L, Q5_K_S
         --n-gpu-layers 999
         --override-kv tokenizer.ggml.eos_token_id=int:151336
         --override-kv glm4.rope.dimension_count=int:64
         --chat-template chatglm4
-        --ctx-size 22000 # can be pushed to ~24000
+        --ctx-size 22000
+        # can be pushed to ~24000
         --cache-type-k q8_0 
         # --cache-type-v q8_0 
         # --flash-attn
-        --samplers "min_p;dry;xtc;temperature"
+        --samplers 'min_p;dry;xtc;temperature'
         --min-p 0.01
-        --dry-multiplier 1.1 # 1.0
-        --dry-allowed-length 4  # 3
+        --dry-multiplier 1.1
+        # 1.0
+        --dry-allowed-length 4
+        # 3
         --dry-penalty-last-n 1024
-        --temp 0.4  # 0.6
-    proxy: http://127.0.0.1:8020
+        --temp 0.4
+        # 0.6
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600

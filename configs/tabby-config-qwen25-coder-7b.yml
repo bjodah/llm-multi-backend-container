@@ -1,6 +1,6 @@
 network:
   host: 127.0.0.1
-  port: 2507
+  port: 11902
 
 # Options for logging
 logging:

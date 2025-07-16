@@ -9,11 +9,11 @@ $ ./bin/host-llm-multi-backend-container.sh --build --force-recreate
 
 ## Useful(?) tools
 <details>
-<summary>testing qwen2.5-coder-7b on port 2507</summary>
+<summary>testing qwen2.5-coder-7b on port 11902</summary>
 
 ```console
-$ ./scripts/host-qwen2.5-coder-7b_localhost_port2507.sh
-$ env OPENAI_API_BASE=localhost:2507/v1 OPENAI_API_KEY=sk-empty \
+$ ./scripts/host-qwen2.5-coder-7b_localhost_port11902.sh
+$ env OPENAI_API_BASE=localhost:11902/v1 OPENAI_API_KEY=sk-empty \
     ./scripts/test-chat-completions.sh modelnameplaceholder "In python, how do I defer deletion of a specific path to end of program?" \
     | jq -r | batcat -pp -l md
 ```
@@ -26,10 +26,11 @@ $ bash -x scripts/test-chat-completions.sh
 
 ## Monitoring
 ```console
-$ watch "ps aux | grep -E '(vllm|llama-|tabbyAPI)' | grep -v emacs | grep -v 'grep -E'"
+$ ./scripts/enter-container-llama-swap.sh watch "ps aux | grep -E '(vllm|llama-|tabbyAPI)' | grep -v emacs | grep -v 'grep -E'"
 $ while true; do clear; date; echo -n "currently loaded model: "; curl -s localhost:8686/running | jq -r '.running[0].model';  echo '...sleeping for 60 seconds'; sleep 60; done
 $ curl -s localhost:8686/logs/stream/upstream
 $ curl -s localhost:8686/logs/stream/proxy
+$ ./scripts/enter-container-llama-swap.sh tail -F /tmp/llama-server-stdout-stderr.log
 ```
 
 ## Working directly with underlying end-point:
@@ -68,9 +69,9 @@ $ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/DeepSeek-V3-0324-
   #      - https://huggingface.co/ubergarm/DeepSeek-V3-0324-GGUF
   #      - https://github.com/ikawrakow/ik_llama.cpp/discussions/258
   llamacpp-deepseek-v3-0324:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
-        --port 8017
+        --port ${PORT}
         --ctx-size 16384
         --seed "-1"
         --prio 2
@@ -81,7 +82,7 @@ $ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/DeepSeek-V3-0324-
         --ubatch-size 1
         --jinja
     #--model /root/.cache/huggingface/hub/models--unsloth--DeepSeek-V3-0324-GGUF/snapshots/b3e19c41e42074be413d73f1d0e1b7f2be9e60c3/UD-Q2_K_XL/DeepSeek-V3-0324-UD-Q2_K_XL-00001-of-00006.gguf  # zombie process after reading 231G (of 248G)
-    proxy: http://127.0.0.1:8017
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 ```
 
@@ -92,9 +93,9 @@ $ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/DeepSeek-V3-0324-
 
 ```
   llamacpp-Qwen2.5-VL-32B:
-    cmd: >
+    cmd: |
       /opt/llama.cpp/build/bin/llama-server
-        --port 8013
+        --port ${PORT}
         --ctx-size 4096
         --cache-type-k q8_0
         --cache-type-v q4_0
@@ -102,7 +103,7 @@ $ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/DeepSeek-V3-0324-
         --n-gpu-layers 64
         --hf-repo mradermacher/Qwen2.5-VL-32B-Instruct-i1-GGUF:i1-IQ3_S
         --temp 0.15
-    proxy: http://127.0.0.1:8013
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 ```
 
@@ -113,13 +114,13 @@ $ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/DeepSeek-V3-0324-
 
 ```
   phildougherty-Qwen2.5-VL-7B:
-    cmd: >
+    cmd: |
       python3 /phildougherty-qwen-vl-api/app.py
           --model Qwen2.5-VL-7B-Instruct
-          --port 8015
+          --port ${PORT}
           --quant int8
           # --quant int4
-    proxy: http://127.0.0.1:8015
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
 ```
