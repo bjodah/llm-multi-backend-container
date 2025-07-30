@@ -42,8 +42,9 @@ $ curl -H "Authorization: Bearer sk-empty" http://localhost:8686/upstream/llamac
 ## Notes
 - For customization, you might want to grep for a few keywords:
 ```console
-$ git grep 8686
+$ git grep -E '\b868[6-8]\b'
 $ git grep sk-empty
+$ git grep -iE '(logging|loglevel|verbos)'
 ```
 
 ## Downloading models

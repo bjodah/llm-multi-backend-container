@@ -111,6 +111,6 @@ RUN \
     apt-get update --quiet && apt-get install --assume-yes jq curl \
     && cd /opt/llama.cpp \
     && git pull \
-    && cmake --build /opt/llama.cpp/build --parallel
+    && cmake --build /opt/llama.cpp/build --parallel --verbose
 
 ENV PATH=/configs:/opt/llama.cpp/build/bin:$PATH

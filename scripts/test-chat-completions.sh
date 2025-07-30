@@ -18,6 +18,10 @@ query_chat() {
     return $retcode
 }
 if [ $# -eq 0 ]; then
+    query_chat llamacpp-Qwen3-30B-A3B-it-2507 "What's the captial of Scandinavia? todays date is $(date --iso-8601)"
+    #query_chat llamacpp-magistral-small-2507 "What's the captial of Scandinavia? todays date is $(date --iso-8601)"
+    #query_chat llamacpp-devstral-small-2507 "What's the captial of Scandinavium? todays date is $(date --iso-8601)"
+    exit
     query_chat llamacpp-Qwen3-30B-A3B@do-think "What's the captial of Scandinavia? todays date is $(date --iso-8601)" \
     && curl -s http://localhost:8687/lastlog | jq '.'
     exit

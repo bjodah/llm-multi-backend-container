@@ -30,6 +30,29 @@ models:
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
+  llamacpp-magistral-small-2507:
+    cmd: |
+      llama-serve-wrap /logs/llamacpp-magistral-small-2507.log
+        --port ${PORT}
+        --hf-repo bartowski/mistralai_Magistral-Small-2507-GGUF:Q6_K_L
+        --n-gpu-layers 40
+        --no-mmproj-offload
+        --jinja
+        --ctx-size 32768
+        --cache-type-k q8_0
+        --cache-type-v q5_1
+        --flash-attn
+        --min-p 0.005
+        --top-p 0.995
+        --temp 0.15
+        --repeat-penalty 1.01
+        --verbose
+  
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 3600
+
+
+
   # Mistral-3.1-2503 has vision support, for which text generation suffers?
   # Neither is is it particularly good at coding either (Qwen2.5-Coder is better)
   llamacpp-mistral-small-24b-2501:
@@ -81,11 +104,11 @@ models:
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
     
-  llamacpp-devstral-small-2505:
+  llamacpp-devstral-small-2507:
     cmd: |
-      llama-serve-wrap /logs/llamacpp-devstral-small-2505.log
+      llama-serve-wrap /logs/llamacpp-devstral-small-2507.log
         --port ${PORT}
-        --hf-repo unsloth/Devstral-Small-2505-GGUF:Q5_K_XL
+        --hf-repo unsloth/Devstral-Small-2507-GGUF:Q5_K_XL
         --ctx-size 32768
         --cache-type-k q8_0
         --n-gpu-layers 99
@@ -93,7 +116,7 @@ models:
         # --no-mmproj
         # --cache-type-v q8_0
         # --flash-attn
-        --samplers 'min_p;dry;temperature;xtc'
+        # --samplers 'min_p;dry;temperature;xtc'
         --min-p 0.01
         --dry-multiplier 0.3
         --dry-allowed-length 3
@@ -349,6 +372,32 @@ models:
       llama-serve-wrap /logs/llamacpp-Qwen3-30B-A3B.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-30B-A3B-GGUF:Q5_K_XL
+        --n-gpu-layers 999
+        --jinja
+        --cache-type-k q8_0
+        --cache-type-v q8_0
+        --flash-attn
+        --ctx-size 24000
+        --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
+        --min-p 0.005
+        --top-p 0.97
+        --top-k 40
+        --temp 0.7
+        --dry-multiplier 0.7
+        --dry-allowed-length 4
+        --dry-penalty-last-n 2048
+        --presence-penalty 0.05
+        --frequency-penalty 0.005
+        --repeat-penalty 1.01
+        --repeat-last-n 16
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 3600
+
+  llamacpp-Qwen3-30B-A3B-it-2507:
+    cmd: |
+      llama-serve-wrap /logs/llamacpp-Qwen3-30B-A3B.log
+        --port ${PORT}
+        --hf-repo unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q5_K_XL
         --n-gpu-layers 999
         --jinja
         --cache-type-k q8_0
