@@ -9,6 +9,7 @@ query_chat() {
     if [ -e "$logfile" ]; then
         rm "$logfile"
     fi
+    echo "$2"
     curl -s -X POST "$MB_OPENAI_API_BASE/chat/completions" \
          -H "Content-Type: application/json" \
          -H "Authorization: Bearer $MB_OPENAI_API_KEY" \
@@ -18,7 +19,8 @@ query_chat() {
     return $retcode
 }
 if [ $# -eq 0 ]; then
-    query_chat llamacpp-Qwen3-30B-A3B-it-2507 "What's the captial of Scandinavia? todays date is $(date --iso-8601)"
+    query_chat llamacpp-Qwen3-Coder-30B-A3B-it-2507 "What's the captial of Scandinavia? todays date is $(date --iso-8601)"
+    #query_chat llamacpp-Qwen3-30B-A3B-it-2507 "What's the captial of Scandinavia? todays date is $(date --iso-8601)"
     #query_chat llamacpp-magistral-small-2507 "What's the captial of Scandinavia? todays date is $(date --iso-8601)"
     #query_chat llamacpp-devstral-small-2507 "What's the captial of Scandinavium? todays date is $(date --iso-8601)"
     exit

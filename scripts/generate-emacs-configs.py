@@ -19,20 +19,21 @@ class EmacsConfigElispExporter:
 
     def gptel(self, port: int=DEFAULT_PORT) -> str:
         """See https://github.com/karthink/gptel"""
+        newline = '\n'
         return f"""\
 (gptel-make-openai "llm-multi-backend"
   :stream t
   :protocol "http"
   :host {self._endpoint(trailing="", port=port, protocol='')}
   :key "{self.api_key}"
-  :models '({' '.join(self.models)})
+  :models '({(newline+'            ').join(sorted(self.models))})
 )
 """
 
     def minuet(self, port: int=DEFAULT_PORT):
         """See https://github.com/milanglacier/minuet-ai.el"""
         # from https://github.com/milanglacier/minuet-ai.el/blob/main/recipes.md#example-minuet-config
-        model = next(filter(lambda s: 'qwen' in s.lower() and 'coder' in s.lower(), self.models))
+        model = next(filter(lambda s: 'qwen3-coder' in s.lower(), self.models))
         return f"""
 (defun my-use-llm-multi-backend
     "Configures minuet to use local fim compatible model"
