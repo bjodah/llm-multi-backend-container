@@ -25,6 +25,7 @@ services:
       - ${HOST_CACHE_HUGGINGFACE:-~/.cache/huggingface}:/root/.cache/huggingface
       - ${HOST_CACHE_HUGGINGFACE:-~/.cache/huggingface}/hub:/models  # tabbyAPI...
       - ${HOST_CACHE_LLAMACPP:-~/.cache/llama.cpp}:/root/.cache/llama.cpp
+      - ${HOST_CACHE_VLLM:-~/.cache/vllm}:/root/.cache/vllm
       - ./cache/torch_extensions:/root/.cache/torch_extensions
       - ./logs:/logs
       - ./configs:/configs

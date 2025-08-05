@@ -22,7 +22,7 @@ model:
   model_name: /root/.cache/huggingface/hub/models--Apel-sin--gemma-3-27b-it-qat-exl2/snapshots/74af7424746142dfd255f5404d906214e9fea7ce
 
 
-  max_seq_len: 31000  # for turboderp 4.0bpw, I can run 32768 with cache_mode Q6
+  max_seq_len: 28000  # for turboderp 4.0bpw, I can run 32768 with cache_mode Q6
   cache_mode: Q8
   
 

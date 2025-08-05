@@ -43,10 +43,15 @@ RUN \
     --mount=type=cache,target=/root/.ccache,sharing=locked \
     --mount=type=cache,target=/root/.cache/pip,sharing=locked \
     --mount=type=cache,target=/root/.cache/huggingface,sharing=locked \
-    python3 -m pip install --no-build-isolation pandas ninja torch fastparquet safetensors pygments websockets regex numpy rich pillow pytest \
-    && git clone https://github.com/Dao-AILab/flash-attention /opt/flash-attention \
+    python3 -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128 \
+    && python3 -m pip install --no-build-isolation \
+       pandas ninja fastparquet safetensors pygments websockets regex 'numpy<2.3' rich pillow pytest \
+    && git clone --branch v2.8.0.post2 https://github.com/Dao-AILab/flash-attention /opt/flash-attention \
     && cd /opt/flash-attention \
-    && bash -c 'ulimit -v 52000000; env MAX_JOBS=2 FLASH_ATTN_CUDA_ARCHS=80 PYTORCH_NVCC="ccache nvcc" python3 -m pip install --no-build-isolation .'
+    && bash -c 'ulimit -v 42000000; env NVCC_THREADS=1 MAX_JOBS=1 FLASH_ATTN_CUDA_ARCHS=80 PYTORCH_NVCC="ccache nvcc" python3 -m pip install --no-build-isolation .' \
+    && env XFORMERS_PT_FLASH_ATTN=0 python3 -m pip install \
+       git+https://github.com/huggingface/transformers \
+       git+https://github.com/facebookresearch/xformers
 
 # install exllamav2
 # sentencepiece
@@ -54,9 +59,7 @@ RUN \
 RUN \
     --mount=type=cache,target=/root/.cache/pip,sharing=locked \
     --mount=type=cache,target=/root/.cache/huggingface,sharing=locked \
-    python3 -m pip install --upgrade-strategy=eager --upgrade git+https://github.com/huggingface/transformers \
-    && python3 -m pip install --upgrade-strategy=eager --upgrade git+https://github.com/facebookresearch/xformers \
-    && git clone https://github.com/turboderp/exllamav2 /opt/exllamav2 \
+    git clone https://github.com/turboderp/exllamav2 /opt/exllamav2 \
     && cd /opt/exllamav2 \
     && python3 setup.py build_ext -i \
     && python3 -m pip install --no-deps --no-build-isolation -e .
@@ -108,7 +111,7 @@ RUN \
 
 RUN \
     --mount=type=cache,target=/root/.cache,sharing=locked \
-    apt-get update --quiet && apt-get install --assume-yes jq curl \
+    apt-get update --quiet && apt-get install --assume-yes curl jq \
     && cd /opt/llama.cpp \
     && git pull \
     && cmake --build /opt/llama.cpp/build --parallel --verbose

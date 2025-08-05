@@ -44,6 +44,7 @@ main() {
     ( set -x; env \
                   HOST_CACHE_HUGGINGFACE="$(realpath $HOME/.cache/huggingface)" \
                   HOST_CACHE_LLAMACPP="$(realpath $HOME/.cache/llama.cpp)" \
+                  HOST_CACHE_VLLM="$(realpath $HOME/.cache/vllm)" \
                   $COMPOSE_CMD --file "$repo_root"/compose.yml up "$@" ) 
 }
 {
