@@ -481,7 +481,7 @@ models:
       --jinja
       --flash-attn
       --ctx-size 131072
-      --reasoning-format none
+      #--reasoning-format none
       --temp 1.0
       --top-p 0.99
       --min-p 0.005
@@ -503,7 +503,10 @@ models:
       --jinja
       --flash-attn
       --ctx-size 65536
-      --reasoning-format none
+      # --reasoning-format none
+      # https://github.com/ggml-org/llama.cpp/pull/15238
+      # https://github.com/ggml-org/llama.cpp/pull/15181
+      # --chat-template-kwargs '{"reasoning_effort": "high"}'
       --temp 1.0
       --top-p 0.99
       --min-p 0.005
