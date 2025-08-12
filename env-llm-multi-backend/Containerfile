@@ -111,9 +111,9 @@ RUN \
 
 RUN \
     --mount=type=cache,target=/root/.cache,sharing=locked \
-    apt-get update --quiet && apt-get install --assume-yes curl jq \
+    apt-get update --quiet && apt-get install --assume-yes jq curl \
     && cd /opt/llama.cpp \
-    && git pull \
+    && git fetch && git pull \
     && cmake --build /opt/llama.cpp/build --parallel --verbose
 
 ENV PATH=/configs:/opt/llama.cpp/build/bin:$PATH

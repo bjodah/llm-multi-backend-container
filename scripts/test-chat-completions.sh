@@ -10,6 +10,7 @@ query_chat() {
         rm "$logfile"
     fi
     echo "$2"
+    set -x
     curl -s -X POST "$MB_OPENAI_API_BASE/chat/completions" \
          -H "Content-Type: application/json" \
          -H "Authorization: Bearer $MB_OPENAI_API_KEY" \
@@ -19,6 +20,10 @@ query_chat() {
     return $retcode
 }
 if [ $# -eq 0 ]; then
+    query_chat llamacpp-gpt-oss-120b "Answer only with the missing word: The capital of Poland is"
+    exit
+    query_chat llamacpp-Qwen3-Coder-30B-A3B-it "Answer only with the missing word: The capital of Poland is"
+    query_chat llamacpp-gpt-oss-20b "Answer only with the missing word: The capital of Poland is"
     query_chat exllamav2-gemma-3-27b "Answer only with the missing word: The capital of Poland is"
     query_chat llamacpp-Qwen3-Coder-30B-A3B-it "Answer only with the missing word: The capital of Poland is"
     query_chat vllm-Qwen2.5-VL-7B "Answer only with the missing word: The capital of Poland is"
