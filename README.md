@@ -1,5 +1,15 @@
 # llm-multi-backend-container
-Use llama-swap inside a container with vllm, llama.cpp, and exllamav2+tabbyAPI.
+Use llama-swap inside a container with vllm, llama.cpp, and exllamav2+tabbyAPI. 
+
+## Adapting for other machines
+This repo is my working config, it's mainly used on a 16 core Ryzen machine with 64 GiB RAM and a single RTX 3090.
+For customization, you might want to grep for a few keywords:
+```console
+$ git grep -E '\b868[6-8]\b'   # port numbers
+$ git grep sk-empty            # API token/key
+$ git grep -iE '(logging|loglevel|verbos)'
+$ git grep -E "\b(8\.6|86)\b"  # CUDA compute arch, 8.6 == ampere (RTX 3090)
+```
 
 ## Usage
 ```console
@@ -7,21 +17,16 @@ $ head ./bin/host-llm-multi-backend-container.sh
 $ ./bin/host-llm-multi-backend-container.sh --build --force-recreate
 ```
 
-## Useful(?) tools
-<details>
-<summary>testing qwen2.5-coder-7b on port 11902</summary>
-
-```console
-$ ./scripts/host-qwen2.5-coder-7b_localhost_port11902.sh
-$ env OPENAI_API_BASE=localhost:11902/v1 OPENAI_API_KEY=sk-empty \
-    ./scripts/test-chat-completions.sh modelnameplaceholder "In python, how do I defer deletion of a specific path to end of program?" \
-    | jq -r | batcat -pp -l md
-```
-</details>
-
 ## Testing
 ```console
 $ bash -x scripts/test-chat-completions.sh
++ curl -s -X POST http://localhost:8688/v1/chat/completions -H 'Content-Type: application/json' -H 'Authorization: Bearer sk-empty' -d '{"model": "llamacpp-glm-4.5-air", "messages": [{"role": "user", "content": "Answer only with the missing word: The capital of Sweden is"}]}'
++ jq '.choices[0].message.content'
+"\n<think>We are to answer with only the missing word. The question is: \"The capital of Sweden is\"\n The capital of Sweden is Stockholm. Therefore, the missing word is \"Stockholm\".</think>Stockholm"
++ retcode=0
++ '[' 0 -ne 0 ']'
++ return 0
++ exit
 ```
 
 ## Monitoring
@@ -37,14 +42,6 @@ $ ./scripts/enter-container-llama-swap.sh tail -F /tmp/llama-server-stdout-stder
 ```console
 $ curl -H "Authorization: Bearer sk-empty" http://localhost:8686/upstream/llamacpp-Qwen3-30B-A3B/health
 $ curl -H "Authorization: Bearer sk-empty" http://localhost:8686/upstream/llamacpp-Qwen3-30B-A3B/slots | jq
-```
-
-## Notes
-- For customization, you might want to grep for a few keywords:
-```console
-$ git grep -E '\b868[6-8]\b'
-$ git grep sk-empty
-$ git grep -iE '(logging|loglevel|verbos)'
 ```
 
 ## Downloading models
@@ -138,5 +135,17 @@ $ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/DeepSeek-V3-0324-
         # --draft-max 16
         # --draft-min 5
         # --draft-p-min 0.5
+```
+</details>
+
+## Tidbits
+<details>
+<summary>testing qwen2.5-coder-7b on port 11902</summary>
+
+```console
+$ ./scripts/host-qwen2.5-coder-7b_localhost_port11902.sh
+$ env OPENAI_API_BASE=localhost:11902/v1 OPENAI_API_KEY=sk-empty \
+    ./scripts/test-chat-completions.sh modelnameplaceholder "In python, how do I defer deletion of a specific path to end of program?" \
+    | jq -r | batcat -pp -l md
 ```
 </details>

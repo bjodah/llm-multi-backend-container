@@ -513,3 +513,24 @@ models:
       --top-k 100
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
+
+  llamacpp-glm-4.5-air:
+    cmd: |
+      llama-serve-wrap /logs/llamacpp-gpt-oss-120b.log
+      --port ${PORT}
+      --hf-repo unsloth/GLM-4.5-Air-GGUF:IQ4_XS
+      --n-cpu-moe 36
+      --n-gpu-layers 999
+      --no-mmap
+      --jinja
+      --reasoning-format deepseek
+      --cache-type-k q8_0
+      --cache-type-v q5_1
+      --flash-attn
+      --ctx-size 65536
+      --temp 0.6
+      --top-p 0.99
+      --min-p 0.005
+      --top-k 60
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 3600

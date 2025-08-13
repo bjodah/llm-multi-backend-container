@@ -9,19 +9,21 @@ query_chat() {
     if [ -e "$logfile" ]; then
         rm "$logfile"
     fi
-    echo "$2"
     set -x
     curl -s -X POST "$MB_OPENAI_API_BASE/chat/completions" \
          -H "Content-Type: application/json" \
          -H "Authorization: Bearer $MB_OPENAI_API_KEY" \
-         -d '{"model": "'"$1"'", "messages": [{"role": "user", "content": "'"$2"'"}]}' | tee $logfile | jq '.choices[0].message.content'
+         -d '{"model": "'"$1"'", "messages": [{"role": "user", "content": "'"$2"'"}]}' | jq '.choices[0].message.content'
     retcode=${PIPESTATUS[0]}
-    echo "curl's retcode=$retcode Full log found in: $logfile"
+    if [ $retcode -ne 0 ]; then
+        echo "curl's retcode=$retcode Full log found in: $logfile"
+    fi
     return $retcode
 }
 if [ $# -eq 0 ]; then
-    query_chat llamacpp-gpt-oss-20b@high "What's the capital of Scandinavia?"
+    query_chat llamacpp-glm-4.5-air "Answer only with the missing word: The capital of Sweden is"
     exit
+    query_chat llamacpp-gpt-oss-20b@high "What's the capital of Scandinavia?"
     query_chat llamacpp-gpt-oss-120b "Answer only with the missing word: The capital of Poland is"
     query_chat llamacpp-Qwen3-Coder-30B-A3B-it "Answer only with the missing word: The capital of Poland is"
     query_chat exllamav2-gemma-3-27b "Answer only with the missing word: The capital of Poland is"
