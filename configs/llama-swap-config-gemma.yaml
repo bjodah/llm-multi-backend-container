@@ -88,3 +88,39 @@
         --top-p 0.95
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
+
+  llamacpp-gemma-3-270m-it-qat:
+    cmd: |
+      llama-serve-wrap /logs/llamacpp-llama3-270m.log
+        --port ${PORT}
+        #--hf-repo bartowski/google_gemma-3-270m-it-qat-GGUF:Q4_0
+        #--hf-repo unsloth/gemma-3-270m-it-qat-GGUF:Q4_K_XL
+        --hf-repo unsloth/gemma-3-270m-it-qat-GGUF:Q8_K_XL
+        --n-gpu-layers 128
+        --jinja
+        --ctx-size 32768
+        --cache-type-k q8_0
+        --cache-type-v q5_1
+        --flash-attn
+        --temp 1.0
+        --min-p 0.01
+        --top-k 64
+        --top-p 0.95
+
+  llamacpp-gemma-3-270m-it:
+    cmd: |
+      llama-serve-wrap /logs/llamacpp-llama3-270m.log
+        --port ${PORT}
+        #--hf-repo bartowski/google_gemma-3-270m-it-GGUF:Q8_0
+        #--hf-repo unsloth/gemma-3-270m-it-GGUF:Q4_K_XL
+        --hf-repo unsloth/gemma-3-270m-it-GGUF:Q8_K_XL
+        --n-gpu-layers 128
+        --jinja
+        --ctx-size 32768
+        --cache-type-k q8_0
+        --cache-type-v q5_1
+        --flash-attn
+        --temp 1.0
+        --min-p 0.01
+        --top-k 64
+        --top-p 0.95

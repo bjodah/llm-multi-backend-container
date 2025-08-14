@@ -456,7 +456,9 @@ models:
         --cache-type-k q8_0
         --cache-type-v q5_1
         --flash-attn
-        --ctx-size 32768
+        --ctx-size 65536
+        --parallel 2
+        # ^--- watch out, this should support 2 concurrent users, but ctx-size is divided by this number
         --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
