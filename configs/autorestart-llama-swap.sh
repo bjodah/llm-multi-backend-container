@@ -9,7 +9,7 @@ main() {
     while true; do
         # Start the process again
         >&2 echo -n "$(date +"%Y-%m-%d %H:%M:%S") Starting llama-swap..."
-        /usr/local/bin/llama-swap -config $1 -listen :8686 2>&1 >$2 &
+        /usr/local/bin/llama-swap -config $1 -listen :8686 2>&1 >>$2 &
         PID=$!
         sleep 0.1
         if kill -0 $PID 2>/dev/null; then

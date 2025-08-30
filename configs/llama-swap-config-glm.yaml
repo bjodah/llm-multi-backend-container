@@ -1,6 +1,6 @@
   llamacpp-glm-4-32b-0414:  # ~16 tps TG
     cmd: |
-      llama-serve-wrap /logs/llamacpp-glm-4-32b-0414.log
+      llama-server --log-file   /logs/llamacpp-glm-4-32b-0414.log
         --port ${PORT}
         --hf-repo bartowski/THUDM_GLM-4-32B-0414-GGUF:Q4_K_M
         # Q5_K_M
@@ -27,7 +27,7 @@
   # Thinking version of glm-4
   llamacpp-glm-z1-32b-0414:
     cmd: |
-      llama-serve-wrap /logs/llamacpp-glm-z1-32b-0414.log
+      llama-server --log-file   /logs/llamacpp-glm-z1-32b-0414.log
         --port ${PORT}
         --hf-repo bartowski/THUDM_GLM-Z1-32B-0414-GGUF:Q3_K_XL
         # IQ4_XS # Q4_K_L, Q5_K_S
@@ -51,7 +51,7 @@
   # I haven't had too much success with this, I prefer non-rumination
   llamacpp-glm-z1-rumination-32b-0414:
     cmd: |
-      llama-serve-wrap /logs/llamacpp-glm-z1-rumination-32b-0414.log
+      llama-server --log-file   /logs/llamacpp-glm-z1-rumination-32b-0414.log
         --port ${PORT}
         --hf-repo bartowski/THUDM_GLM-Z1-Rumination-32B-0414-GGUF:Q3_K_XL
         #IQ4_XS  # Q4_K_L, Q5_K_S

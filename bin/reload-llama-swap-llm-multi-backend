@@ -8,3 +8,6 @@ podman exec llm-mb_llama-swapper bash -c 'set -x; pkill llama-swap;'
 
 # llama.cpp often requires harsh killing when CUDA malloc fails etc.
 podman exec llm-mb_llama-swapper bash -c 'set -x; pkill -9 llama-server'
+
+# reload cot_proxy too
+podman restart llm-mb_cot-proxy

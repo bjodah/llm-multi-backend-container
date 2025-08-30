@@ -111,7 +111,7 @@ RUN \
 
 RUN \
     --mount=type=cache,target=/root/.cache,sharing=locked \
-    apt-get update --quiet && apt-get install --assume-yes jq curl \
+    apt-get update --quiet && apt-get install --assume-yes make curl jq \
     && cd /opt/llama.cpp \
     && git fetch && git pull \
     && cmake --build /opt/llama.cpp/build --parallel --verbose

@@ -7,7 +7,7 @@
 
   llamacpp-Qwen3-0.6B:
     cmd: |
-      llama-serve-wrap /logs/llamacpp-Qwen3-0.6B.log
+      llama-server --log-file /logs/llamacpp-Qwen3-0.6B.log
         --port ${PORT}
         --hf-repo bartowski/Qwen_Qwen3-0.6B-GGUF:Q8_0
         --n-gpu-layers 999
@@ -31,7 +31,7 @@
 
   llamacpp-Qwen3-1.7B:
     cmd: |
-      llama-serve-wrap /logs/llamacpp-Qwen3-1.7B.log
+      llama-server --log-file /logs/llamacpp-Qwen3-1.7B.log
         --port ${PORT}
         --hf-repo bartowski/Qwen_Qwen3-1.7B-GGUF:Q8_0
         --n-gpu-layers 999
@@ -55,7 +55,7 @@
 
   llamacpp-Qwen3-4B:
     cmd: |
-      llama-serve-wrap /logs/llamacpp-Qwen3-4B.log
+      llama-server --log-file /logs/llamacpp-Qwen3-4B.log
         --port ${PORT}
         --hf-repo bartowski/Qwen_Qwen3-4B-GGUF:Q8_0
         --n-gpu-layers 999
@@ -79,7 +79,7 @@
 
   llamacpp-Qwen3-8B:
     cmd: |
-      llama-serve-wrap /logs/llamacpp-Qwen3-8B.log
+      llama-server --log-file /logs/llamacpp-Qwen3-8B.log
         --port ${PORT}
         --hf-repo bartowski/Qwen_Qwen3-8B-GGUF:Q8_0
         --n-gpu-layers 999
@@ -103,7 +103,7 @@
 
   llamacpp-Qwen3-14B:
     cmd: |
-      llama-serve-wrap /logs/llamacpp-Qwen3-14B.log
+      llama-server --log-file /logs/llamacpp-Qwen3-14B.log
         --port ${PORT}
         --hf-repo bartowski/Qwen_Qwen3-14B-GGUF:Q8_0
         --n-gpu-layers 999
@@ -129,7 +129,7 @@
 
   llamacpp-Qwen3-30B-A3B:
     cmd: |
-      llama-serve-wrap /logs/llamacpp-Qwen3-30B-A3B.log
+      llama-server --log-file /logs/llamacpp-Qwen3-30B-A3B.log
         --port ${PORT}
         --hf-repo bartowski/Qwen_Qwen3-30B-A3B-GGUF:Q4_K_M
         --n-gpu-layers 999
@@ -155,7 +155,7 @@
 
   llamacpp-Qwen3-32B:
     cmd: |
-      llama-serve-wrap /logs/llamacpp-Qwen3-32B.log
+      llama-server --log-file /logs/llamacpp-Qwen3-32B.log
         --port ${PORT}
         --hf-repo bartowski/Qwen_Qwen3-32B-GGUF:Q4_K_M
         --n-gpu-layers 999
