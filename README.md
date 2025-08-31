@@ -16,6 +16,14 @@ $ git grep -E "\b(8\.6|86)\b"  # CUDA compute arch, 8.6 == ampere (RTX 3090)
 $ head ./bin/host-llm-multi-backend-container.sh
 $ ./bin/host-llm-multi-backend-container.sh --build --force-recreate
 ```
+See what model/backend combinations are available:
+```console
+$ curl -s -X GET -H "Authorization: Bearer sk-empty" http://localhost:8686/v1/models | jq -r '.data[].id' | grep -i 'qwen2.5-coder-7b'
+vllm-Qwen2.5-Coder-7B
+llamacpp-Qwen2.5-Coder-7B
+exllamav2-Qwen2.5-Coder-7B
+```
+
 
 ## Testing
 ```console

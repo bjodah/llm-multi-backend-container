@@ -4,7 +4,7 @@
         --port ${PORT}
         --hf-repo mradermacher/Ling-Coder-lite-GGUF:Q4_K_M
         --n-gpu-layers 99 
-        --ctx-size 32768
+        --ctx-size 16384
         --cache-type-k q8_0 
         --cache-type-v q5_1
         --flash-attn
@@ -19,11 +19,12 @@
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
-  llamacpp-ling-lite-0415:
+  llamacpp-ling-lite-1.5:
     cmd: |
       llama-server --log-file   /logs/llamacpp-ling-lite-0415.log
         --port ${PORT}
-        --hf-repo bartowski/inclusionAI_Ling-lite-0415-GGUF:Q6_K_L
+        #--hf-repo bartowski/inclusionAI_Ling-lite-0415-GGUF:Q6_K_L
+        --hf-repo mradermacher/Ling-lite-1.5-2507-i1-GGUF:Q6_K
         --ctx-size 32768
         --n-gpu-layers 99 
         --cache-type-k q8_0 

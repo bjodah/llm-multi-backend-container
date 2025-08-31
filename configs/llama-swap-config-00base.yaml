@@ -545,6 +545,8 @@ models:
       --cache-type-v q5_1
       --flash-attn
       --ctx-size 65536
+      #--chat-template-kwargs '{"enable_thinking": "False"}'
+      # ^--- doesn't work? https://www.reddit.com/r/LocalLLaMA/comments/1mdwh31/how_can_you_turn_off_reasoning_for_certain_tasks/
       --temp 0.6
       --top-p 0.99
       --min-p 0.005
