@@ -1,0 +1,27 @@
+network:
+  host: 0.0.0.0  # change to 127.0.0.1 if podman uses --net host
+  port: 11905
+
+# Options for logging
+logging:
+  # Enable prompt logging (default: False).
+  log_prompt: false
+
+  # Enable generation parameter logging (default: False).
+  log_generation_params: true
+
+  # Enable request logging (default: False).
+  # NOTE: Only use this for debugging!
+  log_requests: true
+
+model:
+  # env HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download ArtusDev/Qwen_Qwen3-Coder-30B-A3B-Instruct-EXL3 --revision "5.0bpw_H6"
+  model_name: /root/.cache/huggingface/hub/models--ArtusDev--Qwen_Qwen3-Coder-30B-A3B-Instruct-EXL3/snapshots/6de19afd97792057d21115d8ec89f89c5bbea423
+
+
+  max_seq_len: 27500  #
+  cache_mode: Q8
+
+
+sampling:
+  override_preset: sampling-qwen3

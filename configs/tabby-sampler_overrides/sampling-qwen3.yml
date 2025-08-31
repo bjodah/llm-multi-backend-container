@@ -1,0 +1,122 @@
+# MARK: Temperature
+temperature:
+  override: 0.7
+  force: false
+temperature_last:
+  override: false
+  force: false
+min_temp:
+  override: 1.0
+  force: false
+max_temp:
+  override: 1.0
+  force: false
+temp_exponent:
+  override: 1.0
+  force: false
+smoothing_factor:
+  override: 0.0
+  force: false
+
+# MARK: Alphabet soup
+top_k:
+  override: 20
+  force: false
+top_p:
+  override: 0.8
+  force: false
+top_a:
+  override: 0.0
+  force: false
+min_p:
+  override: 0.03
+  force: false
+tfs:
+  override: 1.0
+  force: false
+typical:
+  override: 1.0
+  force: false
+skew:
+  override: 0.0
+  force: false
+xtc_probability:
+  override: 0.0
+  force: false
+xtc_threshold:
+  override: 0.1
+  force: false
+
+# MARK: Penalty settings
+frequency_penalty:
+  override: 0.01
+  force: false
+presence_penalty:
+  override: 0.01
+  force: false
+repetition_penalty:
+  override: 1.05
+  force: false
+repetition_decay:
+  override: 0
+  force: false
+penalty_range:
+  override: -1
+  force: false
+
+# MARK: DRY
+dry_multiplier:
+  override: 0.4
+  force: false
+dry_base:
+  override: 1.75  # llama.cpp's default
+  force: false
+dry_allowed_length:
+  override: 2
+  force: false
+dry_range:
+  override: 256
+  force: false
+dry_sequence_breakers:
+  override: ['\n', ':', '"', '*']
+  force: false
+  additive: false
+
+# MARK: Mirostat
+mirostat_mode:
+  override: 0
+  force: false
+mirostat_tau:
+  override: 1.5
+  force: false
+mirostat_eta:
+  override: 0.3
+  force: false
+
+# MARK: Token options
+add_bos_token:
+  override:
+  force: false
+ban_eos_token:
+  override: false
+  force: false
+logit_bias:
+  override:
+  force: false
+  additive: false
+banned_tokens:
+  override: []
+  force: false
+  additive: false
+allowed_tokens:
+  override: []
+  force: false
+  additive: false
+
+# MARK: CFG scale
+cfg_scale:
+  override: 1.0
+  force: false
+negative_prompt:
+  override:
+  force: false
