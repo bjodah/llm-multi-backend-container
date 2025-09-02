@@ -233,6 +233,18 @@ models:
     proxy: http://127.0.0.1:11901
     ttl: 3600
 
+  vllm-Qwen3-Coder-30B:
+    cmd: |
+      python3 -m vllm.entrypoints.openai.api_server
+        --port ${PORT}
+        --served-model-name ${MODEL_ID}
+        --model cpatonn/Qwen3-Coder-30B-A3B-Instruct-AWQ-4bit
+        --gpu-memory-utilization 0.92
+        --max-model-len 32768
+        --max-num-seqs 128
+        --dtype float16
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 3600
 
   vllm-SmolLM2-1.7B-Instruct:
     cmd: |
