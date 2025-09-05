@@ -22,7 +22,7 @@ models:
         --ctx-size 16384
         --cache-type-k q8_0
         --cache-type-v q8_0
-        --flash-attn
+        --flash-attn on
         --temp 1.0
         --min-p 0.01
         --top-k 64
@@ -41,7 +41,7 @@ models:
         --jinja
         --cache-type-k q8_0
         --cache-type-v q5_1
-        --flash-attn
+        --flash-attn on
         --ctx-size 24000
         --samplers "top_k;dry;min_p;temperature;top_p"
         --min-p 0.005
@@ -68,7 +68,7 @@ models:
         --jinja
         --cache-type-k q8_0
         --cache-type-v q5_1
-        --flash-attn
+        --flash-attn on
         --ctx-size 8192
         --samplers "top_k;dry;min_p;temperature;top_p"
         --min-p 0.005
@@ -96,7 +96,7 @@ models:
         --jinja
         --cache-type-k q8_0
         --cache-type-v q5_1
-        --flash-attn
+        --flash-attn on
         --ctx-size 16384
         --samplers "top_k;dry;min_p;temperature;top_p"
         --min-p 0.005
@@ -127,7 +127,7 @@ models:
         --jinja
         --cache-type-k q5_1
         --cache-type-v q5_1
-        --flash-attn
+        --flash-attn on
         --ctx-size 8192
         --samplers "top_k;dry;min_p;temperature;top_p"
         # ^---- vain attempt to capture both thinking/non-thinking
@@ -161,7 +161,7 @@ models:
         --cache-type-k q5_1
         # ^-- https://github.com/ggml-org/llama.cpp/issues/11200#issuecomment-2585822315
         --cache-type-v q4_0
-        --flash-attn
+        --flash-attn on
         --samplers "top_k;dry;min_p;temperature;top_p"
         # vain attempt to capture both thinking/non-thinking
         --min-p 0.005
@@ -190,7 +190,7 @@ models:
         --ctx-size 8192
         --cache-type-k q8_0 
         --cache-type-v q8_0 
-        --flash-attn
+        --flash-attn on
         --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
         --top-k 40 
         --top-p 0.95
@@ -213,7 +213,7 @@ models:
         --ctx-size 8192
         --cache-type-k q8_0
         --cache-type-v q5_1
-        --flash-attn
+        --flash-attn on
         --samplers "min_p;dry;temperature"
         # xtc;
         --min-p 0.03
@@ -240,7 +240,7 @@ models:
         --ctx-size 16384
         --cache-type-k q8_0 
         --cache-type-v q5_1
-        --flash-attn
+        --flash-attn on
         --samplers "top_k;dry;top_p;min_p;temperature;typ_p;xtc" 
         --top-k 40 
         --dry-multiplier 0.5 
@@ -267,7 +267,7 @@ models:
         --ctx-size 16384
         --cache-type-k q8_0 
         --cache-type-v q5_1
-        --flash-attn
+        --flash-attn on
         --samplers "min_p;dry;xtc;temperature"
         --min-p 0.01
         --dry-multiplier 1.1

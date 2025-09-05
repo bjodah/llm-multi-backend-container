@@ -10,7 +10,7 @@
         --ctx-size 28000
         #--cache-type-k q8_0
         # --cache-type-v q8_0  https://github.com/ggml-org/llama.cpp/issues/12352#issuecomment-2727452955
-        --flash-attn
+        --flash-attn on
         # xtc;
         --samplers 'min_p;dry;temperature;top_p'
         --min-p 0.03
@@ -37,7 +37,7 @@
         # --cache-type-k q8_0
         # --cache-type-v q5_1
         --no-mmproj
-        --flash-attn
+        --flash-attn on
         --samplers 'min_p;dry;temperature;top_p'
         # xtc;
         --min-p 0.03
@@ -57,7 +57,7 @@
         --hf-repo unsloth/gemma-3-4b-it-GGUF:Q8_0
         # --cache-type-k q8_0
         # --cache-type-v q8_0
-        --flash-attn
+        --flash-attn on
         --n-gpu-layers 999
         --jinja
         --ctx-size 32000
@@ -81,7 +81,7 @@
         --ctx-size 32768
         # --cache-type-k q8_0
         # --cache-type-v q8_0
-        --flash-attn
+        --flash-attn on
         --temp 1.0
         --min-p 0.01
         --top-k 64
@@ -101,7 +101,7 @@
         --ctx-size 32768
         --cache-type-k q8_0
         --cache-type-v q5_1
-        --flash-attn
+        --flash-attn on
         --temp 1.0
         --min-p 0.01
         --top-k 64
@@ -119,7 +119,7 @@
         --ctx-size 32768
         --cache-type-k q8_0
         --cache-type-v q5_1
-        --flash-attn
+        --flash-attn on
         --temp 1.0
         --min-p 0.01
         --top-k 64

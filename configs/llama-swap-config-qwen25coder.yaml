@@ -13,7 +13,7 @@
         --ctx-size 32768 
         --cache-type-k q8_0 
         --cache-type-v q5_1 
-        --flash-attn
+        --flash-attn on
         --samplers "penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature" 
         --top-k 40 
         --top-p 0.95 
@@ -41,7 +41,7 @@
         --ctx-size 4096 
         --cache-type-k q8_0 
         --cache-type-v q8_0 
-        --flash-attn
+        --flash-attn on
         --samplers "dry;top_k;top_p;min_p;temperature;typ_p;xtc" 
         --top-k 40 
         --top-p 0.95
@@ -65,7 +65,7 @@
         --ctx-size 32768
         --cache-type-k q8_0 
         --cache-type-v q8_0 
-        --flash-attn
+        --flash-attn on
         --samplers "dry;top_k;top_p;min_p;temperature;typ_p;xtc" 
         --top-k 40 
         --top-p 0.95
@@ -90,7 +90,7 @@
         --ctx-size 4096 
         --cache-type-k q8_0 
         --cache-type-v q8_0 
-        --flash-attn
+        --flash-attn on
         --samplers "dry;top_k;top_p;min_p;temperature;typ_p;xtc" 
         --top-k 40 
         --top-p 0.95

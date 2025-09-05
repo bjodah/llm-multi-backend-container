@@ -7,7 +7,7 @@
         --ctx-size 16384
         --cache-type-k q8_0 
         --cache-type-v q5_1
-        --flash-attn
+        --flash-attn on
         --samplers 'top_k;dry;top_p;min_p;temperature;typ_p;xtc'
         --top-k 40 
         --dry-multiplier 0.5 
