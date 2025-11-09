@@ -21,8 +21,9 @@ query_chat() {
     return $retcode
 }
 if [ $# -eq 0 ]; then
-    query_chat vllm-Qwen3-Coder-30B "What's the capital of Scandinavia?"
+    query_chat llamacpp-Qwen3-Coder-30B-A3B-it "Answer only with the missing word: The capital of Poland is"
     exit
+    query_chat vllm-Qwen3-Coder-30B "What's the capital of Scandinavia?"
     query_chat exllamav3-qwen3-coder-30b "What's the capital of Scandinavia?"
     query_chat llamacpp-seed-oss-36b "What's the capital of Scandinavia?"
     query_chat llamacpp-gpt-oss-20b@high "What's the capital of Scandinavia?"
@@ -30,9 +31,7 @@ if [ $# -eq 0 ]; then
     query_chat llamacpp-gemma-3-270m-it "Answer only with the missing word: The capital of Sweden is"
     query_chat llamacpp-glm-4.5-air "Answer only with the missing word: The capital of Sweden is"
     query_chat llamacpp-gpt-oss-120b "Answer only with the missing word: The capital of Poland is"
-    query_chat llamacpp-Qwen3-Coder-30B-A3B-it "Answer only with the missing word: The capital of Poland is"
     query_chat exllamav2-gemma-3-27b "Answer only with the missing word: The capital of Poland is"
-    query_chat llamacpp-Qwen3-Coder-30B-A3B-it "Answer only with the missing word: The capital of Poland is"
     query_chat vllm-Qwen2.5-VL-7B "Answer only with the missing word: The capital of Poland is"
     exit
     #query_chat llamacpp-Qwen3-30B-A3B-it-2507 "What's the captial of Scandinavia? todays date is $(date --iso-8601)"

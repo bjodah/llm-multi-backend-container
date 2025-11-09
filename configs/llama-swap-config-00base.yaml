@@ -14,17 +14,21 @@ models:
   # Qwen3-Coder-30B is currently my main model (fast & supports FIM)
   llamacpp-Qwen3-Coder-30B-A3B-it:
     macros:
-      context_window: 65536
+      # context_window: 65536
+      # context_window: 32768
+      context_window: 16384
     cmd: |
       llama-server
         --log-file ${MODEL_ID}
         --port ${PORT}
-        #--hf-repo unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q5_K_XL
-        --hf-repo unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_XL
+        --hf-repo unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q5_K_XL
+        #--hf-repo unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_XL
         --n-gpu-layers 999
         --jinja
-        --cache-type-k q8_0
-        --cache-type-v q5_1
+        # --cache-type-k q8_0
+        # --cache-type-v q5_1
+        --cache-type-k f16
+        --cache-type-v f16
         --flash-attn on
         --ctx-size ${context_window}
         --ubatch-size 1024
@@ -565,7 +569,7 @@ models:
       # --reasoning-format none
       # https://github.com/ggml-org/llama.cpp/pull/15238
       # https://github.com/ggml-org/llama.cpp/pull/15181
-      # --chat-template-kwargs '{"reasoning_effort": "high"}'
+      --chat-template-kwargs '{"reasoning_effort": "high"}'
       --temp 1.0
       --top-p 0.99
       --min-p 0.005
