@@ -43,23 +43,27 @@ RUN \
     --mount=type=cache,target=/root/.ccache,sharing=locked \
     --mount=type=cache,target=/root/.cache/pip,sharing=locked \
     --mount=type=cache,target=/root/.cache/huggingface,sharing=locked \
-    python3 -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128 \
+    python3 -m pip install 'torch<2.9' torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128 \
     && python3 -m pip install --no-build-isolation \
        pandas ninja fastparquet safetensors pygments websockets regex 'numpy<2.3' rich pillow pytest \
     && git clone --branch v2.8.0.post2 https://github.com/Dao-AILab/flash-attention /opt/flash-attention \
     && cd /opt/flash-attention \
-    && bash -c 'ulimit -v 42000000; env NVCC_THREADS=1 MAX_JOBS=1 FLASH_ATTN_CUDA_ARCHS=80 PYTORCH_NVCC="ccache nvcc" python3 -m pip install --no-build-isolation .' \
-    && env XFORMERS_PT_FLASH_ATTN=0 python3 -m pip install \
-       git+https://github.com/huggingface/transformers \
-       git+https://github.com/facebookresearch/xformers
+    && bash -c 'ulimit -v 42000000; env NVCC_THREADS=1 MAX_JOBS=1 FLASH_ATTN_CUDA_ARCHS=80 PYTORCH_NVCC="ccache nvcc" python3 -m pip install --no-build-isolation .'
 
 # install exllamav2
 # sentencepiece
 # /root/.cache/torch_extensions/py312_cu124/exllamav2_ext/exllamav2_ext.so
+    # --mount=type=cache,target=/root/.cache/pip,sharing=locked \
+    # && env XFORMERS_PT_FLASH_ATTN=0 python3 -m pip install \
+    #    'torch<2.9' 'git+https://github.com/facebookresearch/xformers@v0.0.32.post2#egg=xformers' \
+    # && python3 -m pip install \
+    #    'torch<2.9' 'git+https://github.com/huggingface/transformers' \
+    # && python3 -c "import torch; import flash_attn_2_cuda" \
+
 RUN \
-    --mount=type=cache,target=/root/.cache/pip,sharing=locked \
     --mount=type=cache,target=/root/.cache/huggingface,sharing=locked \
-    git clone https://github.com/turboderp/exllamav2 /opt/exllamav2 \
+    python3 -c "import torch; import flash_attn_2_cuda" \
+    && git clone https://github.com/turboderp/exllamav2 /opt/exllamav2 \
     && cd /opt/exllamav2 \
     && python3 setup.py build_ext -i \
     && python3 -m pip install --no-deps --no-build-isolation -e .
@@ -110,20 +114,20 @@ RUN \
     && python3 setup.py build_ext -i \
     && python3 -m pip install --no-deps --no-build-isolation -e .
 
-# RUN curl -Ls https://github.com/mostlygeek/llama-swap/releases/download/v157/llama-swap_157_linux_amd64.tar.gz \
-#     | tar xz -C /usr/local/bin
-
 RUN \
     --mount=type=cache,target=/root/.cache/go-build,sharing=locked \
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash \
     && bash -c ". /root/.nvm/nvm.sh && nvm install 20 && which npm \
-    && curl -Ls https://go.dev/dl/go1.24.4.linux-amd64.tar.gz | tar xz -C /usr/local \
+    && curl -Ls https://go.dev/dl/go1.25.4.linux-amd64.tar.gz | tar xz -C /usr/local \
     && cp -s /usr/local/go/bin/* /usr/local/bin \
     && go install github.com/go-delve/delve/cmd/dlv@latest \
     && ln -s /root/go/bin/dlv /usr/local/bin/dlv"
 
-RUN cd /tmp \
-    && git clone --branch per-model-macros https://github.com/bjodah/llama-swap \
-    && cd llama-swap \
-    && bash -c ". /root/.nvm/nvm.sh && make clean all" \
-    && cp /tmp/llama-swap/build/llama-swap-linux-amd64 /usr/local/bin/llama-swap
+RUN curl -Ls https://github.com/mostlygeek/llama-swap/releases/download/v172/llama-swap_172_linux_amd64.tar.gz \
+    | tar xz -C /usr/local/bin
+
+# RUN cd /tmp \
+#     && git clone --branch per-model-macros https://github.com/bjodah/llama-swap \
+#     && cd llama-swap \
+#     && bash -c ". /root/.nvm/nvm.sh && make clean all" \
+#     && cp /tmp/llama-swap/build/llama-swap-linux-amd64 /usr/local/bin/llama-swap

@@ -157,3 +157,10 @@ $ env OPENAI_API_BASE=localhost:11902/v1 OPENAI_API_KEY=sk-empty \
     | jq -r | batcat -pp -l md
 ```
 </details>
+
+When debugging CUDA shenanigans, here a brain-dump of relevant commands:
+```shell-session
+$ sudo apt-get install nvidia-driver nvidia-driver-cuda 
+$ sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml
+$ bash ./scripts/troubleshoot-container.sh 
+```
