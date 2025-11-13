@@ -19,7 +19,7 @@ models:
       "context_window": 16384
     cmd: |
       llama-server
-        --log-file ${MODEL_ID}
+        --log-file /logs/${MODEL_ID}.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q5_K_XL
         #--hf-repo unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_XL
