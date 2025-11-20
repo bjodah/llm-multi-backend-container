@@ -24,6 +24,12 @@ llamacpp-Qwen2.5-Coder-7B
 exllamav2-Qwen2.5-Coder-7B
 ```
 
+## Agentic coding
+```console
+$ # npm install -g @qwen-code/qwen-code@latest
+$ env OPENAI_API_KEY=sk-empty OPENAI_BASE_URL=http://host.docker.internal:8688/v1 OPENAI_MODEL=llamacpp-Qwen3-Coder-30B-A3B-it qwen
+```
+
 
 ## Testing
 ```console

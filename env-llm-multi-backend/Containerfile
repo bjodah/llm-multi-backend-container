@@ -131,3 +131,10 @@ RUN curl -Ls https://github.com/mostlygeek/llama-swap/releases/download/v172/lla
 #     && cd llama-swap \
 #     && bash -c ". /root/.nvm/nvm.sh && make clean all" \
 #     && cp /tmp/llama-swap/build/llama-swap-linux-amd64 /usr/local/bin/llama-swap
+
+RUN \
+    --mount=type=cache,target=/root/.ccache,sharing=locked \
+    --mount=type=cache,target=/root/.cache,sharing=locked \
+    cd /opt/llama.cpp \
+    && git fetch && git pull \
+    && cmake --build /opt/llama.cpp/build --parallel --verbose

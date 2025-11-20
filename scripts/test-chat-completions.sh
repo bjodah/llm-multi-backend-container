@@ -2,7 +2,7 @@
 #set -x
 #MB_OPENAI_API_BASE=${MB_OPENAI_API_BASE:-"http://localhost:8686/v1"}
 #MB_OPENAI_API_BASE=${MB_OPENAI_API_BASE:-"http://localhost:8687/v1"} # <-- 8687 is a logging version
-MB_OPENAI_API_BASE=${MB_OPENAI_API_BASE:-"http://localhost:8688/v1"} # <-- 8688 also intercepts @no-think in model name
+MB_OPENAI_API_BASE=${MB_OPENAI_API_BASE:-"http://localhost:8686/v1"} # <-- 8688 also intercepts @no-think in model name
 MB_OPENAI_API_KEY=${MB_OPENAI_API_KEY:-"sk-empty"}
 query_chat() {
     logfile="/tmp/$(echo $1 | tr -d '/').log"
@@ -21,7 +21,10 @@ query_chat() {
     return $retcode
 }
 if [ $# -eq 0 ]; then
+    query_chat llamacpp-Qwen3-Coder-30B-A3B-it-Q4 "Answer only with the missing word: The capital of Poland is"
+    exit
     query_chat llamacpp-Qwen3-Coder-30B-A3B-it "Answer only with the missing word: The capital of Poland is"
+    query_chat llamacpp-magistral-small-2509 "What's the captial of Scandinavia?"
     query_chat exllamav3-qwen3-coder-30b "What's the capital of Scandinavia?"
     query_chat vllm-Qwen3-Coder-30B "What's the capital of Scandinavia?"
     exit
