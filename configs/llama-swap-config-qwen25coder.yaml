@@ -2,6 +2,9 @@
   # the name below works with aider, thanks to:
   # https://github.com/Aider-AI/aider/blob/8f15269bd063a3c720ced514303b9efcc03fe29f/aider/models.py#L418
   llamacpp-Qwen2.5-Coder-32B:
+    # Define a macro for the context window so it can be reused.
+    macros:
+      context_window: 32768
     cmd: |
       llama-serve-wrap /logs/llamacpp-Qwen2.5-Coder-32B.log
         --port ${PORT}
@@ -10,7 +13,7 @@
         --n-gpu-layers 999 
         #--n-gpu-layers-draft 999
         --jinja
-        --ctx-size 32768 
+        --ctx-size ${context_window} 
         --cache-type-k q8_0 
         --cache-type-v q5_1 
         --flash-attn on
@@ -25,11 +28,15 @@
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # I use this model for "tab-completion" in emacs (minuet.el), hence small context window.
   llamacpp-Qwen2.5-Coder-7B:
+    macros:
+      context_window: 4096
     cmd: |
       llama-serve-wrap /logs/llamacpp-Qwen2.5-Coder-7B.log
         --port ${PORT}
@@ -38,7 +45,7 @@
         --n-gpu-layers 999
         --n-gpu-layers-draft 999
         --jinja
-        --ctx-size 4096 
+        --ctx-size ${context_window} 
         --cache-type-k q8_0 
         --cache-type-v q8_0 
         --flash-attn on
@@ -49,11 +56,15 @@
         --temp 0.10
         --dry-multiplier 0.1
         --dry-allowed-length 3
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # As I've understood it Qwen2.5-Coder-32B was not trained with FIM and tool calling?
   llamacpp-Qwen2.5-Coder-14B:
+    macros:
+      context_window: 32768
     cmd: |
       llama-serve-wrap /logs/llamacpp-Qwen2.5-Coder-14B.log
         --port ${PORT}
@@ -62,7 +73,7 @@
         --n-gpu-layers 999
         --n-gpu-layers-draft 999
         --jinja
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --cache-type-k q8_0 
         --cache-type-v q8_0 
         --flash-attn on
@@ -73,12 +84,16 @@
         --temp 0.10
         --dry-multiplier 0.1
         --dry-allowed-length 3
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
 
   # The 3B model is too dumb in my experience...
   llamacpp-Qwen2.5-Coder-3B:
+    macros:
+      context_window: 4096
     cmd: |
       llama-serve-wrap /logs/llamacpp-Qwen2.5-Coder-3B.log
         --port ${PORT}
@@ -87,7 +102,7 @@
         --n-gpu-layers 999
         --n-gpu-layers-draft 999
         --jinja
-        --ctx-size 4096 
+        --ctx-size ${context_window} 
         --cache-type-k q8_0 
         --cache-type-v q8_0 
         --flash-attn on
@@ -98,6 +113,8 @@
         --temp 0.1
         --dry-multiplier 0.1
         --dry-allowed-length 3
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
@@ -116,6 +133,8 @@
     ttl: 3600
 
   vllm-Qwen2.5-Coder-7B:
+    macros:
+      context_window: 32768
     cmd: |
       env TORCH_CUDA_ARCH_LIST=8.6 VLLM_ATTENTION_BACKEND=FLASHINFER python3
         -m vllm.entrypoints.openai.api_server
@@ -128,13 +147,17 @@
         --gpu-memory-utilization 0.8
         --enable-chunked-prefill
         --enable-prefix-caching
-        --max-model-len 32768
+        --max-model-len ${context_window}
         --disable-sliding-window
         --kv-cache-dtype fp8_e5m2
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
     
   vllm-Qwen2.5-Coder-14B:
+    macros:
+      context_window: 32768
     cmd: |
       env TORCH_CUDA_ARCH_LIST=8.6 VLLM_ATTENTION_BACKEND=FLASHINFER python3
         -m vllm.entrypoints.openai.api_server
@@ -147,9 +170,11 @@
         --gpu-memory-utilization 0.95
         --enable-chunked-prefill
         --enable-prefix-caching
-        --max-model-len 32768
+        --max-model-len ${context_window}
         --disable-sliding-window
         --kv-cache-dtype fp8_e5m2
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
     
