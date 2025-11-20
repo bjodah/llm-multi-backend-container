@@ -25,11 +25,19 @@ exllamav2-Qwen2.5-Coder-7B
 ```
 
 ## Agentic coding
+Unfortunately Qwen3-Coder-30B makes too many typos in filenames etc in my testing (even with f16 kv-cache). Using qwen coder cli:
 ```console
 $ # npm install -g @qwen-code/qwen-code@latest
-$ env OPENAI_API_KEY=sk-empty OPENAI_BASE_URL=http://host.docker.internal:8688/v1 OPENAI_MODEL=llamacpp-Qwen3-Coder-30B-A3B-it qwen
+$ env \
+    OPENAI_API_KEY=sk-empty \
+    OPENAI_BASE_URL=http://host.docker.internal:8688/v1 \
+    OPENAI_MODEL=llamacpp-glm-4.5-air \
+    qwen
 ```
+Using codex:
+```console
 
+```
 
 ## Testing
 ```console
