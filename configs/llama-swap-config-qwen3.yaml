@@ -6,6 +6,8 @@
 
 
   llamacpp-Qwen3-0.6B:
+    macros:
+      context_window: 32768
     cmd: |
       llama-server --log-file /logs/llamacpp-Qwen3-0.6B.log
         --port ${PORT}
@@ -13,7 +15,7 @@
         --n-gpu-layers 999
         --jinja
         --cache-type-k q8_0
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
@@ -26,10 +28,14 @@
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-Qwen3-1.7B:
+    macros:
+      context_window: 32768
     cmd: |
       llama-server --log-file /logs/llamacpp-Qwen3-1.7B.log
         --port ${PORT}
@@ -37,7 +43,7 @@
         --n-gpu-layers 999
         --jinja
         --cache-type-k q8_0
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
@@ -50,10 +56,14 @@
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-Qwen3-4B:
+    macros:
+      context_window: 32768
     cmd: |
       llama-server --log-file /logs/llamacpp-Qwen3-4B.log
         --port ${PORT}
@@ -61,7 +71,7 @@
         --n-gpu-layers 999
         --jinja
         --cache-type-k q8_0
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
@@ -74,10 +84,14 @@
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-Qwen3-8B:
+    macros:
+      context_window: 32768
     cmd: |
       llama-server --log-file /logs/llamacpp-Qwen3-8B.log
         --port ${PORT}
@@ -85,7 +99,7 @@
         --n-gpu-layers 999
         --jinja
         --cache-type-k q8_0
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
@@ -98,10 +112,14 @@
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-Qwen3-14B:
+    macros:
+      context_window: 32768
     cmd: |
       llama-server --log-file /logs/llamacpp-Qwen3-14B.log
         --port ${PORT}
@@ -111,7 +129,7 @@
         --cache-type-k q8_0
         --cache-type-v q8_0
         --flash-attn on
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
@@ -124,10 +142,14 @@
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-Qwen3-30B-A3B:
+    macros:
+      context_window: 24000
     cmd: |
       llama-server --log-file /logs/llamacpp-Qwen3-30B-A3B.log
         --port ${PORT}
@@ -137,7 +159,7 @@
         --cache-type-k q8_0
         --cache-type-v q8_0
         --flash-attn on
-        --ctx-size 24000
+        --ctx-size ${context_window}
         --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
@@ -150,10 +172,14 @@
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-Qwen3-32B:
+    macros:
+      context_window: 32768
     cmd: |
       llama-server --log-file /logs/llamacpp-Qwen3-32B.log
         --port ${PORT}
@@ -163,7 +189,7 @@
         --cache-type-k q8_0
         --cache-type-v q4_0
         --flash-attn on
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
@@ -176,5 +202,7 @@
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
