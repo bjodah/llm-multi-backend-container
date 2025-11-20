@@ -1,3 +1,5 @@
+# See: https://github.com/openai/codex/blob/main/docs/config.md#model_providers
+
 # Recall that in TOML, root keys must be listed before tables.
 model = "llamacpp-gpt-oss-120b"
 model_provider = "openai-chat-completions"

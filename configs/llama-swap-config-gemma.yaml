@@ -1,4 +1,6 @@
   llamacpp-gemma-3-12b:
+    macros:
+      context_window: 28000
     cmd: |
       llama-server --log-file   /logs/llamacpp-gemma-3-12b.log
         --port ${PORT}
@@ -7,7 +9,7 @@
         # --hf-repo-draft google/gemma-3-1b-it-qat-q4_0-gguf
         # --n-gpu-layers-draft 999
         --jinja
-        --ctx-size 28000
+        --ctx-size ${context_window}
         #--cache-type-k q8_0
         # --cache-type-v q8_0  https://github.com/ggml-org/llama.cpp/issues/12352#issuecomment-2727452955
         --flash-attn on
@@ -19,12 +21,16 @@
         --dry-penalty-last-n 256
         --temp 1.0
         --top-p 0.95
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # https://www.reddit.com/r/LocalLLaMA/comments/1krr7hn/how_to_get_the_most_from_llamacpps_iswa_support/
   # TODO: add --mmproj flag for enabling multimodal input?
   llamacpp-gemma-3-27b:
+    macros:
+      context_window: 49000
     cmd: |
       llama-server --log-file   /logs/llamacpp-gemma-3-27b.log
         --port ${PORT}
@@ -33,7 +39,7 @@
         # --hf-repo-draft google/gemma-3-1b-it-qat-q4_0-gguf
         # --n-gpu-layers-draft 999
         --jinja
-        --ctx-size 49000
+        --ctx-size ${context_window}
         # --cache-type-k q8_0
         # --cache-type-v q5_1
         --no-mmproj
@@ -46,10 +52,14 @@
         --dry-penalty-last-n 256
         --temp 1.0
         --top-p 0.95
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-gemma-3-4b:
+    macros:
+      context_window: 32000
     cmd: |
       llama-server --log-file   /logs/llamacpp-gemma-3-4b.log
         --port ${PORT}
@@ -60,7 +70,7 @@
         --flash-attn on
         --n-gpu-layers 999
         --jinja
-        --ctx-size 32000
+        --ctx-size ${context_window}
         --temp 1.0
         --prio 2
         --temp 1.0
@@ -68,17 +78,21 @@
         --min-p 0.01
         --top-k 64
         --top-p 0.95
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-gemma-3-1b:
+    macros:
+      context_window: 32768
     cmd: |
       llama-server --log-file   /logs/llamacpp-gemma-3-1b.log
         --port ${PORT}
         --hf-repo unsloth/gemma-3-1b-it-GGUF:Q8_0
         --n-gpu-layers 999
         --jinja
-        --ctx-size 32768
+        --ctx-size ${context_window}
         # --cache-type-k q8_0
         # --cache-type-v q8_0
         --flash-attn on
@@ -86,10 +100,14 @@
         --min-p 0.01
         --top-k 64
         --top-p 0.95
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-gemma-3-270m-it-qat:
+    macros:
+      context_window: 32768
     cmd: |
       llama-server --log-file   /logs/llamacpp-llama3-270m.log
         --port ${PORT}
@@ -98,7 +116,7 @@
         --hf-repo unsloth/gemma-3-270m-it-qat-GGUF:Q8_K_XL
         --n-gpu-layers 128
         --jinja
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --cache-type-k q8_0
         --cache-type-v q5_1
         --flash-attn on
@@ -106,8 +124,12 @@
         --min-p 0.01
         --top-k 64
         --top-p 0.95
+    metadata:
+      context_window: ${context_window}
 
   llamacpp-gemma-3-270m-it:
+    macros:
+      context_window: 32768
     cmd: |
       llama-server --log-file   /logs/llamacpp-llama3-270m.log
         --port ${PORT}
@@ -116,7 +138,7 @@
         --hf-repo unsloth/gemma-3-270m-it-GGUF:Q8_K_XL
         --n-gpu-layers 128
         --jinja
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --cache-type-k q8_0
         --cache-type-v q5_1
         --flash-attn on
@@ -124,3 +146,5 @@
         --min-p 0.01
         --top-k 64
         --top-p 0.95
+    metadata:
+      context_window: ${context_window}
