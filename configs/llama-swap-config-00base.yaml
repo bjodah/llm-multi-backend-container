@@ -86,6 +86,8 @@ models:
     ttl: 3600
 
   llamacpp-mistral-small-3.2-24b-2506:
+    macros:
+      context_window: 32768
     cmd: |
       llama-server
         --log-file ${MODEL_ID}
@@ -96,7 +98,7 @@ models:
         --no-mmproj-offload
         --jinja
         --chat-template-file /configs/Mistral-Small-3.2-24B-Instruct-2506.jinja
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --cache-type-k q8_0
         --cache-type-v q5_1
         --flash-attn on
@@ -104,7 +106,8 @@ models:
         --top-p 0.995
         --temp 0.15
         --repeat-penalty 1.01
-  
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
@@ -135,15 +138,17 @@ models:
     ttl: 3600
 
   llamacpp-magistral-small-2507:
+    macros:
+      context_window: 32768
     cmd: |
-      llama-server 
+      llama-server
         --log-file ${MODEL_ID}
         --port ${PORT}
         --hf-repo bartowski/mistralai_Magistral-Small-2507-GGUF:Q6_K_L
         --n-gpu-layers 40
         --no-mmproj-offload
         --jinja
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --cache-type-k q8_0
         --cache-type-v q5_1
         --flash-attn on
@@ -152,7 +157,8 @@ models:
         --temp 0.15
         --repeat-penalty 1.01
         --verbose
-  
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
@@ -161,8 +167,10 @@ models:
   # Mistral-3.1-2503 has vision support, for which text generation suffers?
   # Neither is is it particularly good at coding either (Qwen2.5-Coder is better)
   llamacpp-mistral-small-24b-2501:
+    macros:
+      context_window: 32768
     cmd: |
-      llama-server 
+      llama-server
         --log-file ${MODEL_ID}
         --port ${PORT}
         #--hf-repo unsloth/Mistral-Small-24B-Instruct-2501-GGUF:Q6_K 19.3 GB, 24k ctx
@@ -172,7 +180,7 @@ models:
         --jinja
         # --hf-repo-draft bartowski/alamios_Mistral-Small-3.1-DRAFT-0.5B-GGUF:Q8_0
         # --n-gpu-layers-draft 99
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --cache-type-k q8_0
         # --cache-type-v q8_0
         # --flash-attn on
@@ -182,13 +190,16 @@ models:
         --dry-allowed-length 3
         --dry-penalty-last-n 256
         --temp 0.15
-
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-mistral-small-3.1-24b-2503:
+    macros:
+      context_window: 32768
     cmd: |
-      llama-server 
+      llama-server
         --log-file ${MODEL_ID}
         --port ${PORT}
         --hf-repo unsloth/Mistral-Small-3.1-24B-Instruct-2503-GGUF:Q5_K_XL
@@ -197,7 +208,7 @@ models:
         --jinja
         # --hf-repo-draft bartowski/alamios_Mistral-Small-3.1-DRAFT-0.5B-GGUF:Q8_0
         # --n-gpu-layers-draft 99
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --cache-type-k q8_0
         # --cache-type-v q8_0
         # --flash-attn on
@@ -207,17 +218,20 @@ models:
         --dry-allowed-length 3
         --dry-penalty-last-n 256
         --temp 0.15
-
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
     
   llamacpp-devstral-small-2507:
+    macros:
+      context_window: 32768
     cmd: |
-      llama-server 
+      llama-server
         --log-file ${MODEL_ID}
         --port ${PORT}
         --hf-repo unsloth/Devstral-Small-2507-GGUF:Q5_K_XL
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --cache-type-k q8_0
         --n-gpu-layers 99
         --jinja
@@ -230,7 +244,8 @@ models:
         --dry-allowed-length 3
         --dry-penalty-last-n 256
         --temp 0.15
-
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
         
@@ -238,14 +253,16 @@ models:
   # the name below works with aider, thanks to:
   # https://github.com/Aider-AI/aider/blob/8f15269bd063a3c720ced514303b9efcc03fe29f/aider/models.py#L429
   llamacpp-QwQ-32B:
+    macros:
+      context_window: 32768
     cmd: |
-      llama-server 
+      llama-server
         --log-file ${MODEL_ID}
         --port ${PORT}
         --hf-repo unsloth/QwQ-32B-GGUF:Q4_K_XL
         --n-gpu-layers 99
         --jinja
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --cache-type-k q8_0
         --cache-type-v q5_1
         --flash-attn on
@@ -258,20 +275,23 @@ models:
         --temp 0.5
         # was 0.6
         #--verbose
-
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
         
   llamacpp-DeepCoder-14B:
+    macros:
+      context_window: 65536
     cmd: |
-      llama-server 
+      llama-server
         --log-file ${MODEL_ID}
         --port ${PORT}
         --hf-repo bartowski/agentica-org_DeepCoder-14B-Preview-GGUF:Q4_K_L
         # :Q8_0
         --n-gpu-layers 999
         --jinja
-        --ctx-size 65536
+        --ctx-size ${context_window}
         --cache-type-k q8_0
         --cache-type-v q8_0
         --flash-attn on
@@ -282,6 +302,8 @@ models:
         # --dry-multiplier 1.0
         # --dry-allowed-length 3
         # --dry-penalty-last-n 256
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
@@ -328,17 +350,23 @@ models:
     ttl: 3600
 
   vllm-SmolLM2-1.7B-Instruct:
+    macros:
+      context_window: 2048
     cmd: |
       python3 -m vllm.entrypoints.openai.api_server
         --port ${PORT}
         --served-model-name vllm-SmolLM2-1.7B-Instruct
         --model HuggingFaceTB/SmolLM2-1.7B-Instruct
         --gpu-memory-utilization 0.5
-        --max-model-len 2048
+        --max-model-len ${context_window}
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   vllm-Qwen-QwQ-32B:
+    macros:
+      context_window: 16500
     cmd: |
       env VLLM_ATTENTION_BACKEND=FLASHINFER python3
         -m vllm.entrypoints.openai.api_server
@@ -349,23 +377,27 @@ models:
         --gpu-memory-utilization 0.97
         --enable-chunked-prefill
         --enable-prefix-caching
-        --max-model-len 16500
+        --max-model-len ${context_window}
         --max-num-seqs 128
         --max-num-batched-tokens 32768
         --disable-sliding-window
         --generation-config Qwen/QwQ-32B-AWQ
         --enable-reasoning
         --reasoning-parser deepseek_r1
-        --tool-call-parser hermes 
+        --tool-call-parser hermes
         --kv-cache-dtype fp8_e5m2
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
-    # 
+    #
     # --max-model-len 32768
     #  --kv-cache-dtype fp8_e4m3
     # --enable-auto-tool-choice
 
   vllm-Qwen3-14B:  # ~30 tps for 3090@250W
+    macros:
+      context_window: 32768
     cmd: |
       env VLLM_ATTENTION_BACKEND=FLASHINFER python3
         -m vllm.entrypoints.openai.api_server
@@ -376,7 +408,7 @@ models:
         --gpu-memory-utilization 0.97
         --enable-chunked-prefill
         --enable-prefix-caching
-        --max-model-len 32768
+        --max-model-len ${context_window}
         --max-num-seqs 128
         --max-num-batched-tokens 32768
         --disable-sliding-window
@@ -384,10 +416,14 @@ models:
         --enable-reasoning
         --reasoning-parser deepseek_r1
         --kv-cache-dtype fp8_e5m2
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   vllm-Qwen2.5-VL-7B:
+    macros:
+      context_window: 8192
     cmd: |
       python3 -m vllm.entrypoints.openai.api_server
           --api-key sk-empty
@@ -396,8 +432,10 @@ models:
           --model Qwen/Qwen2.5-VL-7B-Instruct-AWQ
           --trust-remote-code
           --gpu-memory-utilization 0.954330
-          --max-model-len 8192
+          --max-model-len ${context_window}
           --max-num-batched-tokens 32768
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
     # --kv-cache-dtype fp8_e5m2
@@ -405,14 +443,16 @@ models:
     # --enable-chunked-prefill
 
   llamacpp-openthinker2-32b:
+    macros:
+      context_window: 16000
     cmd: |
-      llama-server 
+      llama-server
         --log-file ${MODEL_ID}
         --port ${PORT}
         --hf-repo bartowski/open-thoughts_OpenThinker2-32B-GGUF:Q4_K_M
         --n-gpu-layers 999
         --jinja
-        --ctx-size 16000
+        --ctx-size ${context_window}
         --cache-type-k q8_0
         --cache-type-v q8_0
         --flash-attn on
@@ -424,20 +464,24 @@ models:
         # 3
         --dry-penalty-last-n 1024
         --temp 0.6
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # see https://github.com/LG-AI-EXAONE/EXAONE-Deep
   llamacpp-exaone-deep-32b:
+    macros:
+      context_window: 32768
     cmd: |
-      llama-server 
+      llama-server
         --log-file ${MODEL_ID}
         --port ${PORT}
         --hf-repo bartowski/LGAI-EXAONE_EXAONE-Deep-32B-GGUF:Q4_K_M
         # 19.3GB
         --n-gpu-layers 99
         --jinja
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --cache-type-k q8_0
         --cache-type-v q8_0
         --flash-attn on
@@ -448,13 +492,17 @@ models:
         --dry-penalty-last-n 4096
         --temp 0.7
         # 0.6 recommended, with top_p=0.95
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # tool use might not work until fixed: https://huggingface.co/unsloth/Qwen3-4B-GGUF/discussions/4
   llamacpp-Qwen3-4B-128K:
+    macros:
+      context_window: 131072
     cmd: |
-      llama-server 
+      llama-server
         --log-file ${MODEL_ID}
         --port ${PORT}
         --hf-repo unsloth/Qwen3-4B-128K-GGUF:Q8_0
@@ -463,7 +511,7 @@ models:
         --cache-type-k q8_0
         --cache-type-v q4_0
         --flash-attn on
-        --ctx-size 131072
+        --ctx-size ${context_window}
         --samplers 'top_k;dry;min_p;temperature;top_p'
         # ^-- vain attempt to capture both thinking/non-thinking
         --min-p 0.005
@@ -477,13 +525,17 @@ models:
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # testing unlsoths' _XL quant:
   llamacpp-Qwen3-30B-A3B-K_XL:
+    macros:
+      context_window: 24000
     cmd: |
-      llama-server 
+      llama-server
         --log-file ${MODEL_ID}
         --port ${PORT}
         --hf-repo unsloth/Qwen3-30B-A3B-GGUF:Q5_K_XL
@@ -492,7 +544,7 @@ models:
         --cache-type-k q8_0
         --cache-type-v q8_0
         --flash-attn on
-        --ctx-size 24000
+        --ctx-size ${context_window}
         --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
@@ -505,12 +557,16 @@ models:
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-Qwen3-30B-A3B-it-2507:
+    macros:
+      context_window: 24000
     cmd: |
-      llama-server 
+      llama-server
         --log-file ${MODEL_ID}
         --port ${PORT}
         --hf-repo unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q5_K_XL
@@ -519,7 +575,7 @@ models:
         --cache-type-k q8_0
         --cache-type-v q8_0
         --flash-attn on
-        --ctx-size 24000
+        --ctx-size ${context_window}
         --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
@@ -532,12 +588,16 @@ models:
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-Qwen3-30B-A3B-think-2507:
+    macros:
+      context_window: 24000
     cmd: |
-      llama-server 
+      llama-server
         --log-file ${MODEL_ID}
         --port ${PORT}
         --hf-repo unsloth/Qwen3-30B-A3B-Thinking-2507-GGUF:Q5_K_XL
@@ -546,7 +606,7 @@ models:
         --cache-type-k q8_0
         --cache-type-v q8_0
         --flash-attn on
-        --ctx-size 24000
+        --ctx-size ${context_window}
         --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
         --min-p 0.005
         --top-p 0.97
@@ -559,30 +619,38 @@ models:
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-gpt-oss-20b:
+    macros:
+      context_window: 131072
     cmd: |
-      llama-server 
+      llama-server
         --log-file ${MODEL_ID}
       --port ${PORT}
       --hf-repo unsloth/gpt-oss-20b-GGUF:Q8_0
       --n-gpu-layers 999
       --jinja
       --flash-attn on
-      --ctx-size 131072
+      --ctx-size ${context_window}
       #--reasoning-format none
       --temp 1.0
       --top-p 0.99
       --min-p 0.005
       --top-k 100
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-gpt-oss-120b:
+    macros:
+      context_window: 65536
     cmd: |
-      llama-server 
+      llama-server
         --log-file ${MODEL_ID}
       --port ${PORT}
       --hf-repo unsloth/gpt-oss-120b-GGUF:Q4_K_XL
@@ -594,7 +662,7 @@ models:
       --no-mmap
       --jinja
       --flash-attn on
-      --ctx-size 65536
+      --ctx-size ${context_window}
       # --reasoning-format none
       # https://github.com/ggml-org/llama.cpp/pull/15238
       # https://github.com/ggml-org/llama.cpp/pull/15181
@@ -603,12 +671,16 @@ models:
       --top-p 0.99
       --min-p 0.005
       --top-k 100
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-glm-4.5-air:
+    macros:
+      context_window: 65536
     cmd: |
-      llama-server 
+      llama-server
         --log-file ${MODEL_ID}
       --port ${PORT}
       --hf-repo unsloth/GLM-4.5-Air-GGUF:IQ4_XS
@@ -620,19 +692,23 @@ models:
       --cache-type-k q8_0
       --cache-type-v q5_1
       --flash-attn on
-      --ctx-size 65536
+      --ctx-size ${context_window}
       #--chat-template-kwargs '{"enable_thinking": "False"}'
       # ^--- doesn't work? https://www.reddit.com/r/LocalLLaMA/comments/1mdwh31/how_can_you_turn_off_reasoning_for_certain_tasks/
       --temp 0.6
       --top-p 0.99
       --min-p 0.005
       --top-k 60
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-seed-oss-36b:
+    macros:
+      context_window: 65536
     cmd: |
-      llama-server 
+      llama-server
       --log-file ${MODEL_ID}
       --port ${PORT}
       --hf-repo unsloth/Seed-OSS-36B-Instruct-GGUF:Q4_K_XL
@@ -640,9 +716,11 @@ models:
       --jinja
       --flash-attn on
       #--ctx-size 8192
-      --ctx-size 65536
+      --ctx-size ${context_window}
       --no-kv-offload
       --temp 1.1
       --top-p 0.95
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
