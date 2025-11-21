@@ -1,4 +1,7 @@
   llamacpp-Qwen3-30B-A3B-cpu:
+    # Define a macro for the context window so it can be reused.
+    macros:
+      context_window: 32768
     cmd: |
       llama-serve-wrap /logs/llamacpp-Qwen3-30B-A3B-Q8_K_XL.log
         --port ${PORT}
@@ -9,7 +12,7 @@
         # of 48
         --jinja
         --cache-type-k q8_0
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --samplers 'top_k;dry;min_p;temperature;top_p'
         # vain attempt to capture both thinking/non-thinking
         --min-p 0.005
@@ -24,5 +27,7 @@
         --repeat-penalty 1.01
         --repeat-last-n 16
         --verbose
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
