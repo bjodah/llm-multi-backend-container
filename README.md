@@ -26,7 +26,10 @@ exllamav2-Qwen2.5-Coder-7B
 
 ## Agentic coding
 I've been experimenting with `codex`, `qwen-code` and `open-code`, given my modest system spec. (24GB vRAM 3090, 64GB dual ch DDR5 system ram)
-there's a real struggle to make these tools perform adequately. Some lessons learned:
+there's a real struggle to make these tools perform adequately. The agents were run in a sandbox:
+```console
+```
+
 <details>
 <summary>Qwen3-Coder-30B</summary>
 
@@ -40,7 +43,18 @@ $ env \
   qwen 'run `git show 01e42d7`, study the changes, find remaining uses of hard-coded integer literals in yaml files in configs/ folder and apply this transformation to those files.'
 ```
 
-using opencode also works quite well with this model.
+using opencode also works quite well with this model:
+```console
+$ LLAMA_API_KEY=sk-empty opencode
+```
+
+using aider:
+```console
+$ env \
+  OPENAI_API_KEY=sk-empty \
+  OPENAI_API_BASE=http://host.docker.internal:8686/v1
+  aider --model openai/vllm-Qwen3-Coder-30B
+```
 
 </details>
 
@@ -56,14 +70,17 @@ the failure to complete tasks is seen in both `codex` and `opencode`.
 <summary>gpt-oss-120b</summary>
 
 This works quite alright with `codex`:
+
 ```console
 $ LLAMA_API_KEY=sk-empty codex  # see .codex/config.toml
 ```
+
 </details>
 
 <details>
 <summary>GLM-4.5-Air</summary>
 Works decently using the qwen cli backed by llama.cpp:
+
 ```console
 $ # npm install -g @qwen-code/qwen-code@latest
 $ env \

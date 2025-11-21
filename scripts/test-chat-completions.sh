@@ -21,8 +21,9 @@ query_chat() {
     return $retcode
 }
 if [ $# -eq 0 ]; then
-    query_chat vllm-gpt-oss-20b "What's the capital of Scandinavia?"
+    query_chat vllm-Qwen3-Coder-30B "What's the capital of Scandinavia?"
     exit
+    query_chat vllm-gpt-oss-20b "What's the capital of Scandinavia?"
     query_chat llamacpp-Qwen3-Coder-30B-A3B-it-Q4 "Answer only with the missing word: The capital of Poland is"
     query_chat llamacpp-Qwen3-Coder-30B-A3B-it "Answer only with the missing word: The capital of Poland is"
     query_chat llamacpp-magistral-small-2509 "What's the captial of Scandinavia?"

@@ -1,0 +1,21 @@
+FROM docker.io/python:3.13-trixie
+
+ARG DEBIAN_FRONTEND=noninteractive
+ARG DEBCONF_NONINTERACTIVE_SEEN=true
+
+
+RUN apt-get update \
+    && apt-get install -y tmux \
+    && echo 'export PATH=/root/.local/bin:$PATH' >/etc/profile.d/root-local-bin.sh \
+    && pip install uv pytest \
+    && uv tool install --python=3.13 --no-cache --reinstall --force --with=google-generativeai --with=audioop-lts aider-chat@latest
+    # https://github.com/Aider-AI/aider/issues/3037#issuecomment-3050423543
+
+RUN curl https://raw.githubusercontent.com/nodesource/distributions/refs/heads/master/scripts/deb/setup_24.x | bash \
+    && apt-get install -y nodejs
+
+RUN npm i -g opencode-ai @openai/codex @google/gemini-cli@latest @qwen-code/qwen-code@latest \
+    && curl -fsSL https://bun.com/install | bash \
+    && echo 'export PATH=/root/.bun/bin:$PATH' >/etc/profile.d/root-bun-bin.sh  # needed by opencode for local models
+
+COPY profile.d/* /etc/profile.d/

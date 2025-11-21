@@ -1,0 +1,1 @@
+alias aider-local="env OPENAI_API_KEY=sk-empty OPENAI_API_BASE=http://host.docker.internal:8686/v1 aider --model openai/vllm-Qwen3-Coder-30B"
