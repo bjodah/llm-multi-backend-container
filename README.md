@@ -28,12 +28,17 @@ exllamav2-Qwen2.5-Coder-7B
 I've been experimenting with `codex`, `qwen-code` and `open-code`, given my modest system spec. (24GB vRAM 3090, 64GB dual ch DDR5 system ram)
 there's a real struggle to make these tools perform adequately. The agents were run in a sandbox:
 ```console
+$ cd /path/to/my/project
+$ ~/llm-multi-backend-container/scripts/enter-sandbox.sh
+podman build ...
+podman run ...
+root@3fd6c449735e:/work# cat ~/.bash_aliases.d/bash-aliases-agents.sh  # to survey configured agentic frameworks configured
 ```
 
 <details>
 <summary>Qwen3-Coder-30B</summary>
 
-`llama.cpp` does not work satisfactorily (too many typos), using vllm does work "OK-ish":
+`llama.cpp` does not work satisfactorily (too many typos), using vllm does work much better.
 
 ```console
 $ env \
@@ -50,6 +55,7 @@ $ LLAMA_API_KEY=sk-empty opencode
 
 using aider:
 ```console
+$ alias aider-local  # short-hand for command below
 $ env \
   OPENAI_API_KEY=sk-empty \
   OPENAI_API_BASE=http://host.docker.internal:8686/v1
