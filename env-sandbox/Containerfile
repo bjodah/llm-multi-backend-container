@@ -18,4 +18,8 @@ RUN npm i -g opencode-ai @openai/codex @google/gemini-cli@latest @qwen-code/qwen
     && curl -fsSL https://bun.com/install | bash \
     && echo 'export PATH=/root/.bun/bin:$PATH' >/etc/profile.d/root-bun-bin.sh  # needed by opencode for local models
 
-COPY profile.d/* /etc/profile.d/
+RUN echo 'if [ -d $HOME/.bash_aliases.d ]; then for f in $HOME/.bash_aliases.d/*; do . $f; done; fi' >>/root/.bashrc \
+    && mkdir -p /root/.bash_aliases.d \
+    && echo 'alias ll="ls -laFrth --color=auto"' >>/root/.bash_aliases.d/ll
+
+COPY bash-aliases-agents.sh /root/.bash_aliases.d/
