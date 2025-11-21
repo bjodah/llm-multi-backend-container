@@ -19,7 +19,14 @@
                 "vllm-gpt-oss-20b": {
                     "name": "vllm-gpt-oss-20b",
                     "limit": {
-                        "context": 32768,
+                        "context": 131072,
+                        "output": 8000
+                    }
+                },
+                "llamacpp-gpt-oss-120b": {
+                    "name": "llamacpp-gpt-oss-120b",
+                    "limit": {
+                        "context": 65536,
                         "output": 8000
                     }
                 }
