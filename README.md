@@ -25,7 +25,42 @@ exllamav2-Qwen2.5-Coder-7B
 ```
 
 ## Agentic coding
-Unfortunately Qwen3-Coder-30B makes too many typos in filenames etc in my testing (even with f16 kv-cache). Using qwen coder cli:
+I've been experimenting with `codex`, `qwen-code` and `open-code`, given my modest system spec. (24GB vRAM 3090, 64GB dual ch DDR5 system ram)
+there's a real struggle to make these tools perform adequately. Some lessons learned:
+<details>
+<summary>Qwen3-Coder-30B</summary>
+
+`llama.cpp` does not work satisfactorily (too many typos), using vllm does work "OK-ish":
+
+```console
+$ env \
+  OPENAI_API_KEY=sk-empty \
+  OPENAI_BASE_URL=http://host.docker.internal:8688/v1 \
+  OPENAI_MODEL=vllm-Qwen3-Coder-30B \
+  qwen 'run `git show 01e42d7`, study the changes, find remaining uses of hard-coded integer literals in yaml files in configs/ folder and apply this transformation to those files.'
+```
+
+</details>
+
+<details>
+<summary>gpt-oss-20b</summary>
+
+Nope, crashes llama.cpp due to malformated tool-calling, and even though vllm does not crash the model fails to follow through with its tasks.
+
+</details>
+
+<details>
+<summary>gpt-oss-120b</summary>
+
+This works quite alright with `codex`:
+```console
+$ LLAMA_API_KEY=sk-empty codex  # see .codex/config.toml
+```
+</details>
+
+<details>
+<summary>GLM-4.5-Air</summary>
+Works decently using the qwen cli backed by llama.cpp:
 ```console
 $ # npm install -g @qwen-code/qwen-code@latest
 $ env \
@@ -34,10 +69,9 @@ $ env \
     OPENAI_MODEL=llamacpp-glm-4.5-air \
     qwen
 ```
-Using codex:
-```console
 
-```
+</details>
+
 
 ## Testing
 ```console
