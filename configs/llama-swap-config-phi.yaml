@@ -1,4 +1,7 @@
   llamacpp-Phi-4:
+    # Define a macro for the context window so it can be reused.
+    macros:
+      context_window: 32768
     cmd: |
       llama-server --log-file   /logs/llamacpp-Phi-4.log
         --port ${PORT}
@@ -6,7 +9,7 @@
         # Q2_K_L, bartowski/phi-4-GGUF:Q8_0
         --n-gpu-layers 999
         --jinja
-        --ctx-size 32768
+        --ctx-size ${context_window}
         --cache-type-k q8_0
         # --cache-type-v q8_0
         # --flash-attn
@@ -17,10 +20,15 @@
         --dry-allowed-length 3
         --dry-penalty-last-n 256
         --temp 0.5
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-Phi-4-reasoning-plus:
+    # Define a macro for the context window so it can be reused.
+    macros:
+      context_window: 32768
     cmd: |
       llama-server --log-file   /logs/llamacpp-Phi-4-reasoning-plus.log
         --port ${PORT}
@@ -28,8 +36,8 @@
         --n-gpu-layers 99
         --jinja
         --special
-        # ^--- response will contain <think> </think> <|im_end|>
-        --ctx-size 32768
+        # ^--- response will contain 
+        --ctx-size ${context_window}
         --cache-type-k q8_0
         --cache-type-v q8_0
         --flash-attn
@@ -46,5 +54,7 @@
         --repeat-last-n 16
         #--verbose
 
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
