@@ -10,6 +10,8 @@ models:
 
   # yoga720-15ikb: 252tps pp, 28tps tg
   llamacpp-gemma-3-1b:
+    macros:
+      context_window: 8192
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-gemma-3-1b-it.log
@@ -17,9 +19,9 @@ models:
         # Q8_0: 1.05 GB
         --hf-repo unsloth/gemma-3-1b-it-GGUF:Q8_0
         --n-gpu-layers 99
-        --no-mmap        
+        --no-mmap
         --threads 4
-        --ctx-size 8192 # (k8,v8,8192): 1.693
+        --ctx-size ${context_window} # (k8,v8,8192): 1.693
         --cache-type-k q8_0
         --cache-type-v q8_0
         --flash-attn on
@@ -27,6 +29,8 @@ models:
         --min-p 0.01
         --top-k 64
         --top-p 0.95
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
@@ -36,6 +40,8 @@ models:
 
   # yoga720-15ikb: 846tps pp, 22.2tps tg
   llamacpp-Qwen3-0.6B:
+    macros:
+      context_window: 24000
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-0.6B.log
@@ -49,7 +55,7 @@ models:
         --cache-type-v q5_1
         --flash-attn on
         # (k8,v51,24000):1.945
-        --ctx-size 24000
+        --ctx-size ${context_window}
         --samplers "top_k;dry;min_p;temperature;top_p"
         --min-p 0.005
         --top-p 0.97
@@ -62,11 +68,15 @@ models:
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # yoga720-15ikb: 500tps pp, 15tps tg
   llamacpp-Qwen3-1.7B:
+    macros:
+      context_window: 8192
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-1.7B.log
@@ -80,7 +90,7 @@ models:
         --cache-type-k q8_0
         --cache-type-v q5_1
         --flash-attn on
-        --ctx-size 8192
+        --ctx-size ${context_window}
         # (k8,4096):1.802, (k8,6200):1.97, (k8,v51,8192): 1.845
         --samplers "top_k;dry;min_p;temperature;top_p"
         --min-p 0.005
@@ -94,12 +104,16 @@ models:
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   #--hf-repo unsloth/Qwen3-30B-A3B-GGUF:IQ1_S
   # yoga720-15ikb: 79 pp, 4.5 tg
   llamacpp-Qwen3-30B-A3B:
+    macros:
+      context_window: 8192
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-30B-A3B.log
@@ -115,8 +129,8 @@ models:
         --cache-type-k q5_1
         --cache-type-v q5_1
         --flash-attn on
-        --ctx-size 8192
-        # (k4,v4,2048): 1.15, (k4,v4,4096): 1.244, (k4,v4,8192): 1.345, (k51,v51,8192): 1.420, (k51,v51,16384): 
+        --ctx-size ${context_window}
+        # (k4,v4,2048): 1.15, (k4,v4,4096): 1.244, (k4,v4,8192): 1.345, (k51,v51,8192): 1.420, (k51,v51,16384):
         --samplers "top_k;dry;min_p;temperature;top_p"
         # vain attempt to capture both thinking/non-thinking
         --min-p 0.005
@@ -130,12 +144,16 @@ models:
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   #unsloth/Qwen3-0.6B-GGUF:Q8_0
   # yoga720-15ikb: 16tps pp, 7tps tg
   llamacpp-Qwen3-30B-A3B-draft:
+    macros:
+      context_window: 4096
     cmd: >
       /build/llama.cpp-debug/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-30B-A3B.log
@@ -150,7 +168,7 @@ models:
         --threads 4
         --no-mmap
         --jinja
-        --ctx-size 4096
+        --ctx-size ${context_window}
         # ^-- I wonder if llama_kv_cache_unified reporting f16 for k and v is the culprit, yup:
         --cache-type-k q5_1
         # https://github.com/ggml-org/llama.cpp/issues/11200#issuecomment-2585822315
@@ -171,12 +189,16 @@ models:
         --frequency-penalty 0.005
         --repeat-penalty 1.01
         --repeat-last-n 16
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
 
   # 259 pp, 31 tg
   llamacpp-Qwen2.5-Coder-1.5B:
+    macros:
+      context_window: 4096
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen2.5-Coder-1.5B-Instruct.log
@@ -184,17 +206,19 @@ models:
         --hf-repo unsloth/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q5_K_M
         # 1.13GB
         --n-gpu-layers 99
-        --ctx-size 4096 
-        --cache-type-k q8_0 
-        --cache-type-v q8_0 
+        --ctx-size ${context_window}
+        --cache-type-k q8_0
+        --cache-type-v q8_0
         --flash-attn on
-        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
-        --top-k 40 
+        --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc"
+        --top-k 40
         --top-p 0.95
-        --min-p 0.0 
+        --min-p 0.0
         --temp 0.1
         --dry-multiplier 0.1
         --dry-allowed-length 3
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
@@ -205,7 +229,9 @@ models:
 
   # Q2_K (1.68GB) does not fit on gpu with 4096 ctx (k4,v4). Trying partial offloading:
   # yoga720-15ikb: 65pp, 13tg
-  llamacpp-Phi-4-mini: 
+  llamacpp-Phi-4-mini:
+    macros:
+      context_window: 4096
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Phi-4.log
@@ -215,7 +241,7 @@ models:
         --n-gpu-layers 24
         # of 32, (k4,q4,4096): 1.894GB vram
         --threads 4
-        --ctx-size 4096
+        --ctx-size ${context_window}
         --cache-type-k q4_0
         --cache-type-v q4_0
         --flash-attn on
@@ -226,12 +252,16 @@ models:
         --dry-allowed-length 3
         --dry-penalty-last-n 256
         --temp 0.5
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
 
   # yoga720-15ikb: 33 pp, 13 tg
   llamacpp-Ling-Coder-lite:
+    macros:
+      context_window: 16384
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Ling-Coder-lite.log
@@ -243,37 +273,41 @@ models:
         # \_ with gpu + cpu:  145 pp, 10.1 tg
         # /  only       cpu:  140 pp,  8.5 tg
         --no-mmap
-        --ctx-size 16384
-        # (k8,v51,4096): 1.09, (k8,v51,8192): 1.18, (k8,v51,8192): 1.392 
-        --cache-type-k q8_0 
+        --ctx-size ${context_window}
+        # (k8,v51,4096): 1.09, (k8,v51,8192): 1.18, (k8,v51,8192): 1.392
+        --cache-type-k q8_0
         --cache-type-v q5_1
         --flash-attn on
-        --samplers "top_k;dry;top_p;min_p;temperature;typ_p;xtc" 
-        --top-k 40 
-        --dry-multiplier 0.5 
+        --samplers "top_k;dry;top_p;min_p;temperature;typ_p;xtc"
+        --top-k 40
+        --dry-multiplier 0.5
         --dry-allowed-length 5
-        --top-p 0.95 
-        --min-p 0.01 
-        --temp 0.8 
+        --top-p 0.95
+        --min-p 0.01
+        --temp 0.8
+    metadata:
+      context_window: ${context_window}
 
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-ling-lite-0415:
+    macros:
+      context_window: 16384
     cmd: |
       /build/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-ling-lite-0415.log
         --port ${PORT}
         --hf-repo bartowski/inclusionAI_Ling-lite-0415-GGUF:IQ4_XS
         # 9.19GB
-        --n-gpu-layers 28                       
-        --override-tensor '.ffn_.*_exps.=CPU'   
+        --n-gpu-layers 28
+        --override-tensor '.ffn_.*_exps.=CPU'
         # of 28,  \_ with gpu + cpu:  142 pp,  6.5 tg
         #         /  only       cpu:  145 pp,  8.6 tg
         --no-mmap
-        --ctx-size 16384
+        --ctx-size ${context_window}
         # (k8,v51,16384): 1.77GB vram
-        --cache-type-k q8_0 
+        --cache-type-k q8_0
         --cache-type-v q5_1
         --flash-attn on
         # ^-- gibberish for large context?
@@ -286,6 +320,8 @@ models:
         --dry-penalty-last-n 1024
         --temp 0.6
         #--verbose
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 

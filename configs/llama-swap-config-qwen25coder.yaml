@@ -10,16 +10,16 @@
         --port ${PORT}
         --hf-repo unsloth/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M
         #--hf-repo-draft unsloth/Qwen2.5-Coder-0.5B-Instruct-GGUF:Q4_K_M
-        --n-gpu-layers 999 
+        --n-gpu-layers 999
         #--n-gpu-layers-draft 999
         --jinja
-        --ctx-size ${context_window} 
-        --cache-type-k q8_0 
-        --cache-type-v q5_1 
+        --ctx-size ${context_window}
+        --cache-type-k q8_0
+        --cache-type-v q5_1
         --flash-attn on
-        --samplers "penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature" 
-        --top-k 40 
-        --top-p 0.95 
+        --samplers "penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature"
+        --top-k 40
+        --top-p 0.95
         --min-p 0.005
         --temp 0.15
         --dry-multiplier 0.5
@@ -45,14 +45,14 @@
         --n-gpu-layers 999
         --n-gpu-layers-draft 999
         --jinja
-        --ctx-size ${context_window} 
-        --cache-type-k q8_0 
-        --cache-type-v q8_0 
+        --ctx-size ${context_window}
+        --cache-type-k q8_0
+        --cache-type-v q8_0
         --flash-attn on
-        --samplers "dry;top_k;top_p;min_p;temperature;typ_p;xtc" 
-        --top-k 40 
+        --samplers "dry;top_k;top_p;min_p;temperature;typ_p;xtc"
+        --top-k 40
         --top-p 0.95
-        --min-p 0.0 
+        --min-p 0.0
         --temp 0.10
         --dry-multiplier 0.1
         --dry-allowed-length 3
@@ -74,13 +74,13 @@
         --n-gpu-layers-draft 999
         --jinja
         --ctx-size ${context_window}
-        --cache-type-k q8_0 
-        --cache-type-v q8_0 
+        --cache-type-k q8_0
+        --cache-type-v q8_0
         --flash-attn on
-        --samplers "dry;top_k;top_p;min_p;temperature;typ_p;xtc" 
-        --top-k 40 
+        --samplers "dry;top_k;top_p;min_p;temperature;typ_p;xtc"
+        --top-k 40
         --top-p 0.95
-        --min-p 0.0 
+        --min-p 0.0
         --temp 0.10
         --dry-multiplier 0.1
         --dry-allowed-length 3
@@ -102,14 +102,14 @@
         --n-gpu-layers 999
         --n-gpu-layers-draft 999
         --jinja
-        --ctx-size ${context_window} 
-        --cache-type-k q8_0 
-        --cache-type-v q8_0 
+        --ctx-size ${context_window}
+        --cache-type-k q8_0
+        --cache-type-v q8_0
         --flash-attn on
-        --samplers "dry;top_k;top_p;min_p;temperature;typ_p;xtc" 
-        --top-k 40 
+        --samplers "dry;top_k;top_p;min_p;temperature;typ_p;xtc"
+        --top-k 40
         --top-p 0.95
-        --min-p 0.0 
+        --min-p 0.0
         --temp 0.1
         --dry-multiplier 0.1
         --dry-allowed-length 3
@@ -154,7 +154,7 @@
       context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
-    
+
   vllm-Qwen2.5-Coder-14B:
     macros:
       context_window: 32768

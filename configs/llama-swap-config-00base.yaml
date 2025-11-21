@@ -361,7 +361,7 @@ models:
 
   vllm-Qwen3-Coder-30B:
     macros:
-      context_window: 65536 #32768
+      context_window: 48000 # (+ (expt 2 14) (expt 2 15)) #32768
     cmd: |
       python3 -m vllm.entrypoints.openai.api_server
         --port ${PORT}
