@@ -204,6 +204,9 @@ models:
 
 
   llamacpp-Qwen2.5-Coder-3B:
+    # Define a macro for the context window so it can be reused.
+    macros:
+      context_window: 8192
     cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen2.5-Coder-3B-Instruct.log
@@ -211,7 +214,7 @@ models:
         --hf-repo unsloth/Qwen2.5-Coder-3B-Instruct-GGUF:Q5_K_M
         # 2.22GB
         --n-gpu-layers 99
-        --ctx-size 8192
+        --ctx-size ${context_window}
         --cache-type-k q8_0 
         --cache-type-v q8_0 
         --flash-attn on
@@ -222,10 +225,15 @@ models:
         --temp 0.1
         --dry-multiplier 0.1
         --dry-allowed-length 3
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-Phi-4-mini:
+    # Define a macro for the context window so it can be reused.
+    macros:
+      context_window: 8192
     cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Phi-4.log
@@ -234,7 +242,7 @@ models:
         # 2.64
         --n-gpu-layers 24
         # of 32, (k4,q4,4096): 1.894GB vram
-        --ctx-size 8192
+        --ctx-size ${context_window}
         --cache-type-k q8_0
         --cache-type-v q5_1
         --flash-attn on
@@ -245,11 +253,16 @@ models:
         --dry-allowed-length 3
         --dry-penalty-last-n 256
         --temp 0.5
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
 
   llamacpp-Ling-Coder-lite:
+    # Define a macro for the context window so it can be reused.
+    macros:
+      context_window: 16384
     cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Ling-Coder-lite.log
@@ -261,7 +274,7 @@ models:
         # \_ with gpu + cpu:      pp,      tg
         # /  only       cpu:      pp,      tg
         --no-mmap
-        --ctx-size 16384
+        --ctx-size ${context_window}
         --cache-type-k q8_0 
         --cache-type-v q5_1
         --flash-attn on
@@ -272,11 +285,15 @@ models:
         --top-p 0.95 
         --min-p 0.01 
         --temp 0.8 
-
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-ling-lite-0415:
+    # Define a macro for the context window so it can be reused.
+    macros:
+      context_window: 16384
     cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-ling-lite-0415.log
@@ -288,7 +305,7 @@ models:
         # of 28,  \_ with gpu + cpu:      pp,      tg
         #         /  only       cpu:      pp,      tg
         --no-mmap
-        --ctx-size 16384
+        --ctx-size ${context_window}
         --cache-type-k q8_0 
         --cache-type-v q5_1
         --flash-attn on
@@ -301,6 +318,8 @@ models:
         --dry-penalty-last-n 1024
         --temp 0.6
         #--verbose
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
