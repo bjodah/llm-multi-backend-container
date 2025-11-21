@@ -371,6 +371,8 @@ models:
         --max-model-len ${context_window}
         --max-num-seqs 2
         --dtype float16
+        --tool-call-parser qwen3_coder
+        --enable-auto-tool-choice
     proxy: http://127.0.0.1:${PORT}
     metadata:
       context_window: ${context_window}

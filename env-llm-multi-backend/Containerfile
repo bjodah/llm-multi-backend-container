@@ -137,4 +137,5 @@ RUN \
     --mount=type=cache,target=/root/.cache,sharing=locked \
     cd /opt/llama.cpp \
     && git fetch && git pull \
-    && cmake --build /opt/llama.cpp/build --parallel --verbose
+    && cmake --build /opt/llama.cpp/build --parallel --verbose \
+    && python3 -m pip install gpt-oss
