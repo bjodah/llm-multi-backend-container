@@ -1,4 +1,6 @@
   llamacpp-glm-4-32b-0414:  # ~16 tps TG
+    macros:
+      context_window: 31000
     cmd: |
       llama-server --log-file   /logs/llamacpp-glm-4-32b-0414.log
         --port ${PORT}
@@ -9,7 +11,7 @@
         --override-kv tokenizer.ggml.eos_token_id=int:151336
         --override-kv glm4.rope.dimension_count=int:64
         --chat-template chatglm4
-        --ctx-size 31000  # 32768
+        --ctx-size ${context_window}  # 32768
         --cache-type-k q8_0 
         # --cache-type-v q8_0  # TODO: try with q8_0, maybe lower context?
         # --flash-attn
@@ -21,11 +23,15 @@
         --dry-penalty-last-n 2048
         --min-p 0.02
         --temp 0.6
+    metadata:
+      context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   # Thinking version of glm-4
   llamacpp-glm-z1-32b-0414:
+    macros:
+      context_window: 22000
     cmd: |
       llama-server --log-file   /logs/llamacpp-glm-z1-32b-0414.log
         --port ${PORT}
@@ -35,7 +41,7 @@
         --override-kv tokenizer.ggml.eos_token_id=int:151336
         --override-kv glm4.rope.dimension_count=int:64
         --chat-template chatglm4
-        --ctx-size 22000
+        --ctx-size ${context_window}
         # 32768
         --cache-type-k q8_0 
         # --cache-type-v q8_0
@@ -47,9 +53,13 @@
         --temp 0.4 # 0.6
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
+    metadata:
+      context_window: ${context_window}
 
   # I haven't had too much success with this, I prefer non-rumination
   llamacpp-glm-z1-rumination-32b-0414:
+    macros:
+      context_window: 22000
     cmd: |
       llama-server --log-file   /logs/llamacpp-glm-z1-rumination-32b-0414.log
         --port ${PORT}
@@ -59,7 +69,7 @@
         --override-kv tokenizer.ggml.eos_token_id=int:151336
         --override-kv glm4.rope.dimension_count=int:64
         --chat-template chatglm4
-        --ctx-size 22000
+        --ctx-size ${context_window}
         # can be pushed to ~24000
         --cache-type-k q8_0 
         # --cache-type-v q8_0 
@@ -75,3 +85,5 @@
         # 0.6
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
+    metadata:
+      context_window: ${context_window}

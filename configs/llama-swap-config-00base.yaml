@@ -20,24 +20,24 @@ macros:
     ${llamacpp}
     --n-gpu-layers 999
 
-  "kv16": >-
+  "lcp_kv16": >-
     --cache-type-k f16
     --cache-type-v f16
     --flash-attn on
 
-  "k8v8": >-
+  "lcp_k8v8": >-
     --cache-type-k q8_0
     --cache-type-v q8_0
     --flash-attn on
 
-  "batching_qwen3": >-
+  "lcp_batching_qwen3": >-
     --ubatch-size 1024
     --batch-size 1024
     --cache-reuse 256
     # ^--- ubatch/batch/cache-reuse taken from:
     #  - https://github.com/ggml-org/llama.cpp/blob/2c8dac72eb6acd4e20c0da251535dfc46d35178b/common/arg.cpp#L3538-L3548
 
-  "sampling_qwen3": >-
+  "lcp_sampling_qwen3": >-
     --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
     --min-p 0.005
     --top-p 0.97
@@ -58,12 +58,12 @@ models:
       context_window: 61000 #65536
     cmd: |
       ${llamacpp-gpu}
-      #${k8v8}
-      ${kv16}
+      #${lcp_k8v8}
+      ${lcp_kv16}
       --hf-repo unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_XL
       --ctx-size ${context_window}
-      ${batching_qwen3}
-      ${sampling_qwen3}
+      ${lcp_batching_qwen3}
+      ${lcp_sampling_qwen3}
     proxy: http://127.0.0.1:${PORT}
     metadata:
       context_window: ${context_window}
@@ -75,11 +75,11 @@ models:
       context_window: 16384
     cmd: |
       ${llamacpp-gpu}
-      ${kv16}
+      ${lcp_kv16}
       --hf-repo unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q5_K_XL
       --ctx-size ${context_window}
-      ${batching_qwen3}
-      ${sampling_qwen3}
+      ${lcp_batching_qwen3}
+      ${lcp_sampling_qwen3}
     proxy: http://127.0.0.1:${PORT}
     metadata:
       context_window: ${context_window}
@@ -331,6 +331,33 @@ models:
         --config /configs/tabby-config-qwq32b.yml
     proxy: http://127.0.0.1:11901
     ttl: 3600
+
+  vllm-gpt-oss-20b:
+    macros:
+      #context_window: 131072
+      context_window: 32768
+    cmd: |
+      env PYTHON_EXECUTION_BACKEND=dangerously_use_uv 
+        python3 -m vllm.entrypoints.openai.api_server
+          --port ${PORT}
+          --served-model-name ${MODEL_ID}
+          --model openai/gpt-oss-20b
+          --async-scheduling 
+          --gpu-memory-utilization 0.92
+          --max-model-len ${context_window}
+          --max-num-seqs 2
+          --max-num-batched-tokens 1024
+          --trust-remote-code
+          --tool-server demo 
+          --tool-call-parser openai
+          --enable-auto-tool-choice
+          --reasoning-effort medium
+# --tensor-parallel-size 1
+    proxy: http://127.0.0.1:${PORT}
+    metadata:
+      context_window: ${context_window}
+    ttl: 3600
+      
 
   vllm-Qwen3-Coder-30B:
     macros:
