@@ -40,12 +40,15 @@ $ env \
   qwen 'run `git show 01e42d7`, study the changes, find remaining uses of hard-coded integer literals in yaml files in configs/ folder and apply this transformation to those files.'
 ```
 
+using opencode also works quite well with this model.
+
 </details>
 
 <details>
 <summary>gpt-oss-20b</summary>
 
-Nope, crashes llama.cpp due to malformated tool-calling, and even though vllm does not crash the model fails to follow through with its tasks.
+Nope, crashes llama.cpp due to malformated tool-calling, and even though vllm does not crash the model fails to follow through with its tasks:
+the failure to complete tasks is seen in both `codex` and `opencode`.
 
 </details>
 
