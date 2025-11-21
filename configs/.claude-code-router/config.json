@@ -1,0 +1,35 @@
+{
+  "ANTHROPIC_BASE_URL": "http://localhost:3456",
+  "ANTHROPIC_API_KEY": "sk-empty",
+  "APIKEY": "sk-empty",
+  "API_TIMEOUT_MS": 3600000,
+  "NON_INTERACTIVE_MODE": false,
+  "Providers": [
+    {
+      "name": "openai",
+      "api_base_url": "http://host.docker.internal:8688/v1/chat/completions",
+      "api_key": "sk-empty",
+      "models": [
+        "vllm-Qwen3-Coder-30B"
+      ],
+      "transformer": {
+          "use": [
+            [
+              "maxtoken",
+              {
+                "max_tokens": 48000
+              }
+            ]
+          ]
+        }
+    }
+  ],
+  "Router": {
+    "default": "openai,vllm-Qwen3-Coder-30B",
+    "background": "openai,vllm-Qwen3-Coder-30B",
+    "think": "openai,vllm-Qwen3-Coder-30B",
+    "longContext": "openai,vllm-Qwen3-Coder-30B",
+    "longContextThreshold": 32000,
+    "webSearch": "openai,vllm-Qwen3-Coder-30B"
+  }
+}

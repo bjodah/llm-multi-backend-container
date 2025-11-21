@@ -14,7 +14,13 @@ RUN apt-get update \
 RUN curl https://raw.githubusercontent.com/nodesource/distributions/refs/heads/master/scripts/deb/setup_24.x | bash \
     && apt-get install -y nodejs
 
-RUN npm i -g opencode-ai @openai/codex @google/gemini-cli@latest @qwen-code/qwen-code@latest \
+RUN npm i -g \
+        opencode-ai \
+        @openai/codex \
+        @google/gemini-cli@latest \
+        @qwen-code/qwen-code@latest \
+        @anthropic-ai/claude-code \
+        @musistudio/claude-code-router \
     && curl -fsSL https://bun.com/install | bash \
     && echo 'export PATH=/root/.bun/bin:$PATH' >/etc/profile.d/root-bun-bin.sh  # needed by opencode for local models
 

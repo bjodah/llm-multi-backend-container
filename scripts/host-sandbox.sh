@@ -17,7 +17,8 @@ main() {
         -w /work \
         -v $REPO_ROOT/configs/.codex:/root/.codex \
         -v $REPO_ROOT/configs/opencode:/root/.config/opencode \
-        -v $REPO_ROOT/configs/.aider.model.metadata.json:/root/.aider.model.metadata \
+        -v $REPO_ROOT/configs/.aider.model.metadata.json:/root/.aider.model.metadata.json \
+        -v $REPO_ROOT/configs/.claude-code-router:/root/.claude-code-router \
         -e AIDER_DARK_MODE=true \
         -e LLAMA_API_KEY=sk-empty \
         -e GIT_AUTHOR_EMAIL \
