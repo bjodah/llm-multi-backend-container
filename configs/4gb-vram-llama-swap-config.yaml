@@ -9,17 +9,19 @@ logLevel: debug # info warn
 models:
 
   llamacpp-gemma-3-4b: # 33 pp, 10 tg
+    macros:
+      context_window: 16384
     cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-gemma-3-4b-it.log
         --port ${PORT}
         --hf-repo unsloth/gemma-3-4b-it-GGUF:Q4_K_XL
         # 2.54 GB
-        --n-gpu-layers 99  
+        --n-gpu-layers 99
         --no-mmap
         # of 26   \_ gpu:   pp, tg
         #         /  cpu:   pp, tg
-        --ctx-size 16384
+        --ctx-size ${context_window}
         --cache-type-k q8_0
         --cache-type-v q8_0
         --flash-attn on
@@ -28,9 +30,13 @@ models:
         --top-k 64
         --top-p 0.95
     proxy: http://127.0.0.1:${PORT}
+    metadata:
+      context_window: ${context_window}
     ttl: 3600
 
   llamacpp-Qwen3-0.6B: # 23 pp, 8.5 tg
+    macros:
+      context_window: 24000
     cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-0.6B.log
@@ -42,7 +48,7 @@ models:
         --cache-type-k q8_0
         --cache-type-v q5_1
         --flash-attn on
-        --ctx-size 24000
+        --ctx-size ${context_window}
         --samplers "top_k;dry;min_p;temperature;top_p"
         --min-p 0.005
         --top-p 0.97
@@ -56,9 +62,13 @@ models:
         --repeat-penalty 1.01
         --repeat-last-n 16
     proxy: http://127.0.0.1:${PORT}
+    metadata:
+      context_window: ${context_window}
     ttl: 3600
 
   llamacpp-Qwen3-1.7B: # 20.2pp, 6.8tg
+    macros:
+      context_window: 8192
     cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-1.7B.log
@@ -69,7 +79,7 @@ models:
         --cache-type-k q8_0
         --cache-type-v q5_1
         --flash-attn on
-        --ctx-size 8192
+        --ctx-size ${context_window}
         --samplers "top_k;dry;min_p;temperature;top_p"
         --min-p 0.005
         --top-p 0.97
@@ -83,9 +93,13 @@ models:
         --repeat-penalty 1.01
         --repeat-last-n 16
     proxy: http://127.0.0.1:${PORT}
+    metadata:
+      context_window: ${context_window}
     ttl: 3600
 
   llamacpp-Qwen3-4B: # yoga720-15ikb: 500tps pp, 15tps tg
+    macros:
+      context_window: 16384
     cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-4B.log
@@ -97,7 +111,7 @@ models:
         --cache-type-k q8_0
         --cache-type-v q5_1
         --flash-attn on
-        --ctx-size 16384
+        --ctx-size ${context_window}
         --samplers "top_k;dry;min_p;temperature;top_p"
         --min-p 0.005
         --top-p 0.97
@@ -111,15 +125,19 @@ models:
         --repeat-penalty 1.01
         --repeat-last-n 16
     proxy: http://127.0.0.1:${PORT}
+    metadata:
+      context_window: ${context_window}
     ttl: 3600
 
   llamacpp-Qwen3-30B-A3B:  # yoga720-15ikb: 16tps pp, 7tps tg
+    macros:
+      context_window: 8192
     cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-30B-A3B.log
         --port ${PORT}
         --hf-repo unsloth/Qwen3-30B-A3B-GGUF:Q4_K_XL
-        --n-gpu-layers 99                       
+        --n-gpu-layers 99
         --override-tensor '.ffn_.*_exps.=CPU'
         # \_ with gpu + cpu:      pp,      tg
         # /  only       cpu:      pp,      tg
@@ -128,7 +146,7 @@ models:
         --cache-type-k q5_1
         --cache-type-v q5_1
         --flash-attn on
-        --ctx-size 8192
+        --ctx-size ${context_window}
         --samplers "top_k;dry;min_p;temperature;top_p"
         # ^---- vain attempt to capture both thinking/non-thinking
         --min-p 0.005
@@ -143,9 +161,13 @@ models:
         --repeat-penalty 1.01
         --repeat-last-n 16
     proxy: http://127.0.0.1:${PORT}
+    metadata:
+      context_window: ${context_window}
     ttl: 3600
 
   llamacpp-Qwen3-30B-A3B-draft:
+    macros:
+      context_window: 4096
     cmd: |
       /bld/llama.cpp/bin/llama-server
         --log-file /tmp/llamacpp-Qwen3-30B-A3B.log
@@ -156,7 +178,7 @@ models:
         --n-gpu-layers-draft 99
         --no-mmap
         --jinja
-        --ctx-size 4096
+        --ctx-size ${context_window}
         # ^-- I wonder if llama_kv_cache_unified reporting f16 for k and v is the culprit, yup:
         --cache-type-k q5_1
         # ^-- https://github.com/ggml-org/llama.cpp/issues/11200#issuecomment-2585822315
@@ -176,6 +198,8 @@ models:
         --repeat-penalty 1.01
         --repeat-last-n 16
     proxy: http://127.0.0.1:${PORT}
+    metadata:
+      context_window: ${context_window}
     ttl: 3600
 
 
