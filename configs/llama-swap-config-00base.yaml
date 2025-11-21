@@ -361,7 +361,7 @@ models:
 
   vllm-Qwen3-Coder-30B:
     macros:
-      context_window: 32768
+      context_window: 65536 #32768
     cmd: |
       python3 -m vllm.entrypoints.openai.api_server
         --port ${PORT}
@@ -369,7 +369,7 @@ models:
         --model cpatonn/Qwen3-Coder-30B-A3B-Instruct-AWQ-4bit
         --gpu-memory-utilization 0.92
         --max-model-len ${context_window}
-        --max-num-seqs 2
+        --max-num-seqs 1
         --dtype float16
         --tool-call-parser qwen3_coder
         --enable-auto-tool-choice
