@@ -29,7 +29,7 @@ I've been experimenting with `codex`, `qwen-code` and `open-code`, given my mode
 there's a real struggle to make these tools perform adequately. The agents were run in a sandbox:
 ```console
 $ cd /path/to/my/project
-$ ~/llm-multi-backend-container/scripts/enter-sandbox.sh
+$ ~/llm-multi-backend-container/scripts/launch-sandbox.sh
 podman build ...
 podman run ...
 root@3fd6c449735e:/work# cat ~/.bash_aliases.d/bash-aliases-agents.sh  # to survey configured agentic frameworks configured
