@@ -26,6 +26,7 @@ RUN npm i -g \
 
 RUN echo 'if [ -d $HOME/.bash_aliases.d ]; then for f in $HOME/.bash_aliases.d/*; do . $f; done; fi' >>/root/.bashrc \
     && mkdir -p /root/.bash_aliases.d \
-    && echo 'alias ll="ls -laFrth --color=auto"' >>/root/.bash_aliases.d/ll
+    && echo 'alias ll="ls -laFrth --color=auto"' >>/root/.bash_aliases.d/ll \
+    && apt-get install --no-install-recommends -y emacs-nox
 
 COPY bash-aliases-agents.sh /root/.bash_aliases.d/

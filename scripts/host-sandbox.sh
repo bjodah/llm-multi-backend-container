@@ -19,6 +19,7 @@ main() {
         -v $REPO_ROOT/configs/opencode:/root/.config/opencode \
         -v $REPO_ROOT/configs/.aider.model.metadata.json:/root/.aider.model.metadata.json \
         -v $REPO_ROOT/configs/.claude-code-router:/root/.claude-code-router \
+        -v $REPO_ROOT/configs/.emacs.d:/root/.emacs.d \
         -e AIDER_DARK_MODE=true \
         -e LLAMA_API_KEY=sk-empty \
         -e GIT_AUTHOR_EMAIL \
