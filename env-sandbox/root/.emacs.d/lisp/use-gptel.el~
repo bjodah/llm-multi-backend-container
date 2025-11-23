@@ -1,0 +1,83 @@
+(use-package gptel
+  :vc (:url "https://github.com/karthink/gptel"
+            :rev :newest
+            :branch "main")
+  :ensure t
+  :config
+  (setq
+   gptel-api-key (lambda () (getenv "OPENAI_API_KEY"))
+   gptel-model 'vllm-Qwen3-Coder-30B
+   gptel-expert-commands t
+   )
+  :bind (("C-c M-." . 'gptel-send)
+         ("C-c M-/" . 'gptel-rewrite)
+         ("C-c M->" . (lambda ()
+                      (interactive)
+                      (let ((buffer (get-buffer "*gptel*")))
+                        (if buffer
+                            (let ((window (get-buffer-window buffer)))
+                              (if window
+                                  (select-window window)
+                                (gptel "*gptel*")
+                                ))
+                          (gptel "*gptel*"))
+                        (let ((window (get-buffer-window "*gptel*")))
+                          (if window (select-window window)
+                            (switch-to-buffer "*gptel*")))))))
+  )
+
+;; Gemini 3 Pro helped writing the dynamic fetching of model info below:
+
+(require 'json)
+(require 'map)
+
+(defun llama-swap-get-host ()
+  "Return the appropriate host address based on the container environment."
+  (if (string= (getenv "container") "podman")
+      "host.docker.internal"
+    "localhost"))
+
+(defun llama-swap-fetch-models ()
+  "Dynamically fetch models and context windows from llama-swap.
+Parses the output of http://HOST:8686/v1/models and returns a list
+formatted for `gptel-make-openai'."
+  (let ((url (format "http://%s:8686/v1/models" (llama-swap-get-host)))
+        (curl-args '("-s" "-X" "GET" "-H" "Authorization: Bearer sk-empty")))
+    (condition-case err
+        (with-temp-buffer
+          ;; Execute curl synchronously
+          (apply #'call-process "curl" nil t nil (append curl-args (list url)))
+          (goto-char (point-min))
+          ;; Check if we actually got data
+          (if (= (point-min) (point-max))
+              (error "Empty response from llama-swap")
+            (let* ((json-object-type 'plist)
+                   (json-array-type 'list)
+                   (json-key-type 'keyword)
+                   (resp (json-read))
+                   (data (plist-get resp :data)))
+              ;; Map JSON data to gptel model specs
+              (mapcar (lambda (m)
+                        (let ((id (intern (plist-get m :id)))
+                              ;; Extract context window from nested meta structure
+                              (ctx (map-nested-elt m '(:meta :llamaswap :context_window))))
+                          (if ctx
+                              ;; Return (name :context-window N :capabilities (tool))
+                              ;; We assume tool support for these models, or remove :capabilities if unsure
+                              (list id :context-window ctx :capabilities '(tool))
+                            ;; Return just the symbol if no metadata found
+                            id)))
+                      data))))
+      ;; Fallback in case the server is down or curl fails
+      (error
+       (message "gptel: Could not fetch llama-swap models (%s). Using defaults." err)
+       '(vllm-Qwen3-Coder-30B llamacpp-gpt-oss-120b)))))
+
+(setq gptel-backend
+      (gptel-make-openai "llm-multi-backend"
+        :stream t
+        :protocol "http"
+        :host (format "%s:8688" (llama-swap-get-host))
+        :key "sk-empty"
+        :models (llama-swap-fetch-models)))
+
