@@ -32,7 +32,8 @@
 (require 'map)
 
 (defun llama-swap-get-host ()
-  "Return the appropriate host address based on the container environment."
+  "Return the appropriate host address based on the container environment.
+This is a heuristic for how *I* use emacs (sometimes on localhost, sometimes in a container)."
   (if (string= (getenv "container") "podman")
       "host.docker.internal"
     "localhost"))
@@ -65,7 +66,7 @@ Parses keys as keywords to ensure plist-get works correctly."
                         (let ((id (intern (plist-get m :id)))
                               (ctx (map-nested-elt m '(:meta :llamaswap :context_window))))
                           (if ctx
-                              (list id :context-window ctx :capabilities '(tool))
+                              (list id :context-window (/ (float ctx) 1000) :capabilities '(tool))
                             id)))
                       data))))
       (error

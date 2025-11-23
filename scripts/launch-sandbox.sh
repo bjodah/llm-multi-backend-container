@@ -21,6 +21,7 @@ main() {
         -w /work \
         -v $CACHE_DIR:/cache \
         -v $REPO_ROOT/env-sandbox/root/.emacs.d/init.el:/root/.emacs.d/init.el \
+        -v $REPO_ROOT/env-sandbox/root/.emacs.d/lisp:/root/.emacs.d/lisp \
         -v $REPO_ROOT/configs/.codex:/root/.codex \
         -v $REPO_ROOT/configs/opencode:/root/.config/opencode \
         -v $REPO_ROOT/configs/.aider.model.metadata.json:/root/.aider.model.metadata.json \
