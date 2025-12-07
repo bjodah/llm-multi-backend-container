@@ -343,19 +343,22 @@ models:
           --served-model-name ${MODEL_ID}
           --model openai/gpt-oss-20b
           --async-scheduling 
-          --gpu-memory-utilization 0.92
+          --gpu-memory-utilization 0.65
           --max-model-len ${context_window}
           --max-num-seqs 2
           --max-num-batched-tokens 1024
           --trust-remote-code
           --tool-server demo 
           --tool-call-parser openai
+          --reasoning-parser openai_gptoss
           --enable-auto-tool-choice
-          --reasoning-effort medium
 # --tensor-parallel-size 1
     proxy: http://127.0.0.1:${PORT}
     metadata:
       context_window: ${context_window}
+      request_params:
+        - reasoning_effort: [low, medium, high]
+      capabilities: [tool, reasoning]
     ttl: 3600
       
 
@@ -376,7 +379,7 @@ models:
     proxy: http://127.0.0.1:${PORT}
     metadata:
       context_window: ${context_window}
-    ttl: 3600
+    ttl: 7200
 
   vllm-SmolLM2-1.7B-Instruct:
     macros:
