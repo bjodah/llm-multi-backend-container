@@ -53,23 +53,160 @@ macros:
 
 models:
 
-  llamacpp-Qwen3-Coder-30B-A3B-it-Q4:
+  # Qwen3-Coder-30B is currently my main model (fast & supports FIM)
+  vllm-Qwen3-Coder-30B:
     macros:
-      context_window: 61000 #65536
+      context_window: 48000
     cmd: |
-      ${llamacpp-gpu}
-      #${lcp_k8v8}
-      ${lcp_kv16}
-      --hf-repo unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_XL
-      --ctx-size ${context_window}
-      ${lcp_batching_qwen3}
-      ${lcp_sampling_qwen3}
+      python3 -m vllm.entrypoints.openai.api_server
+        --port ${PORT}
+        --served-model-name ${MODEL_ID}
+        --model cpatonn/Qwen3-Coder-30B-A3B-Instruct-AWQ-4bit
+        --gpu-memory-utilization 0.92
+        --max-model-len ${context_window}
+        --max-num-seqs 1
+        --dtype float16
+        --tool-call-parser qwen3_coder
+        --enable-auto-tool-choice
     proxy: http://127.0.0.1:${PORT}
     metadata:
       context_window: ${context_window}
+      capabilities: [tool]
+    ttl: 7200
+
+  # If I need TTS and STT models simultaneously I fallback to gpt-oss-20b:
+  vllm-gpt-oss-20b:
+    macros:
+      #context_window: 131072
+      context_window: 32768
+    cmd: |
+      env PYTHON_EXECUTION_BACKEND=dangerously_use_uv 
+        python3 -m vllm.entrypoints.openai.api_server
+          --port ${PORT}
+          --served-model-name ${MODEL_ID}
+          --model openai/gpt-oss-20b
+          --async-scheduling 
+          --gpu-memory-utilization 0.65
+          --max-model-len ${context_window}
+          --max-num-seqs 2
+          --max-num-batched-tokens 1024
+          --trust-remote-code
+          --tool-server demo 
+          --tool-call-parser openai
+          --reasoning-parser openai_gptoss
+          --enable-auto-tool-choice
+    proxy: http://127.0.0.1:${PORT}
+    metadata:
+      context_window: ${context_window}
+      request_params:
+        - reasoning_effort: [low, medium, high]
+      capabilities: [tool, reasoning]
     ttl: 3600
 
-  # Qwen3-Coder-30B is currently my main model (fast & supports FIM)
+  # If we accept a bit slower generation, devstral-2 is really good:
+  vllm-Devstral-Small-2-24B:
+    macros:
+      context_window: 48000
+    cmd: |
+      python3 -m vllm.entrypoints.openai.api_server
+        --port ${PORT}
+        --served-model-name ${MODEL_ID}
+        #--model mistralai/Devstral-Small-2-24B-Instruct-2512
+        --model cyankiwi/Devstral-Small-2-24B-Instruct-2512-AWQ-4bit
+        --tool-call-parser mistral
+        --enable-auto-tool-choice
+        --gpu-memory-utilization 0.92
+        --max-model-len ${context_window}
+        --max-num-seqs 1
+        --dtype float16
+    proxy: http://127.0.0.1:${PORT}
+    metadata:
+      context_window: ${context_window}
+      capabilities: [tool]
+    ttl: 7200
+
+  # If we accept sloer generation yet (partial offloading), we have gps-oss-120b and glm-4.5-air:
+  llamacpp-gpt-oss-120b:
+    macros:
+      context_window: 65536
+    cmd: |
+      llama-server
+        --log-file ${MODEL_ID}
+      --port ${PORT}
+      --hf-repo unsloth/gpt-oss-120b-GGUF:Q4_K_XL
+      #--n-cpu-moe 36  <--- hardly using any VRAM
+      --n-cpu-moe 26
+      #--n-cpu-moe 24  <-- not enough VRAM
+      --n-gpu-layers 999
+      --swa-full
+      --no-mmap
+      --jinja
+      --flash-attn on
+      --ctx-size ${context_window}
+      # --reasoning-format none
+      # https://github.com/ggml-org/llama.cpp/pull/15238
+      # https://github.com/ggml-org/llama.cpp/pull/15181
+      --chat-template-kwargs '{"reasoning_effort": "high"}'
+      --temp 1.0
+      --top-p 0.99
+      --min-p 0.005
+      --top-k 100
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 3600
+
+  llamacpp-glm-4.5-air:
+    macros:
+      context_window: 65536
+    cmd: |
+      llama-server
+        --log-file ${MODEL_ID}
+      --port ${PORT}
+      --hf-repo unsloth/GLM-4.5-Air-GGUF:IQ4_XS
+      --n-cpu-moe 36
+      --n-gpu-layers 999
+      --no-mmap
+      --jinja
+      --reasoning-format deepseek
+      --cache-type-k q8_0
+      --cache-type-v q5_1
+      --flash-attn on
+      --ctx-size ${context_window}
+      #--chat-template-kwargs '{"enable_thinking": "False"}'
+      # ^--- doesn't work? https://www.reddit.com/r/LocalLLaMA/comments/1mdwh31/how_can_you_turn_off_reasoning_for_certain_tasks/
+      --temp 0.6
+      --top-p 0.99
+      --min-p 0.005
+      --top-k 60
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 3600
+
+
+  # Below we have various configs I've tried at some point, but not using
+  # actively any longer...
+  
+  llamacpp-devstral-small-2:
+    macros:
+      context_window: 32768
+    cmd: |
+      ${llamacpp-gpu}
+      ${lcp_k8v8}
+      --hf-repo unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF:Q5_K_XL
+      --ctx-size ${context_window}
+      --min-p 0.01
+      --dry-multiplier 0.3
+      --dry-allowed-length 3
+      --dry-penalty-last-n 256
+      --temp 0.15
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 3600
+  
+
   llamacpp-Qwen3-Coder-30B-A3B-it:
     macros:
       context_window: 16384
@@ -332,54 +469,6 @@ models:
     proxy: http://127.0.0.1:11901
     ttl: 3600
 
-  vllm-gpt-oss-20b:
-    macros:
-      #context_window: 131072
-      context_window: 32768
-    cmd: |
-      env PYTHON_EXECUTION_BACKEND=dangerously_use_uv 
-        python3 -m vllm.entrypoints.openai.api_server
-          --port ${PORT}
-          --served-model-name ${MODEL_ID}
-          --model openai/gpt-oss-20b
-          --async-scheduling 
-          --gpu-memory-utilization 0.65
-          --max-model-len ${context_window}
-          --max-num-seqs 2
-          --max-num-batched-tokens 1024
-          --trust-remote-code
-          --tool-server demo 
-          --tool-call-parser openai
-          --reasoning-parser openai_gptoss
-          --enable-auto-tool-choice
-# --tensor-parallel-size 1
-    proxy: http://127.0.0.1:${PORT}
-    metadata:
-      context_window: ${context_window}
-      request_params:
-        - reasoning_effort: [low, medium, high]
-      capabilities: [tool, reasoning]
-    ttl: 3600
-      
-
-  vllm-Qwen3-Coder-30B:
-    macros:
-      context_window: 48000 # (+ (expt 2 14) (expt 2 15)) #32768
-    cmd: |
-      python3 -m vllm.entrypoints.openai.api_server
-        --port ${PORT}
-        --served-model-name ${MODEL_ID}
-        --model cpatonn/Qwen3-Coder-30B-A3B-Instruct-AWQ-4bit
-        --gpu-memory-utilization 0.92
-        --max-model-len ${context_window}
-        --max-num-seqs 1
-        --dtype float16
-        --tool-call-parser qwen3_coder
-        --enable-auto-tool-choice
-    proxy: http://127.0.0.1:${PORT}
-    metadata:
-      context_window: ${context_window}
-    ttl: 7200
 
   vllm-SmolLM2-1.7B-Instruct:
     macros:
@@ -678,64 +767,6 @@ models:
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
-  llamacpp-gpt-oss-120b:
-    macros:
-      context_window: 65536
-    cmd: |
-      llama-server
-        --log-file ${MODEL_ID}
-      --port ${PORT}
-      --hf-repo unsloth/gpt-oss-120b-GGUF:Q4_K_XL
-      #--n-cpu-moe 36  <--- hardly using any VRAM
-      --n-cpu-moe 26
-      #--n-cpu-moe 24  <-- not enough VRAM
-      --n-gpu-layers 999
-      --swa-full
-      --no-mmap
-      --jinja
-      --flash-attn on
-      --ctx-size ${context_window}
-      # --reasoning-format none
-      # https://github.com/ggml-org/llama.cpp/pull/15238
-      # https://github.com/ggml-org/llama.cpp/pull/15181
-      --chat-template-kwargs '{"reasoning_effort": "high"}'
-      --temp 1.0
-      --top-p 0.99
-      --min-p 0.005
-      --top-k 100
-    metadata:
-      context_window: ${context_window}
-    proxy: http://127.0.0.1:${PORT}
-    ttl: 3600
-
-  llamacpp-glm-4.5-air:
-    macros:
-      context_window: 65536
-    cmd: |
-      llama-server
-        --log-file ${MODEL_ID}
-      --port ${PORT}
-      --hf-repo unsloth/GLM-4.5-Air-GGUF:IQ4_XS
-      --n-cpu-moe 36
-      --n-gpu-layers 999
-      --no-mmap
-      --jinja
-      --reasoning-format deepseek
-      --cache-type-k q8_0
-      --cache-type-v q5_1
-      --flash-attn on
-      --ctx-size ${context_window}
-      #--chat-template-kwargs '{"enable_thinking": "False"}'
-      # ^--- doesn't work? https://www.reddit.com/r/LocalLLaMA/comments/1mdwh31/how_can_you_turn_off_reasoning_for_certain_tasks/
-      --temp 0.6
-      --top-p 0.99
-      --min-p 0.005
-      --top-k 60
-    metadata:
-      context_window: ${context_window}
-    proxy: http://127.0.0.1:${PORT}
-    ttl: 3600
-
   llamacpp-seed-oss-36b:
     macros:
       context_window: 65536
@@ -756,3 +787,19 @@ models:
       context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
+
+  # llamacpp-Qwen3-Coder-30B-A3B-it-Q4:
+  #   macros:
+  #     context_window: 61000 #65536
+  #   cmd: |
+  #     ${llamacpp-gpu}
+  #     #${lcp_k8v8}
+  #     ${lcp_kv16}
+  #     --hf-repo unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_XL
+  #     --ctx-size ${context_window}
+  #     ${lcp_batching_qwen3}
+  #     ${lcp_sampling_qwen3}
+  #   proxy: http://127.0.0.1:${PORT}
+  #   metadata:
+  #     context_window: ${context_window}
+  #   ttl: 3600
