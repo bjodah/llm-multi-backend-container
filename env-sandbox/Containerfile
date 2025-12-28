@@ -31,4 +31,5 @@ RUN echo 'if [ -d $HOME/.bash_aliases.d ]; then for f in $HOME/.bash_aliases.d/*
 
 COPY /root /root
 
-RUN emacs --batch --eval "(load-file \"/root/.emacs.d/init.el\")"
+RUN emacs --batch --eval "(load-file \"/root/.emacs.d/init.el\")" \
+    && uv tool install mistral-vibe

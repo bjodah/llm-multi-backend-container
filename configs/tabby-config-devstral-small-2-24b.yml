@@ -1,0 +1,27 @@
+network:
+  host: 0.0.0.0  # change to 127.0.0.1 if podman uses --net host
+  port: 11906
+
+# Options for logging
+logging:
+  # Enable prompt logging (default: False).
+  log_prompt: false
+
+  # Enable generation parameter logging (default: False).
+  log_generation_params: true
+
+  # Enable request logging (default: False).
+  # NOTE: Only use this for debugging!
+  log_requests: true
+
+model:
+  # env HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download DeathGodlike/Devstral-Small-2-24B-Instruct-2512_EXL3 --revision "H8-6.0BPW"
+  model_name: /root/.cache/huggingface/hub/models--DeathGodlike--Devstral-Small-2-24B-Instruct-2512_EXL3/snapshots/5929d4585fe00cbcaf2f5b8d81787b215885b62e
+
+
+  max_seq_len: 27500  #
+  cache_mode: Q8
+
+
+sampling:
+  override_preset: sampling-devstral-2

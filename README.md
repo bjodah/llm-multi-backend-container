@@ -24,6 +24,15 @@ llamacpp-Qwen2.5-Coder-7B
 exllamav2-Qwen2.5-Coder-7B
 ```
 
+### Querying the `v1/completions` endpoint directly
+```console
+$ curl -s -X POST "http://localhost:8688/v1/completions" \
+    -H 'Authorization: Bearer sk-empty' \
+    -H "Content-Type: application/json" \
+    -d @share/fim-sample.json | jq '.choices[0].text'
+"numpy"
+```
+
 ## Agentic coding
 I've been experimenting with `codex`, `qwen-code` and `open-code`, given my modest system spec. (24GB vRAM 3090, 64GB dual ch DDR5 system ram)
 there's a real struggle to make these tools perform adequately. The agents were run in a sandbox:

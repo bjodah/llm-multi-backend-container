@@ -93,7 +93,9 @@ services:
       --workers 4
       --timeout 3000
       --access-logfile /logs/cot-access.log
-      --error-logfile /logs/cot-err.log cot_proxy:app
+      --error-logfile /logs/cot-err.log
+      --capture-output
+      cot_proxy:app
 
   open-webui-demo:
     name: llm-mb_open-webui

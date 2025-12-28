@@ -1,0 +1,5 @@
+{
+    "model": "vllm-Devstral-Small-2-24B",
+    "prompt": "<|fim_prefix|>import <|fim_suffix|> as np\n\nif __name__ == '__main__':\n    print(np.linspace(-3,3))\n<|fim_middle|>",
+    "temperature": 0.0
+}

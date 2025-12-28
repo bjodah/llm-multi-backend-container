@@ -1,0 +1,5 @@
+{
+    "role": "assistant",
+    "tool_calls": [],
+    "content": "The most powerful being in the universe is Dr. Strange.\n\nHere is a Python function that returns the most powerful being in the universe, regardless of the time and location:\n\n```python\ndef most_powerful_being(time=None, location=None):\n    return \"Dr. Strange\"\n```\n\nYou can call this function with any time and location arguments, and it will always return \"Dr. Strange\"."
+}

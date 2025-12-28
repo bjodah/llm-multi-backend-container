@@ -1,0 +1,16 @@
+# resources:
+#   - https://github.com/mistralai/mistral-vibe/issues/70
+[[providers]]
+name = "llama-swap"
+api_base = "http://host.docker.internal:8688/v1"
+api_key_env_var = "LLAMA_API_KEY"
+api_style = "openai"
+backend = "generic"
+
+[[models]]
+name = "vllm-Devstral-Small-2-24B"  # cyankiwi, AWQ-4bit
+provider = "llama-swap"
+alias = "vllm_local"
+temperature = 0.15
+input_price = 0.0
+output_price = 0.0

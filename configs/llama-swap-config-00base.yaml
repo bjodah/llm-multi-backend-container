@@ -56,7 +56,7 @@ models:
   # Qwen3-Coder-30B is currently my main model (fast & supports FIM)
   vllm-Qwen3-Coder-30B:
     macros:
-      context_window: 48000
+      context_window: 44000
     cmd: |
       python3 -m vllm.entrypoints.openai.api_server
         --port ${PORT}
@@ -86,7 +86,7 @@ models:
           --served-model-name ${MODEL_ID}
           --model openai/gpt-oss-20b
           --async-scheduling 
-          --gpu-memory-utilization 0.65
+          --gpu-memory-utilization 0.68
           --max-model-len ${context_window}
           --max-num-seqs 2
           --max-num-batched-tokens 1024
@@ -102,28 +102,6 @@ models:
         - reasoning_effort: [low, medium, high]
       capabilities: [tool, reasoning]
     ttl: 3600
-
-  # If we accept a bit slower generation, devstral-2 is really good:
-  vllm-Devstral-Small-2-24B:
-    macros:
-      context_window: 48000
-    cmd: |
-      python3 -m vllm.entrypoints.openai.api_server
-        --port ${PORT}
-        --served-model-name ${MODEL_ID}
-        #--model mistralai/Devstral-Small-2-24B-Instruct-2512
-        --model cyankiwi/Devstral-Small-2-24B-Instruct-2512-AWQ-4bit
-        --tool-call-parser mistral
-        --enable-auto-tool-choice
-        --gpu-memory-utilization 0.92
-        --max-model-len ${context_window}
-        --max-num-seqs 1
-        --dtype float16
-    proxy: http://127.0.0.1:${PORT}
-    metadata:
-      context_window: ${context_window}
-      capabilities: [tool]
-    ttl: 7200
 
   # If we accept sloer generation yet (partial offloading), we have gps-oss-120b and glm-4.5-air:
   llamacpp-gpt-oss-120b:
@@ -184,9 +162,42 @@ models:
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
+  # If we accept a bit slower generation, devstral-2 is supposedly really good:
+  vllm-Devstral-Small-2-24B:
+    macros:
+      context_window: 38000
+    cmd: |
+      python3 -m vllm.entrypoints.openai.api_server
+        --port ${PORT}
+        --served-model-name ${MODEL_ID}
+        #--model mistralai/Devstral-Small-2-24B-Instruct-2512
+        --model cyankiwi/Devstral-Small-2-24B-Instruct-2512-AWQ-4bit
+        --tool-call-parser mistral
+        --enable-auto-tool-choice
+        --gpu-memory-utilization 0.93
+        --max-model-len ${context_window}
+        --max-num-seqs 1
+        --dtype float16
+    proxy: http://127.0.0.1:${PORT}
+    metadata:
+      context_window: ${context_window}
+      capabilities: [tool]
+    ttl: 7200
 
   # Below we have various configs I've tried at some point, but not using
   # actively any longer...
+
+  exllamav3-Devstral-Small-2-24B:
+    macros:
+      context_window: 27500  # max_seq_len
+    cmd: |
+      env --chdir /opt/tabbyAPI python3 main.py
+        --config /configs/tabby-config-devstral-small-2-24b.yml
+    proxy: http://127.0.0.1:11906
+    metadata:
+      context_window: ${context_window}
+    ttl: 3600
+
   
   llamacpp-devstral-small-2:
     macros:
