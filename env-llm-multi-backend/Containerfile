@@ -176,3 +176,5 @@ RUN \
     && git fetch && git pull \
     && cmake --build /opt/llama.cpp/build --parallel --verbose \
     && python3 -m pip install gpt-oss
+
+# python -c "from formatron.schemas import dict_inference"  # <-- to bisect RUN-statements

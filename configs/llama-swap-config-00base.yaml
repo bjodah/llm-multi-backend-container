@@ -199,7 +199,7 @@ models:
     ttl: 3600
 
   
-  llamacpp-devstral-small-2:
+  llamacpp-Devstral-Small-2-24B:
     macros:
       context_window: 32768
     cmd: |

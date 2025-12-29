@@ -6,7 +6,7 @@ class Case04ChattingTech(CaseBase):
     def __init__(self, cfg: Config):
         super().__init__(cfg)
         self.messages = [
-            {"role": "system", "content": CaseBase.SYSTEM_PROMPT},
+            {"role": "system", "content": self.SYSTEM_PROMPT},
             {
                 "role": "user",
                 "content": [

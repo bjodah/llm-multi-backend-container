@@ -84,7 +84,7 @@ def send_messages(*, messages, cfg: Config, tools: list=[]):
     origin_messages_len = len(messages)
     while has_tool_calls:
         response = client.chat.completions.create(
-            model=model,
+            model=cfg.model,
             messages=messages,
             temperature=cfg.temperature,
             max_tokens=cfg.max_tokens,

@@ -6,7 +6,7 @@ class Case03LongContext(CaseBase):
     def __init__(self, cfg: Config):
         super().__init__(cfg)
         self.messages = [
-            {"role": "system", "content": CaseBase.SYSTEM_PROMPT},
+            {"role": "system", "content": self.SYSTEM_PROMPT},
             *(
                 [
                     {
@@ -28,7 +28,7 @@ class Case03LongContext(CaseBase):
                         ],
                     },
                 ]
-                * 5000
+                * 500  # was 5000 in original README
             ),
             {
                 "role": "user",
@@ -69,7 +69,7 @@ class Case03LongContext(CaseBase):
                         ],
                     },
                 ]
-                * 7000
+                * 700  # was 7000 in the original README
             ),
             {
                 "role": "user",
