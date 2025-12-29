@@ -18,6 +18,7 @@ model:
   # env HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download DeathGodlike/Devstral-Small-2-24B-Instruct-2512_EXL3 --revision "H8-6.0BPW"
   model_name: /root/.cache/huggingface/hub/models--DeathGodlike--Devstral-Small-2-24B-Instruct-2512_EXL3/snapshots/5929d4585fe00cbcaf2f5b8d81787b215885b62e
 
+  prompt_template: devstral-2-template
 
   max_seq_len: 27500  #
   cache_mode: Q8

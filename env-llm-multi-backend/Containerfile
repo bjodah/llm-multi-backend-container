@@ -177,4 +177,6 @@ RUN \
     && cmake --build /opt/llama.cpp/build --parallel --verbose \
     && python3 -m pip install gpt-oss
 
+RUN python3 -m pip install --upgrade --upgrade-strategy=eager formatron 'numpy<2.3' 'pydantic==2.11.0'
+
 # python -c "from formatron.schemas import dict_inference"  # <-- to bisect RUN-statements

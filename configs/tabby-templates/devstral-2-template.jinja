@@ -1,0 +1,89 @@
+{# TODO: use this instead: https://huggingface.co/mistralai/Devstral-Small-2-24B-Instruct-2512/blob/main/chat_template.jinja #}
+{# Metadata: use Mistral's [INST] markers and EOS per Mistral docs:contentReference[oaicite:0]{index=0} #}
+
+{# TabbyAPI tool-calling metadata (tool_start, tool_end) per docs:contentReference[oaicite:1]{index=1} #}
+{%- set tool_start = "[TOOL_CALLS]" -%}
+{%- set tool_end = "[/TOOL_CALLS]" -%}
+
+
+{%- set tools_description = "" %}
+{%- set has_tools = false %}
+
+{%- if tools is defined and tools is not none and tools|length > 0 %}
+
+    {%- set has_tools = true %}
+    {%- set tools_description = "[AVAILABLE_TOOLS]" + (tools | tojson) + "[/AVAILABLE_TOOLS]" %}
+
+{%- endif %}
+
+{# Initial system prompt including available tools (TabbyAPI example):contentReference[oaicite:2]{index=2} #}
+{%- set initial_system_prompt %}
+You are an assistant that helps answer user questions. Use the available tools when needed.
+Available tools:
+{{- tools_description }}
+{% endset %}
+
+
+
+{{ bos_token }}
+{% if messages and messages[0].role == "system" %}
+  {%- if messages[0].content is string %}
+    {{- '[SYSTEM_PROMPT]' + messages[0].content + tools_description + '[/SYSTEM_PROMPT]' }}
+  {%- else %}
+    {{- '[SYSTEM_PROMPT]' + messages[0].content[0].text + tools_description + '[/SYSTEM_PROMPT]' }}
+  {%- endif %}
+{%- set start_idx = 1 -%}
+{% else %}
+[SYSTEM_PROMPT]{{ initial_system_prompt }}[/SYSTEM_PROMPT]
+{%- set start_idx = 0 -%}
+{% endif %}
+
+{%- for message in messages[start_idx:] %}
+    {%- if message['role'] == 'user' %}
+      {%- if message['content'] is string %}
+          {{- '[INST]' + message['content'] + '[/INST]' }}
+      {%- else %}
+          {{- '[INST]' }}
+          {%- for block in message['content'] %}
+              {%- if block['type'] == 'text' %}
+                  {{- block['text'] }}
+              {%- elif block['type'] in ['image', 'image_url'] %}
+                  {{- '[IMG]' }}
+              {%- else %}
+                  {{- raise_exception('Only text and image blocks are supported in message content!') }}
+              {%- endif %}
+          {%- endfor %}
+          {{- '[/INST]' }}
+      {%- endif %}
+  {%- elif message['role'] == 'assistant' %}
+        {%- if message['content'] is string %}
+            {{- message['content'] }}
+        {%- elif message['content'] is iterable  %}
+            {{- message['content'][0]['text'] }}
+        {%- endif %}
+
+
+        {%- if message['tool_calls'] is defined and message['tool_calls'] is not none %}
+            {%- for tool in message['tool_calls'] %}
+            	{%- set toolname = tool['function']['name']  %}
+                {%- set arguments = tool['function']['arguments'] %}
+                {%- if arguments is not string %}
+                    {%- set arguments = arguments|tojson %}
+                {%- endif %}
+                
+                {{ message['content'] }}
+            {%- endfor %}
+        {%- endif %}
+
+        {{- eos_token }}
+
+    {%- elif message["role"] == "tool_results" or message["role"] == "tool" %}
+        {%- if message.content is defined and message.content.content is defined %}
+            {%- set content = message.content.content %}
+        {%- else %}
+            {%- set content = message.content %}
+        {%- endif %}
+        {{- "[TOOL_RESULTS]" + content|string + "[/TOOL_RESULTS]" }}
+    
+    {%- endif %}
+{% endfor %}
