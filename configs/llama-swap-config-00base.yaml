@@ -189,7 +189,7 @@ models:
 
   exllamav3-Devstral-Small-2-24B:
     macros:
-      context_window: 27500  # max_seq_len
+      context_window: 48000  # max_seq_len
     cmd: |
       env --chdir /opt/tabbyAPI python3 main.py
         --config /configs/tabby-config-devstral-small-2-24b.yml

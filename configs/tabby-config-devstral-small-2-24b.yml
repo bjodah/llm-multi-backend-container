@@ -20,7 +20,7 @@ model:
 
   prompt_template: devstral-2-template
 
-  max_seq_len: 27500  #
+  max_seq_len: 48000  #
   cache_mode: Q8
 
 
