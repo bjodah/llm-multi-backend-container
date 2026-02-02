@@ -1,6 +1,6 @@
 # llama-swap config. Note that there are environment variables set in compose.yml that
 # affects the behviour of some inference engines, grep for e.g. LLAMA_ARG_THREADS, VLLM_API_KEY, etc.
-healthCheckTimeout: 900  # 15minutes, downloading models can take a while
+healthCheckTimeout: 2700  # 45minutes, downloading models can take a while
 
 logLevel: debug # info warn
 
@@ -50,6 +50,15 @@ macros:
     --frequency-penalty 0.005
     --repeat-penalty 1.01
     --repeat-last-n 16
+
+groups:
+
+  "fim-and-chat":
+    swap: false
+    exclusive: true
+    members:
+      - "llamacpp-Mellum-4b-sft-all"
+      - "vllm-gpt-oss-20b"
 
 models:
 
@@ -101,7 +110,7 @@ models:
       request_params:
         - reasoning_effort: [low, medium, high]
       capabilities: [tool, reasoning]
-    ttl: 3600
+    ttl: 7200
 
   # If we accept sloer generation yet (partial offloading), we have gps-oss-120b and glm-4.5-air:
   llamacpp-gpt-oss-120b:
@@ -217,7 +226,6 @@ models:
       context_window: ${context_window}
     ttl: 3600
 
-  
   llamacpp-Devstral-Small-2-24B:
     macros:
       context_window: 32768
@@ -236,6 +244,24 @@ models:
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
   
+  llamacpp-Mellum-4b-sft-all:
+    macros:
+      context_window: 4096
+    cmd: |
+      ${llamacpp-gpu}
+      ${lcp_k8v8}
+      --hf-repo LLukas22/Mellum-4b-sft-all-Q4_K_M-GGUF:Q4_K_M
+      #--hf-repo DevQuasar/JetBrains.Mellum-4b-sft-all-GGUF:Q5_K_M
+      --ctx-size ${context_window}
+      --min-p 0.01
+      --dry-multiplier 0.3
+      --dry-allowed-length 3
+      --dry-penalty-last-n 256
+      --temp 0.15
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 7200
 
   llamacpp-Qwen3-Coder-30B-A3B-it:
     macros:
