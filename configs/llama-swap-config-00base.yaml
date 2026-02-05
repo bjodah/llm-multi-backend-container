@@ -112,7 +112,7 @@ models:
       capabilities: [tool, reasoning]
     ttl: 7200
 
-  # If we accept sloer generation yet (partial offloading), we have gps-oss-120b and glm-4.5-air:
+  # If we accept sloer generation yet (partial offloading), we have gps-oss-120b, glm-4.5-air, qwen3-coder-next:
   llamacpp-gpt-oss-120b:
     macros:
       context_window: 65536
@@ -142,6 +142,27 @@ models:
       context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
+
+  llamacpp-Qwen3-Coder-Next-Q5:
+    macros:
+      context_window: 131072
+      #65536
+    cmd: |
+      ${llamacpp-gpu}
+      ${lcp_kv16}
+      --port ${PORT}
+      --hf-repo unsloth/Qwen3-Coder-Next-GGUF:Q5_K_XL
+      #--n-cpu-moe 42  <--- hardly using any VRAM
+      --n-cpu-moe 36
+      #--n-cpu-moe 30  <-- not enough VRAM
+      --ctx-size ${context_window}
+      ${lcp_batching_qwen3}
+      ${lcp_sampling_qwen3}
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 3600
+
 
   llamacpp-glm-4.5-air:
     macros:

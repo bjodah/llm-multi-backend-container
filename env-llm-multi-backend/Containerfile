@@ -169,14 +169,31 @@ RUN curl -Ls https://github.com/mostlygeek/llama-swap/releases/download/v172/lla
 #     && bash -c ". /root/.nvm/nvm.sh && make clean all" \
 #     && cp /tmp/llama-swap/build/llama-swap-linux-amd64 /usr/local/bin/llama-swap
 
+RUN python3 -m pip install --upgrade --upgrade-strategy=eager formatron 'numpy<2.3' 'pydantic==2.11.7' gpt-oss
+
 RUN \
     --mount=type=cache,target=/root/.ccache,sharing=locked \
     --mount=type=cache,target=/root/.cache,sharing=locked \
     cd /opt/llama.cpp \
+    && sudo apt-get update && apt-get -y install libssl-dev \
     && git fetch && git pull \
-    && cmake --build /opt/llama.cpp/build --parallel --verbose \
-    && python3 -m pip install gpt-oss
+    && CMAKE_PREFIX_PATH=/usr/local/cuda cmake \
+         -DLLAMA_CURL=ON \
+         -DLLAMA_OPENSSL=ON \
+         -DGGML_RPC=ON \
+         -DGGML_CUDA=ON \
+         -DGGML_CUDA_FA_ALL_QUANTS=ON \
+         -DGGML_SCHED_MAX_COPIES=1 \
+         -DGGML_CUDA_FORCE_MMQ=ON \
+         -DCMAKE_CUDA_ARCHITECTURES="${CUDA_ARCHITECTURES}" \
+         -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache" \
+         -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
+         -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
+         -S /opt/llama.cpp \
+         -B /opt/llama.cpp/build \
+         --fresh \
+    && cmake --build /opt/llama.cpp/build --parallel --verbose
 
-RUN python3 -m pip install --upgrade --upgrade-strategy=eager formatron 'numpy<2.3' 'pydantic==2.11.0'
+
 
 # python -c "from formatron.schemas import dict_inference"  # <-- to bisect RUN-statements

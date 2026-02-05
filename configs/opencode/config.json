@@ -6,20 +6,20 @@
             "npm" : "@ai-sdk/openai-compatible",
             "options": {
                 "baseURL": "http://host.docker.internal:8688/v1",
-                "apiKey": "{env:LLAMA_API_KEY}",
+                "apiKey": "{env:LLAMA_API_KEY}"
             },
             "models": {
+                "llamacpp-Qwen3-Coder-Next-Q5": {
+                    "name": "llamacpp-Qwen3-Coder-Next-Q5",
+                    "limit": {
+                        "context": 131072,
+                        "output": 32000
+                    }
+                },
                 "vllm-Qwen3-Coder-30B": {
                     "name": "vllm-Qwen3-Coder-30B",
                     "limit": {
                         "context": 48000,
-                        "output": 8000
-                    }
-                },
-                "vllm-gpt-oss-20b": {
-                    "name": "vllm-gpt-oss-20b",
-                    "limit": {
-                        "context": 131072,
                         "output": 8000
                     }
                 },
