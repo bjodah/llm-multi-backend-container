@@ -143,17 +143,17 @@ models:
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
-  llamacpp-Qwen3-Coder-Next-Q5:
+  llamacpp-Qwen3-Coder-Next:
     macros:
       context_window: 131072
       #65536
     cmd: |
       ${llamacpp-gpu}
       ${lcp_kv16}
-      --port ${PORT}
       --hf-repo unsloth/Qwen3-Coder-Next-GGUF:Q5_K_XL
       #--n-cpu-moe 42  <--- hardly using any VRAM
       --n-cpu-moe 36
+      --no-mmap
       #--n-cpu-moe 30  <-- not enough VRAM
       --ctx-size ${context_window}
       ${lcp_batching_qwen3}
