@@ -59,6 +59,8 @@ groups:
     members:
       - "llamacpp-Mellum-4b-sft-all"
       - "vllm-gpt-oss-20b"
+      - "llamacpp-Qwen2.5-Coder-7B"
+
 
 models:
 

@@ -142,15 +142,6 @@ RUN \
 
 ENV PATH=/configs:/opt/llama.cpp/build/bin:$PATH
 
-# install exllamav3
-RUN \
-    --mount=type=cache,target=/root/.cache/pip,sharing=locked \
-    --mount=type=cache,target=/root/.cache/huggingface,sharing=locked \
-    git clone https://github.com/turboderp-org/exllamav3 /opt/exllamav3 \
-    && cd /opt/exllamav3 \
-    && python3 setup.py build_ext -i \
-    && python3 -m pip install --no-deps --no-build-isolation -e .
-
 RUN \
     --mount=type=cache,target=/root/.cache/go-build,sharing=locked \
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash \
@@ -194,6 +185,15 @@ RUN \
          --fresh \
     && cmake --build /opt/llama.cpp/build --parallel --verbose
 
+
+# install exllamav3
+# RUN \
+#     --mount=type=cache,target=/root/.cache/pip,sharing=locked \
+#     --mount=type=cache,target=/root/.cache/huggingface,sharing=locked \
+#     git clone https://github.com/turboderp-org/exllamav3 /opt/exllamav3 \
+#     && cd /opt/exllamav3 \
+#     && python3 setup.py build_ext -i \
+#     && python3 -m pip install --no-deps --no-build-isolation -e .
 
 
 # python -c "from formatron.schemas import dict_inference"  # <-- to bisect RUN-statements
