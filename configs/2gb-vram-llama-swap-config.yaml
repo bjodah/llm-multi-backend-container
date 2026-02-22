@@ -325,3 +325,24 @@ models:
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
+  
+  # llamacpp-Mellum-4b-sft-all:
+  #   macros:
+  #     context_window: 4096
+  #   cmd: |
+  #     /build/llama.cpp/bin/llama-server
+  #       --log-file /tmp/llamacpp-ling-lite-0415.log
+  #       --port ${PORT}
+  #       --hf-repo ravizhan/Mellum-4b-sft-all-gguf:Q2_K  # <-- Q2_K is broken.
+  #       --ctx-size ${context_window}
+  #       --n-gpu-layers 99
+  #       --min-p 0.01
+  #       --dry-multiplier 0.3
+  #       --dry-allowed-length 3
+  #       --dry-penalty-last-n 256
+  #       --temp 0.05
+  #   metadata:
+  #     context_window: ${context_window}
+  #   proxy: http://127.0.0.1:${PORT}
+  #   ttl: 7200
+

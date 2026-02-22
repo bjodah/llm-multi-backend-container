@@ -1,0 +1,5 @@
+{
+  "model": "llamacpp-Mellum-4b-sft-all",
+  "prompt": "<fim_suffix> as np<fim_prefix>import <fim_middle>",
+  "max_tokens": 100
+}
