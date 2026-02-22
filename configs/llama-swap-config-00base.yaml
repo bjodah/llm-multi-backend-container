@@ -59,7 +59,7 @@ groups:
     members:
       - "llamacpp-Mellum-4b-sft-all"
       - "vllm-gpt-oss-20b"
-      - "llamacpp-Qwen2.5-Coder-7B"
+      - "llamacpp-Qwen3-Embedding-4B"
 
 
 models:
@@ -114,7 +114,7 @@ models:
       capabilities: [tool, reasoning]
     ttl: 7200
 
-  # If we accept sloer generation yet (partial offloading), we have gps-oss-120b, glm-4.5-air, qwen3-coder-next:
+  # If we accept slowr generation yet (partial offloading), we have gps-oss-120b, glm-4.5-air, qwen3-coder-next:
   llamacpp-gpt-oss-120b:
     macros:
       context_window: 65536
@@ -286,6 +286,21 @@ models:
     proxy: http://127.0.0.1:${PORT}
     ttl: 7200
 
+  llamacpp-Qwen3-Embedding-4B:
+    macros:
+      context_window: 8192
+    cmd: |
+      ${llamacpp-gpu}
+      ${lcp_k8v8}
+      --hf-repo Qwen/Qwen3-Embedding-4B-GGUF:Q8_0
+      --ctx-size ${context_window}
+      --embeddings
+      --pooling mean
+      --temp 0.007
+      --top-p 0.99
+      --min-p 0.01
+      --top-k 20
+
   llamacpp-Qwen3-Coder-30B-A3B-it:
     macros:
       context_window: 16384
@@ -439,89 +454,6 @@ models:
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
     
-  llamacpp-devstral-small-2507:
-    macros:
-      context_window: 32768
-    cmd: |
-      llama-server
-        --log-file ${MODEL_ID}
-        --port ${PORT}
-        --hf-repo unsloth/Devstral-Small-2507-GGUF:Q5_K_XL
-        --ctx-size ${context_window}
-        --cache-type-k q8_0
-        --n-gpu-layers 99
-        --jinja
-        # --no-mmproj
-        # --cache-type-v q8_0
-        # --flash-attn on
-        # --samplers 'min_p;dry;temperature;xtc'
-        --min-p 0.01
-        --dry-multiplier 0.3
-        --dry-allowed-length 3
-        --dry-penalty-last-n 256
-        --temp 0.15
-    metadata:
-      context_window: ${context_window}
-    proxy: http://127.0.0.1:${PORT}
-    ttl: 3600
-        
-
-  # the name below works with aider, thanks to:
-  # https://github.com/Aider-AI/aider/blob/8f15269bd063a3c720ced514303b9efcc03fe29f/aider/models.py#L429
-  llamacpp-QwQ-32B:
-    macros:
-      context_window: 32768
-    cmd: |
-      llama-server
-        --log-file ${MODEL_ID}
-        --port ${PORT}
-        --hf-repo unsloth/QwQ-32B-GGUF:Q4_K_XL
-        --n-gpu-layers 99
-        --jinja
-        --ctx-size ${context_window}
-        --cache-type-k q8_0
-        --cache-type-v q5_1
-        --flash-attn on
-        --samplers 'top_k;dry;top_p;min_p;temperature;typ_p;xtc'
-        --top-k 50
-        --dry-multiplier 0.25
-        --dry-allowed-length 5
-        --top-p 0.92
-        --min-p 0.01
-        --temp 0.5
-        # was 0.6
-        #--verbose
-    metadata:
-      context_window: ${context_window}
-    proxy: http://127.0.0.1:${PORT}
-    ttl: 3600
-        
-  llamacpp-DeepCoder-14B:
-    macros:
-      context_window: 65536
-    cmd: |
-      llama-server
-        --log-file ${MODEL_ID}
-        --port ${PORT}
-        --hf-repo bartowski/agentica-org_DeepCoder-14B-Preview-GGUF:Q4_K_L
-        # :Q8_0
-        --n-gpu-layers 999
-        --jinja
-        --ctx-size ${context_window}
-        --cache-type-k q8_0
-        --cache-type-v q8_0
-        --flash-attn on
-        #--samplers "min_p;dry;temperature"  # xtc;
-        --temp 0.6
-        --top-p 0.95
-        #--min-p 0.01
-        # --dry-multiplier 1.0
-        # --dry-allowed-length 3
-        # --dry-penalty-last-n 256
-    metadata:
-      context_window: ${context_window}
-    proxy: http://127.0.0.1:${PORT}
-    ttl: 3600
 
   exllamav3-qwen3-coder-30b:
     macros:
@@ -564,36 +496,6 @@ models:
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
-  vllm-Qwen-QwQ-32B:
-    macros:
-      context_window: 16500
-    cmd: |
-      env VLLM_ATTENTION_BACKEND=FLASHINFER python3
-        -m vllm.entrypoints.openai.api_server
-        --port ${PORT}
-        --served-model-name vllm-Qwen-QwQ-32B
-        --model Qwen/QwQ-32B-AWQ
-        --trust-remote-code
-        --gpu-memory-utilization 0.97
-        --enable-chunked-prefill
-        --enable-prefix-caching
-        --max-model-len ${context_window}
-        --max-num-seqs 128
-        --max-num-batched-tokens 32768
-        --disable-sliding-window
-        --generation-config Qwen/QwQ-32B-AWQ
-        --enable-reasoning
-        --reasoning-parser deepseek_r1
-        --tool-call-parser hermes
-        --kv-cache-dtype fp8_e5m2
-    metadata:
-      context_window: ${context_window}
-    proxy: http://127.0.0.1:${PORT}
-    ttl: 3600
-    #
-    # --max-model-len 32768
-    #  --kv-cache-dtype fp8_e4m3
-    # --enable-auto-tool-choice
 
   vllm-Qwen3-14B:  # ~30 tps for 3090@250W
     macros:
@@ -621,81 +523,6 @@ models:
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
-  vllm-Qwen2.5-VL-7B:
-    macros:
-      context_window: 8192
-    cmd: |
-      python3 -m vllm.entrypoints.openai.api_server
-          --api-key sk-empty
-          --port ${PORT}
-          --served-model-name vllm-Qwen2.5-VL-7B
-          --model Qwen/Qwen2.5-VL-7B-Instruct-AWQ
-          --trust-remote-code
-          --gpu-memory-utilization 0.954330
-          --max-model-len ${context_window}
-          --max-num-batched-tokens 32768
-    metadata:
-      context_window: ${context_window}
-    proxy: http://127.0.0.1:${PORT}
-    ttl: 3600
-    # --kv-cache-dtype fp8_e5m2
-    # (--max-model-len) 32768
-    # --enable-chunked-prefill
-
-  llamacpp-openthinker2-32b:
-    macros:
-      context_window: 16000
-    cmd: |
-      llama-server
-        --log-file ${MODEL_ID}
-        --port ${PORT}
-        --hf-repo bartowski/open-thoughts_OpenThinker2-32B-GGUF:Q4_K_M
-        --n-gpu-layers 999
-        --jinja
-        --ctx-size ${context_window}
-        --cache-type-k q8_0
-        --cache-type-v q8_0
-        --flash-attn on
-        --samplers 'min_p;dry;xtc;temperature'
-        --min-p 0.01
-        --dry-multiplier 1.1
-        # 1.0
-        --dry-allowed-length 4
-        # 3
-        --dry-penalty-last-n 1024
-        --temp 0.6
-    metadata:
-      context_window: ${context_window}
-    proxy: http://127.0.0.1:${PORT}
-    ttl: 3600
-
-  # see https://github.com/LG-AI-EXAONE/EXAONE-Deep
-  llamacpp-exaone-deep-32b:
-    macros:
-      context_window: 32768
-    cmd: |
-      llama-server
-        --log-file ${MODEL_ID}
-        --port ${PORT}
-        --hf-repo bartowski/LGAI-EXAONE_EXAONE-Deep-32B-GGUF:Q4_K_M
-        # 19.3GB
-        --n-gpu-layers 99
-        --jinja
-        --ctx-size ${context_window}
-        --cache-type-k q8_0
-        --cache-type-v q8_0
-        --flash-attn on
-        --samplers 'min_p;dry;xtc;temperature'
-        --min-p 0.02
-        --dry-multiplier 0.5
-        --dry-allowed-length 3
-        --dry-penalty-last-n 4096
-        --temp 0.7
-        # 0.6 recommended, with top_p=0.95
-    metadata:
-      context_window: ${context_window}
-    proxy: http://127.0.0.1:${PORT}
-    ttl: 3600
 
   # tool use might not work until fixed: https://huggingface.co/unsloth/Qwen3-4B-GGUF/discussions/4
   llamacpp-Qwen3-4B-128K:
@@ -713,7 +540,6 @@ models:
         --flash-attn on
         --ctx-size ${context_window}
         --samplers 'top_k;dry;min_p;temperature;top_p'
-        # ^-- vain attempt to capture both thinking/non-thinking
         --min-p 0.005
         --top-p 0.97
         --top-k 40
@@ -730,155 +556,3 @@ models:
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
-  # testing unlsoths' _XL quant:
-  llamacpp-Qwen3-30B-A3B-K_XL:
-    macros:
-      context_window: 24000
-    cmd: |
-      llama-server
-        --log-file ${MODEL_ID}
-        --port ${PORT}
-        --hf-repo unsloth/Qwen3-30B-A3B-GGUF:Q5_K_XL
-        --n-gpu-layers 999
-        --jinja
-        --cache-type-k q8_0
-        --cache-type-v q8_0
-        --flash-attn on
-        --ctx-size ${context_window}
-        --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
-        --min-p 0.005
-        --top-p 0.97
-        --top-k 40
-        --temp 0.7
-        --dry-multiplier 0.7
-        --dry-allowed-length 4
-        --dry-penalty-last-n 2048
-        --presence-penalty 0.05
-        --frequency-penalty 0.005
-        --repeat-penalty 1.01
-        --repeat-last-n 16
-    metadata:
-      context_window: ${context_window}
-    proxy: http://127.0.0.1:${PORT}
-    ttl: 3600
-
-  llamacpp-Qwen3-30B-A3B-it-2507:
-    macros:
-      context_window: 24000
-    cmd: |
-      llama-server
-        --log-file ${MODEL_ID}
-        --port ${PORT}
-        --hf-repo unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q5_K_XL
-        --n-gpu-layers 999
-        --jinja
-        --cache-type-k q8_0
-        --cache-type-v q8_0
-        --flash-attn on
-        --ctx-size ${context_window}
-        --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
-        --min-p 0.005
-        --top-p 0.97
-        --top-k 40
-        --temp 0.7
-        --dry-multiplier 0.7
-        --dry-allowed-length 4
-        --dry-penalty-last-n 2048
-        --presence-penalty 0.05
-        --frequency-penalty 0.005
-        --repeat-penalty 1.01
-        --repeat-last-n 16
-    metadata:
-      context_window: ${context_window}
-    proxy: http://127.0.0.1:${PORT}
-    ttl: 3600
-
-  llamacpp-Qwen3-30B-A3B-think-2507:
-    macros:
-      context_window: 24000
-    cmd: |
-      llama-server
-        --log-file ${MODEL_ID}
-        --port ${PORT}
-        --hf-repo unsloth/Qwen3-30B-A3B-Thinking-2507-GGUF:Q5_K_XL
-        --n-gpu-layers 999
-        --jinja
-        --cache-type-k q8_0
-        --cache-type-v q8_0
-        --flash-attn on
-        --ctx-size ${context_window}
-        --samplers 'penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature'
-        --min-p 0.005
-        --top-p 0.97
-        --top-k 40
-        --temp 0.7
-        --dry-multiplier 0.7
-        --dry-allowed-length 4
-        --dry-penalty-last-n 2048
-        --presence-penalty 0.05
-        --frequency-penalty 0.005
-        --repeat-penalty 1.01
-        --repeat-last-n 16
-    metadata:
-      context_window: ${context_window}
-    proxy: http://127.0.0.1:${PORT}
-    ttl: 3600
-
-  llamacpp-gpt-oss-20b:
-    macros:
-      context_window: 131072
-    cmd: |
-      llama-server
-        --log-file ${MODEL_ID}
-      --port ${PORT}
-      --hf-repo unsloth/gpt-oss-20b-GGUF:Q8_0
-      --n-gpu-layers 999
-      --jinja
-      --flash-attn on
-      --ctx-size ${context_window}
-      #--reasoning-format none
-      --temp 1.0
-      --top-p 0.99
-      --min-p 0.005
-      --top-k 100
-    metadata:
-      context_window: ${context_window}
-    proxy: http://127.0.0.1:${PORT}
-    ttl: 3600
-
-  llamacpp-seed-oss-36b:
-    macros:
-      context_window: 65536
-    cmd: |
-      llama-server
-      --log-file ${MODEL_ID}
-      --port ${PORT}
-      --hf-repo unsloth/Seed-OSS-36B-Instruct-GGUF:Q4_K_XL
-      --n-gpu-layers 100
-      --jinja
-      --flash-attn on
-      #--ctx-size 8192
-      --ctx-size ${context_window}
-      --no-kv-offload
-      --temp 1.1
-      --top-p 0.95
-    metadata:
-      context_window: ${context_window}
-    proxy: http://127.0.0.1:${PORT}
-    ttl: 3600
-
-  # llamacpp-Qwen3-Coder-30B-A3B-it-Q4:
-  #   macros:
-  #     context_window: 61000 #65536
-  #   cmd: |
-  #     ${llamacpp-gpu}
-  #     #${lcp_k8v8}
-  #     ${lcp_kv16}
-  #     --hf-repo unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_XL
-  #     --ctx-size ${context_window}
-  #     ${lcp_batching_qwen3}
-  #     ${lcp_sampling_qwen3}
-  #   proxy: http://127.0.0.1:${PORT}
-  #   metadata:
-  #     context_window: ${context_window}
-  #   ttl: 3600
