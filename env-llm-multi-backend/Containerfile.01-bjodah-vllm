@@ -1,0 +1,12 @@
+FROM bjodah/cu128:latest
+
+
+RUN \
+    --mount=type=cache,target=/root/.cache,sharing=locked \
+    bash -lc '\
+    uv venv --python 3.11 /opt/venv-vllm \
+    && . /opt/venv-vllm/bin/activate \
+    && uv pip install \
+          --torch-backend=cu128 \
+          --extra-index-url https://wheels.vllm.ai/nightly \
+              vllm torch torchvision'

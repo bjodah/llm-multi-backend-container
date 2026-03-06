@@ -1,0 +1,3 @@
+#!/bin/bash
+set -eux
+podman stop bjodah-vllm-$1

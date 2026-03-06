@@ -1,0 +1,19 @@
+proxy:
+  listen_addr: "0.0.0.0:8687"
+  upstream_base_url: "http://llama-swapper:8686"
+  timeout_minutes: 23
+  log_paths:
+    - "/v1/chat/completions"
+    - "/v1/completions"
+
+management:
+  listen_addr: "0.0.0.0:8080"
+  auth:
+    username: "admin"
+    password: "changeme"
+
+database:
+  path: "/logs/memoryelaine.db"
+
+logging:
+  max_capture_bytes: 8388608  # 8MB

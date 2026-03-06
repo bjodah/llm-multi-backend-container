@@ -1,0 +1,15 @@
+FROM bjodah/llamacpp
+
+# RUN \
+#     --mount=type=cache,target=/root/.cache/go-build,sharing=locked \
+#     curl -Ls https://go.dev/dl/go1.25.4.linux-amd64.tar.gz | tar xz -C /usr/local \
+#     && cp -s /usr/local/go/bin/* /usr/local/bin \
+#     && go install github.com/go-delve/delve/cmd/dlv@latest \
+#     && ln -s /root/go/bin/dlv /usr/local/bin/dlv
+
+# RUN curl -Ls https://github.com/mostlygeek/llama-swap/releases/download/v172/llama-swap_172_linux_amd64.tar.gz \
+#     | tar xz -C /usr/local/bin
+
+
+RUN curl -Ls https://github.com/mostlygeek/llama-swap/releases/download/v196/llama-swap_196_linux_amd64.tar.gz \
+    | tar xz -C /usr/local/bin

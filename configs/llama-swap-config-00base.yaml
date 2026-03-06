@@ -2,6 +2,8 @@
 # affects the behviour of some inference engines, grep for e.g. LLAMA_ARG_THREADS, VLLM_API_KEY, etc.
 healthCheckTimeout: 2700  # 45minutes, downloading models can take a while
 
+globalTTL: 7200
+
 logLevel: debug # info warn
 
 startPort: 11000
@@ -23,6 +25,11 @@ macros:
   "lcp_kv16": >-
     --cache-type-k f16
     --cache-type-v f16
+    --flash-attn on
+
+  "lcp_kv_bf16": >-
+    --cache-type-k bf16
+    --cache-type-v bf16
     --flash-attn on
 
   "lcp_k8v8": >-
@@ -51,6 +58,14 @@ macros:
     --repeat-penalty 1.01
     --repeat-last-n 16
 
+  "lcp_sampling_qwen35": >-
+    --temp 1.0
+    --top-p 0.95
+    --min-p 0.003
+    --top-k 20
+    --repeat_penalty 1.0
+    --presence_penalty 1.5
+
 groups:
 
   "fim-and-chat":
@@ -58,11 +73,23 @@ groups:
     exclusive: true
     members:
       - "llamacpp-Mellum-4b-sft-all"
-      - "vllm-gpt-oss-20b"
       - "llamacpp-Qwen3-Embedding-4B"
+      - "llamacpp-Qwen3.5-35B-A3B"
+      - "FLUX.2-klein-4B"
+      #- "vllm-Qwen3-VL-8B-it"
 
 
 models:
+
+  FLUX.2-klein-4B:
+    description: "image generation"
+    # checkEndpoint: /v1/images/generations
+    cmd: |
+      env -C /opt/serve_f2k4b_quantized
+        uv run serve-f2k4b
+          --config config.example.yaml
+          --port ${PORT}
+          --log-level debug
 
   # Qwen3-Coder-30B is currently my main model (fast & supports FIM)
   vllm-Qwen3-Coder-30B:
@@ -165,7 +192,6 @@ models:
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
-
   llamacpp-glm-4.5-air:
     macros:
       context_window: 65536
@@ -212,6 +238,117 @@ models:
       context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600 
+
+  vllm-Qwen3-VL-8B-it:
+    macros:
+      context_window: 32768
+    cmd: |
+      python3 -m vllm.entrypoints.openai.api_server
+        --port ${PORT}
+        --served-model-name ${MODEL_ID}
+        --model cyankiwi/Qwen3-VL-8B-Instruct-AWQ-4bit
+        --gpu-memory-utilization 0.61
+        --max-model-len ${context_window}
+        --max-num-seqs 1
+        --dtype float16
+        --enable-auto-tool-choice
+        --tool-call-parser hermes
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 3600
+
+  llamacpp-Qwen3-VL-8B-it:
+    macros:
+      context_window: 32768
+    cmd: |
+      ${llamacpp-gpu}
+      ${lcp_kv16}
+      --hf-repo Qwen/Qwen3-VL-8B-Instruct-GGUF:Q8_0
+      --ctx-size ${context_window}
+      --temp 0.7
+      --top-p 0.8
+      --min-p 0.005
+      --top-k 20
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 7200
+
+  vllm-Qwen3.5-4B:
+    macros:
+      context_window: 65536 #262144
+
+    filters:
+      stripParams: "temperature, top_k, top_p, repeat_penalty, min_p, presence_penalty"
+
+      # see https://www.reddit.com/r/LocalLLaMA/comments/1rhohqk/comment/o84cen5/
+      setParamsByID:
+        "${MODEL_ID}:thinking-coding":
+          temperature: 0.6
+          presence_penalty: 0.0
+        "${MODEL_ID}:instruct":
+          chat_template_kwargs:
+            enable_thinking: false
+          temperature: 0.7
+          top_p: 0.8
+
+    #vllm serve Qwen/Qwen3.5-4B
+    cmd: |
+      #python3 -m vllm.entrypoints.openai.api_server
+      vllm-serve
+        --port ${PORT}
+        --served-model-name ${MODEL_ID}
+        --model cyankiwi/Qwen3.5-4B-AWQ-BF16-INT8
+        --tensor-parallel-size 1
+        --max-model-len ${context_window}
+        --reasoning-parser qwen3
+        --enable-auto-tool-choice
+        --tool-call-parser qwen3_coder
+        --gpu-memory-utilization 0.7
+        --dtype bfloat16
+    cmdStop: vllm-stop ${MODEL_ID}
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 7200
+
+  # llamacpp-Qwen3.5-9B:
+  #   macros:
+  #     context_window: 262144
+  #   cmd: |
+  #    --hf-repo unsloth/Qwen3.5-9B-GGUF:UD-Q8_K_XL
+
+  # llamacpp-Qwen3.5-35B-A3B:
+  #   macros:
+  #     context_window: 32768
+  #   filters:
+  #     stripParams: "temperature, top_k, top_p, repeat_penalty, min_p, presence_penalty"
+
+  #     # see https://www.reddit.com/r/LocalLLaMA/comments/1rhohqk/comment/o84cen5/
+  #     setParamsByID:
+  #       "${MODEL_ID}:thinking-coding":
+  #         temperature: 0.6
+  #         presence_penalty: 0.0
+  #       "${MODEL_ID}:instruct":
+  #         chat_template_kwargs:
+  #           enable_thinking: false
+  #         temperature: 0.7
+  #         top_p: 0.8
+  #   cmd: |
+  #     ${llamacpp-gpu}
+  #     ${lcp_kv_bf16}
+  #     --hf-repo AesSedai/Qwen3.5-35B-A3B-GGUF:IQ4_XS
+  #     --ctx-size ${context_window}
+  #     --n-cpu-moe 999
+  #     --no-mmap
+  #     --temp 1.0
+  #     --top-p 0.95
+  #     --min-p 0.003
+  #     --top-k 20
+  #     --repeat_penalty 1.0
+  #     --presence_penalty 1.5
+
 
   # If we accept a bit slower generation, devstral-2 is *supposedly* really good:
   vllm-Devstral-Small-2-24B:

@@ -1,0 +1,41 @@
+FROM bjodah/vllm
+
+ARG CUDA_ARCHITECTURES="86"
+
+
+# install llama.cpp
+RUN \
+    --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    --mount=type=cache,target=/root/.cache,sharing=locked \
+    git clone --recursive --depth 1 --branch master https://github.com/ggml-org/llama.cpp /opt/llama.cpp
+
+RUN \
+    --mount=type=cache,target=/root/.ccache,sharing=locked \
+    env -C /opt/llama.cpp git pull \
+    && bash -lc 'cmake \
+         -DLLAMA_CURL=ON \
+         -DLLAMA_OPENSSL=ON \
+         -DGGML_RPC=ON \
+         -DGGML_SCHED_MAX_COPIES=1 \
+         -DGGML_CUDA=ON \
+         -DGGML_CUDA_FA_ALL_QUANTS=ON \
+         -DGGML_CUDA_FORCE_MMQ=ON \
+         -DCMAKE_CUDA_ARCHITECTURES="${CUDA_ARCHITECTURES}" \
+         -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache" \
+         -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
+         -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
+         -S /opt/llama.cpp \
+         -B /opt/llama.cpp/build \
+         --fresh \
+    && cmake --build /opt/llama.cpp/build --config Release --parallel'
+#CMAKE_PREFIX_PATH=/usr/local/cuda
+
+ENV PATH=/configs:/opt/llama.cpp/build/bin:$PATH
+
+# RUN \
+#     --mount=type=cache,target=/root/.cache,sharing=locked \
+#     cd /opt/llama.cpp \
+#     && git fetch && git pull \
+#     && cmake --build /opt/llama.cpp/build --parallel --verbose
+

@@ -10,10 +10,10 @@ services:
 
   llama-swapper:
     name: llm-mb_llama-swapper
-    build:
-      context: env-llm-multi-backend/
-      dockerfile: Containerfile
-    #image: bjodah/llm-multi-backend-2025-05-30
+    # build:
+    #   context: env-llm-multi-backend/
+    #   dockerfile: Containerfile
+    image: bjodah/llama-swap
     ports:
       - "8686:8686"
     restart: unless-stopped
@@ -59,44 +59,72 @@ services:
       /configs/llama-swap-config.yaml
       /logs/llama-swap.log
 
-  logging-proxy:
-    name: llm-mb_logging-proxy
-    build:
-      context: openai-proxy
-      dockerfile: Containerfile
+  # logging-proxy:
+  #   name: llm-mb_logging-proxy
+  #   build:
+  #     context: openai-proxy
+  #     dockerfile: Containerfile
+  #   ports:
+  #     - "8687:8687"
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./logs:/logs
+  #   environment:
+  #     - OPENAI_PROXY_UNDERLYING=http://llama-swapper:8686
+  #     - OPENAI_PROXY_SQLITE_DB_PATH=/logs/logging-proxy.db
+  #   command: "--host 0.0.0.0 --port 8687"
+
+  memoryelaine:
+    name: llm-mb_memoryelaine
+    # build:
+    #   context: env-memoryelaine
+    #   dockerfile: Containerfile
+    image: memoryelaine
     ports:
       - "8687:8687"
     restart: unless-stopped
     volumes:
+      - ./configs/memoryelaine-config.yaml:/config.yaml
       - ./logs:/logs
-    environment:
-      - OPENAI_PROXY_UNDERLYING=http://llama-swapper:8686
-      - OPENAI_PROXY_SQLITE_DB_PATH=/logs/logging-proxy.db
-    command: "--host 0.0.0.0 --port 8687"
+    command: >
+      serve --config /config.yaml
 
-  chain-of-thought-proxy:
-    name: llm-mb_cot-proxy
-    build:
-      context: cot_proxy
-      dockerfile: Containerfile
+  # chain-of-thought-proxy:
+  #   name: llm-mb_cot-proxy
+  #   build:
+  #     context: cot_proxy
+  #     dockerfile: Containerfile
+  #   ports:
+  #     - "8688:8688"
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./logs:/logs
+  #     - ./cot_proxy/examples:/configs
+  #     - ./cot_proxy/cot_proxy.py:/app/cot_proxy.py
+  #   environment:
+  #     - COT_TARGET_BASE_URL=http://logging-proxy:8687/
+  #     - COT_CONFIG=/configs/cot_proxy.yaml
+  #   command: >
+  #     --bind 0.0.0.0:8688
+  #     --workers 4
+  #     --timeout 3000
+  #     --access-logfile /logs/cot-access.log
+  #     --error-logfile /logs/cot-err.log
+  #     --capture-output
+  #     cot_proxy:app
+
+  inferplex:
+    name: llm-mb_inferplex
+    image: inferplex
     ports:
-      - "8688:8688"
+      - "8687:8687"
     restart: unless-stopped
     volumes:
+      - ./configs/inferplex-config.yaml:/inferplex-config.yaml
       - ./logs:/logs
-      - ./cot_proxy/examples:/configs
-      - ./cot_proxy/cot_proxy.py:/app/cot_proxy.py
-    environment:
-      - COT_TARGET_BASE_URL=http://logging-proxy:8687/
-      - COT_CONFIG=/configs/cot_proxy.yaml
     command: >
-      --bind 0.0.0.0:8688
-      --workers 4
-      --timeout 3000
-      --access-logfile /logs/cot-access.log
-      --error-logfile /logs/cot-err.log
-      --capture-output
-      cot_proxy:app
+      serve -config /config.yaml
+    
 
   open-webui-demo:
     name: llm-mb_open-webui
@@ -107,7 +135,13 @@ services:
       - ENABLE_OPENAI_API=True
       - OPENAI_API_KEY=sk-empty
       - OPENAI_API_BASE_URL=http://llama-swapper:8686/v1
-      - DEFAULT_MODELS="openai/exllamav2-Qwen2.5-Coder-14B-Instruct"
+      - DEFAULT_MODELS="openai/llamacpp-Qwen3.5-35B-A3B"
+      - ENABLE_IMAGE_GENERATION=true
+      - IMAGE_GENERATION_ENGINE=openai
+      - IMAGE_GENERATION_MODEL=FLUX.2-klein-4B
+      - IMAGE_SIZE=1024x1024
+      - IMAGES_OPENAI_API_BASE_URL=http://llama-swapper:8686/v1
+      - IMAGES_OPENAI_API_KEY=dummy-key
       - WEBUI_AUTH=False
       - DEFAULT_USER_ROLE="admin"
       - HOST=0.0.0.0 # 127.0.0.1

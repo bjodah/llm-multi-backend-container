@@ -1,0 +1,37 @@
+# -*- eval: (read-only-mode) -*-
+# This file was generated, do not edit
+
+
+
+
+
+  llamacpp-Qwen3.5-35B-A3B:
+    macros:
+      context_window: 32768
+
+    cmd: |
+      ${llamacpp-gpu}
+      ${lcp_kv_bf16}
+      --hf-repo AesSedai/Qwen3.5-35B-A3B-GGUF:IQ4_XS
+      ${lcp_sampling_qwen35}
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+      
+  llamacpp-Qwen3.5-35B-A3B-cpu:
+    macros:
+      context_window: 32768
+
+    cmd: |
+      ${llamacpp-gpu}
+      ${lcp_kv_bf16}
+      --hf-repo AesSedai/Qwen3.5-35B-A3B-GGUF:IQ4_XS
+      ${lcp_sampling_qwen35}
+      --n-cpu-moe 999
+      --no-mmproj-offload
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+      
+
+  

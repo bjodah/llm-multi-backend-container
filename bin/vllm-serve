@@ -1,0 +1,33 @@
+#!/bin/bash
+set -euxo pipefail
+[[ -v HUGGING_FACE_HUB_TOKEN ]]
+
+PORT=""
+NAME=""
+args=("$@")
+i=0
+while [ $i -lt ${#args[@]} ]; do
+    if [[ "${args[$i]}" == "--port" ]]; then
+        PORT="${args[$(( i + 1 ))]}"
+    fi
+    if [[ "${args[$i]}" == "--served-model-name" ]]; then
+        NAME="${args[$(( i + 1 ))]}"
+    fi
+    (( i++ )) || true
+done
+
+if [[ -z "$PORT" ]]; then
+    >&2 echo "No --port flag passed?"
+    exit 1
+fi
+
+podman run \
+  --rm \
+  --device nvidia.com/gpu=all \
+  -e HUGGING_FACE_HUB_TOKEN \
+  -e VLLM_API_KEY=sk-empty \
+  -p "$PORT:$PORT" \
+  -v ~/.cache/huggingface:/root/.cache/huggingface \
+  "${podman_run_flags[@]}" \
+  --name "bjodah-vllm-$NAME" `# see vllm-stop` \
+  bjodah/vllm /opt/venv-vllm/bin/vllm serve "${args[@]}"

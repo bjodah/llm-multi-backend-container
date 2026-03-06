@@ -1,0 +1,12 @@
+FROM bjodah/cu128:latest
+
+RUN \
+    --mount=type=cache,target=/root/.cache,sharing=locked \
+    cd /opt \
+    && git clone https://github.com/bjodah/serve_f2k4b_quantized \
+    && cd serve_f2k4b_quantized \
+    && uv sync
+
+# RUN cd /opt/serve_f2k4b_quantized && git pull && git fetch && uv sync
+
+
