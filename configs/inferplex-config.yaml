@@ -1,4 +1,4 @@
-log_level: "info"
+log_level: "debug"
 api_request_timeout_seconds: 1250
 split_token_model_name_label: "@"
 max_request_bytes: 16777216
@@ -6,7 +6,7 @@ max_request_bytes: 16777216
 variants:
   - name: "do-think-qwen"
     label: "do-think"
-    model_regex: "^(?=.*[Qq]wen3).*"
+    model_regex: ".*[Qq]wen3-.*"
     inject_at_end: "\n\n/think"
     weak_defaults:
       temperature: 0.6
@@ -15,24 +15,14 @@ variants:
       tag_pair: ["<think>", "</think>"]
       max_chars_before_opening: 8
 
+
   - name: "q35-instr"
     label: "instr"
-    model_regex: "placeholder-wont-match"
+    model_regex: "[Qq]wen3.5-.*"
     strong_overrides:
-      temperature: 0.7
-      top_p: 0.8
-
-  - name: "q35-instr-lcpp"
-    base_off: "q35-instr"
-    label: "instr"
-    model_regex: "^llamacpp-(?=.*[Qq]wen3.5).*"
-    strong_overrides:
-      chat_template_kwargs:  # chat_template_kwargs is llama.cpp specific
-        enable_thinking: "false"
-
-  - name: "q35-think-code"
-    label: "think-code"
-    model_regex: "placeholder-wont-match"
-    strong_overrides:
-      temperature: 0.6
-      presence_penalty: 0.0
+      chat_template_kwargs:
+        enable_thinking: false
+      temperature: 0.8
+      top_p: 0.9
+      presence_penalty: 0.5
+      repetition_penalty: 1.05

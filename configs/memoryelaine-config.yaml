@@ -7,7 +7,7 @@ proxy:
     - "/v1/completions"
 
 management:
-  listen_addr: "0.0.0.0:8080"
+  listen_addr: "0.0.0.0:8677"
   auth:
     username: "admin"
     password: "changeme"
@@ -17,3 +17,4 @@ database:
 
 logging:
   max_capture_bytes: 8388608  # 8MB
+  level: "debug"

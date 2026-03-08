@@ -28,28 +28,29 @@ if [ ! -v HUGGING_FACE_HUB_TOKEN ]; then
 fi
 main() {
     #declare -a srcs
-    set -e
     $repo_root/scripts/regenerate-llama-swap-conf.sh
     ( if [[ $(compgen -G "$repo_root"/logs/*.log.bak.~*~) != "" ]]; then set -x; rm "$repo_root"/logs/*.log.bak.~*~; fi )
-    ( set -xo pipefail \
-          && cd $repo_root \
-          && podman build \
-                    --device nvidia.com/gpu=all \
-                    -f env-llm-multi-backend/Containerfile.00-bjodah-cu128 -t bjodah/cu128 2>&1 \
-              | tee ./logs/image-build-00-bjodah-cu128.log \
-          && podman build \
+    set -euxo pipefail
+    cd $repo_root
+    podman build \
+           --device nvidia.com/gpu=all \
+           -f env-llm-multi-backend/Containerfile.00-bjodah-cu128 -t bjodah/cu128 2>&1 \
+        | tee ./logs/image-build-00-bjodah-cu128.log
+
+    podman build \
                     --device nvidia.com/gpu=all \
                     -f env-llm-multi-backend/Containerfile.01-bjodah-vllm -t bjodah/vllm 2>&1 \
-              | tee ./logs/image-build-01-bjodah-vllm.log \
-          && podman build \
-                    --device nvidia.com/gpu=all \
-                    -f env-llm-multi-backend/Containerfile.02-bjodah-llamacpp -t bjodah/llamacpp 2>&1 \
-              | tee ./logs/image-build-02-bjodah-llamacpp.log \
-          && podman build \
-                    --device nvidia.com/gpu=all \
-                    -f env-llm-multi-backend/Containerfile.03-bjodah-llama-swap -t bjodah/llama-swap 2>&1 \
-              | tee ./logs/image-build-03-bjodah-llama-swap.log
-    )
+              | tee ./logs/image-build-01-bjodah-vllm.log
+
+    podman build \
+           --device nvidia.com/gpu=all \
+           -f env-llm-multi-backend/Containerfile.02-bjodah-llamacpp -t bjodah/llamacpp 2>&1 \
+        | tee ./logs/image-build-02-bjodah-llamacpp.log
+
+    podman build \
+           --device nvidia.com/gpu=all \
+           -f env-llm-multi-backend/Containerfile.03-bjodah-llama-swap -t bjodah/llama-swap 2>&1 \
+        | tee ./logs/image-build-03-bjodah-llama-swap.log
 
     trap "$COMPOSE_CMD --file ${repo_root}/compose.yml down" TERM INT
     echo "You can view open-webui: $ xdg-open http://localhost:33033/"

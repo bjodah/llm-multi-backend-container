@@ -55,7 +55,7 @@ services:
     ipc: host
     entrypoint:
       /configs/autorestart-llama-swap.sh
-    command:
+    command: >
       /configs/llama-swap-config.yaml
       /logs/llama-swap.log
 
@@ -82,6 +82,7 @@ services:
     image: memoryelaine
     ports:
       - "8687:8687"
+      - "8677:8677"
     restart: unless-stopped
     volumes:
       - ./configs/memoryelaine-config.yaml:/config.yaml
@@ -117,14 +118,14 @@ services:
     name: llm-mb_inferplex
     image: inferplex
     ports:
-      - "8687:8687"
+      - "8688:8688"
     restart: unless-stopped
     volumes:
       - ./configs/inferplex-config.yaml:/inferplex-config.yaml
       - ./logs:/logs
     command: >
-      serve -config /config.yaml
-    
+      --config /inferplex-config.yaml --upstream-base-url http://memoryelaine:8687/ --listen-addr 0.0.0.0 --listen-port 8688
+
 
   open-webui-demo:
     name: llm-mb_open-webui

@@ -17,7 +17,7 @@
     metadata:
       context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
-      
+
   llamacpp-Qwen3.5-35B-A3B-cpu:
     macros:
       context_window: 32768
@@ -32,6 +32,45 @@
     metadata:
       context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
-      
 
-  
+  iklcpp-Qwen3.5-35B-A3B:
+    macros:
+      context_window: 32768
+
+    cmd: |
+      env PATH=/opt/ik_llama.cpp/build/bin:$PATH ${llamacpp-gpu}
+      ${lcp_kv_bf16}
+      --hf-repo ubergarm/Qwen3.5-35B-A3B-GGUF --hf-file 
+      ${lcp_sampling_qwen35}
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+
+  iklcpp-Qwen3.5-35B-A3B-cpu:
+    macros:
+      context_window: 32768
+
+    cmd: |
+      env PATH=/opt/ik_llama.cpp/build/bin:$PATH ${llamacpp-gpu}
+      ${lcp_kv_bf16}
+      --hf-repo ubergarm/Qwen3.5-35B-A3B-GGUF --hf-file 
+      ${lcp_sampling_qwen35}
+      --n-cpu-moe 999
+      --no-mmproj-offload
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+
+  iklcpp-Qwen3.5-27B:
+    macros:
+      context_window: 32768
+
+    cmd: |
+      env PATH=/opt/ik_llama.cpp/build/bin:$PATH ${llamacpp-gpu}
+      ${lcp_kv_bf16}
+      --hf-repo ubergarm/Qwen3.5-27B-GGUF --hf-file Qwen3.5-27B-smol-IQ4_NL.gguf
+      ${lcp_sampling_qwen35}
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+

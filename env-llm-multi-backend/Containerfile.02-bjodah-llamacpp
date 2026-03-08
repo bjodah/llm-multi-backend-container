@@ -1,3 +1,4 @@
+# -*- compile-command: "podman build -f Containerfile.02-bjodah-llamacpp" -*-
 FROM bjodah/vllm
 
 ARG CUDA_ARCHITECTURES="86"
@@ -28,7 +29,7 @@ RUN \
          -S /opt/llama.cpp \
          -B /opt/llama.cpp/build \
          --fresh \
-    && cmake --build /opt/llama.cpp/build --config Release --parallel'
+    && cmake --build /opt/llama.cpp/build --config Release --parallel 8'
 #CMAKE_PREFIX_PATH=/usr/local/cuda
 
 ENV PATH=/configs:/opt/llama.cpp/build/bin:$PATH
@@ -38,4 +39,32 @@ ENV PATH=/configs:/opt/llama.cpp/build/bin:$PATH
 #     cd /opt/llama.cpp \
 #     && git fetch && git pull \
 #     && cmake --build /opt/llama.cpp/build --parallel --verbose
+
+
+RUN \
+    --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    --mount=type=cache,target=/root/.cache,sharing=locked \
+    git clone --recursive --depth 1 --branch main https://github.com/ikawrakow/ik_llama.cpp/ /opt/ik_llama.cpp
+
+RUN \
+    --mount=type=cache,target=/root/.ccache,sharing=locked \
+    env -C /opt/llama.cpp git pull \
+    && bash -lc 'cmake \
+         -DLLAMA_CURL=ON \
+         -DLLAMA_OPENSSL=ON \
+         -DGGML_RPC=ON \
+         -DGGML_SCHED_MAX_COPIES=1 \
+         -DGGML_CUDA=ON \
+         -DGGML_NATIVE=ON \
+         -DGGML_CUDA_FA_ALL_QUANTS=ON \
+         -DGGML_CUDA_FORCE_MMQ=ON \
+         -DCMAKE_CUDA_ARCHITECTURES="${CUDA_ARCHITECTURES}" \
+         -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache" \
+         -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
+         -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
+         -S /opt/ik_llama.cpp \
+         -B /opt/ik_llama.cpp/build \
+         --fresh \
+    && cmake --build /opt/ik_llama.cpp/build --config Release --parallel 8'
 

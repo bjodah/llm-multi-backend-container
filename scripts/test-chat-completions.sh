@@ -2,7 +2,7 @@
 #set -x
 #MB_OPENAI_API_BASE=${MB_OPENAI_API_BASE:-"http://localhost:8686/v1"}
 #MB_OPENAI_API_BASE=${MB_OPENAI_API_BASE:-"http://localhost:8687/v1"} # <-- 8687 is a logging version
-MB_OPENAI_API_BASE=${MB_OPENAI_API_BASE:-"http://localhost:8686/v1"} # <-- 8688 also intercepts @no-think in model name
+MB_OPENAI_API_BASE=${MB_OPENAI_API_BASE:-"http://localhost:8688/v1"} # <-- 8688 also intercepts @no-think in model name
 MB_OPENAI_API_KEY=${MB_OPENAI_API_KEY:-"sk-empty"}
 query_chat() {
     logfile="/tmp/$(echo $1 | tr -d '/').log"
@@ -21,10 +21,13 @@ query_chat() {
     return $retcode
 }
 if [ $# -eq 0 ]; then
-    query_chat vllm-Qwen3.5-4B:instruct "What's the capital of Scandinavia?"
+    query_chat vllm-Qwen3.5-4B@instr "What's the capital of Scandinavia?" && curl -s http://localhost:8687/last-request | jq '.'
+
     exit
+    query_chat llamacpp-Qwen3.5-35B-A3B-cpu "What's the capital of Scandinavia?"
+    query_chat llamacpp-Qwen3-30B-A3B@do-think "What's the captial of Scandinavia? todays date is $(date --iso-8601)" \
     query_chat vllm-Qwen3.5-9B:instruct "What's the capital of Scandinavia?"
-    query_chat llamacpp-Qwen3.5-35B-A3B "What's the capital of Scandinavia?"
+    
     query_chat vllm-Qwen3-VL-8B-it "What's the capital of Scandinavia?"
     query_chat llamacpp-Qwen3-VL-8B-it "What's the capital of Scandinavia?"
     query_chat vllm-Qwen3-Coder-30B "What's the capital of Scandinavia?"
@@ -66,7 +69,7 @@ if [ $# -eq 0 ]; then
     query_chat llamacpp-gemma-3-1b"What't the captial of Sweden?"
     query_chat llamacpp-Qwen3-30B-A3B "/no_think Answer only with the missing word: The capital of Greece is"
     query_chat llamacpp-Qwen3-32B "/nothink Answer only with the missing word: The capital of Italy is"
-    query_chat llamacpp-Qwen3-30B-A3B-Q6_K "/nothink Answer only with the missing word: The capital of Greece is"
+    query_chat llamacpp-Qwen3-30B-A3B-Q4_K_M "/nothink Answer only with the missing word: The capital of Greece is"
     for quant in 30B-A3B 0.6B 1.7B 4B 4B-128K 8B 14B 32B; do
         query_chat llamacpp-Qwen3-${quant} "Answer only with the missing word: The capital of Belarus is"
     done

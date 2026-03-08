@@ -1,3 +1,4 @@
+# -*- compile-command: "podman build -f Containerfile.01-bjodah-vllm" -*-
 FROM bjodah/cu128:latest
 
 
