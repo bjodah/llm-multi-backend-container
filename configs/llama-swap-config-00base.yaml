@@ -211,7 +211,7 @@ models:
       ${lcp_kv16}      
       --hf-repo unsloth/NVIDIA-Nemotron-3-Super-120B-A12B-GGUF:UD-IQ4_XS
       --no-mmap
-      --n-cpu-moe 65
+      --n-cpu-moe 66
       --temp 1.0
       --top-p 0.95
     proxy: http://127.0.0.1:${PORT}
