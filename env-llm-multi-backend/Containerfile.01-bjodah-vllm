@@ -1,6 +1,7 @@
 # -*- compile-command: "podman build -f Containerfile.01-bjodah-vllm" -*-
 FROM bjodah/cu128:latest
 
+ENV HF_HUB_ENABLE_HF_TRANSFER=1
 
 RUN \
     --mount=type=cache,target=/root/.cache,sharing=locked \
@@ -10,4 +11,6 @@ RUN \
     && uv pip install \
           --torch-backend=cu128 \
           --extra-index-url https://wheels.vllm.ai/nightly \
-              vllm torch torchvision'
+              vllm torch torchvision hf_transfer'
+
+# $ huggingface-cli download cyankiwi/Qwen3.5-27B-AWQ-4bit

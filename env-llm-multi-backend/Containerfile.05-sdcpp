@@ -1,0 +1,5 @@
+FROM bjodah/llama-swap
+
+# RUN cd /opt/serve_f2k4b_quantized && git pull && git fetch && uv sync
+
+

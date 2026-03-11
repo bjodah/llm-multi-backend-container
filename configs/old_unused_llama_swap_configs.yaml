@@ -1,3 +1,23 @@
+  llamacpp-Qwen3-Coder-Next:
+    macros:
+      context_window: 131072
+      #65536
+    cmd: |
+      ${llamacpp-gpu}
+      ${lcp_kv16}
+      --hf-repo unsloth/Qwen3-Coder-Next-GGUF:Q5_K_XL
+      #--n-cpu-moe 42  <--- hardly using any VRAM
+      --n-cpu-moe 36
+      --no-mmap
+      #--n-cpu-moe 30  <-- not enough VRAM
+      --ctx-size ${context_window}
+      ${lcp_batching_qwen3}
+      ${lcp_sampling_qwen3}
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+    ttl: 3600
+
   llamacpp-devstral-small-2507:
     macros:
       context_window: 32768
@@ -342,3 +362,58 @@
   #   metadata:
   #     context_window: ${context_window}
   #   ttl: 3600
+
+  # llamacpp-Qwen3-VL-30B-it:
+  #   macros:
+  #     context_window: 32768
+  #   cmd: |
+  #     ${llamacpp-gpu}
+  #     ${lcp_kv16}
+  #     --hf-repo unsloth/Qwen3-VL-30B-A3B-Instruct-GGUF:Q8_K_XL
+  #     --n-cpu-moe 999
+  #     --no-mmap
+  #     --ctx-size ${context_window}
+  #     --temp 0.6
+  #     --top-p 0.8
+  #     --min-p 0.005
+  #     --top-k 20
+  #   metadata:
+  #     context_window: ${context_window}
+  #   proxy: http://127.0.0.1:${PORT}
+  #   ttl: 3600 
+
+  # vllm-Qwen3-VL-8B-it:
+  #   macros:
+  #     context_window: 32768
+  #   cmd: |
+  #     python3 -m vllm.entrypoints.openai.api_server
+  #       --port ${PORT}
+  #       --served-model-name ${MODEL_ID}
+  #       --model cyankiwi/Qwen3-VL-8B-Instruct-AWQ-4bit
+  #       --gpu-memory-utilization 0.61
+  #       --max-model-len ${context_window}
+  #       --max-num-seqs 1
+  #       --dtype float16
+  #       --enable-auto-tool-choice
+  #       --tool-call-parser hermes
+  #   metadata:
+  #     context_window: ${context_window}
+  #   proxy: http://127.0.0.1:${PORT}
+  #   ttl: 3600
+
+  # llamacpp-Qwen3-VL-8B-it:
+  #   macros:
+  #     context_window: 32768
+  #   cmd: |
+  #     ${llamacpp-gpu}
+  #     ${lcp_kv16}
+  #     --hf-repo Qwen/Qwen3-VL-8B-Instruct-GGUF:Q8_0
+  #     --ctx-size ${context_window}
+  #     --temp 0.7
+  #     --top-p 0.8
+  #     --min-p 0.005
+  #     --top-k 20
+  #   metadata:
+  #     context_window: ${context_window}
+  #   proxy: http://127.0.0.1:${PORT}
+  #   ttl: 7200

@@ -9,11 +9,11 @@ RUN \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     --mount=type=cache,target=/root/.cache,sharing=locked \
-    git clone --recursive --depth 1 --branch master https://github.com/ggml-org/llama.cpp /opt/llama.cpp
+    git clone --recursive --branch master https://github.com/ggml-org/llama.cpp /opt/llama.cpp
 
 RUN \
     --mount=type=cache,target=/root/.ccache,sharing=locked \
-    env -C /opt/llama.cpp git pull \
+    env -C /opt/llama.cpp git status `#pull` \
     && bash -lc 'cmake \
          -DLLAMA_CURL=ON \
          -DLLAMA_OPENSSL=ON \
@@ -68,3 +68,19 @@ RUN \
          --fresh \
     && cmake --build /opt/ik_llama.cpp/build --config Release --parallel 8'
 
+
+RUN \
+    --mount=type=cache,target=/root/.cache,sharing=locked \
+    cd /opt \
+    && git clone --depth 1 --recursive https://github.com/leejet/stable-diffusion.cpp \
+    && cd stable-diffusion.cpp \
+    && mkdir build \
+    && cmake \
+         -DSD_CUDA=ON \
+         -DCMAKE_CUDA_ARCHITECTURES="${CUDA_ARCHITECTURES}" \
+         -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache" \
+         -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
+         -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
+         -S . \
+         -B build \
+    && cmake --build ./build --config Release
