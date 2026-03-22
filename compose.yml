@@ -90,6 +90,13 @@ services:
     command: >
       serve --config /config.yaml
 
+  multi-fim-proxy:
+    name: llm-mb_fim-proxy
+    image: multi-fim-proxy
+    network: host
+    environment:
+      - LLAMA_API_KEY=sk-empty
+
   # chain-of-thought-proxy:
   #   name: llm-mb_cot-proxy
   #   build:
