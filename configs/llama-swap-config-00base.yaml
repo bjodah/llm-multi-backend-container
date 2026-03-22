@@ -11,6 +11,20 @@ startPort: 11000
 #      /configs/llama-serve-wrap /logs/llamacpp-gemma-3-27b.log
 #      llama-server --log-file   /logs/llamacpp-gemma-3-27b.log
 
+groups:
+
+  "fim-and-chat":
+    swap: false
+    exclusive: true
+    members:
+      - "llamacpp-Mellum-4b-sft-all"
+      - "iklcpp-Qwen3-Coder-30B-A3B-Instruct-cpu"
+      - "llamacpp-Qwen3-Embedding-4B"
+      # - "llamacpp-Qwen3.5-35B-A3B"
+      # - "FLUX.2-klein-4B"
+      # - "vllm-Qwen3-VL-8B-it"
+
+
 macros:
 
 # python3 -m vllm.entrypoints.openai.api_server
@@ -63,25 +77,20 @@ macros:
     --repeat-penalty 1.01
     --repeat-last-n 16
 
+  "lcp_sampling_qwen3_coder": >-
+    --min-p 0.007
+    --top-p 0.8
+    --top-k 20
+    --repeat-penalty 1.05
+    --temp 0.6
+
   "lcp_sampling_qwen35": >-
     --temp 1.0
     --top-p 0.95
     --min-p 0.003
     --top-k 20
-    --repeat_penalty 1.0
-    --presence_penalty 1.5
-
-groups:
-
-  "fim-and-chat":
-    swap: false
-    exclusive: true
-    members:
-      - "llamacpp-Mellum-4b-sft-all"
-      - "llamacpp-Qwen3-Embedding-4B"
-      - "llamacpp-Qwen3.5-35B-A3B"
-      - "FLUX.2-klein-4B"
-      #- "vllm-Qwen3-VL-8B-it"
+    --repeat-penalty 1.0
+    --presence-penalty 1.5
 
 
 models:
