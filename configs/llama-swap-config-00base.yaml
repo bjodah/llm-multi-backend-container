@@ -12,6 +12,11 @@ startPort: 11000
 #      llama-server --log-file   /logs/llamacpp-gemma-3-27b.log
 
 macros:
+
+# python3 -m vllm.entrypoints.openai.api_server
+  "vllm-serve": >-
+    /opt/venv-vllm/bin/vllm serve
+
   "llamacpp": >-
     llama-server
         --log-file /logs/${MODEL_ID}.log
@@ -96,15 +101,17 @@ models:
     macros:
       context_window: 44000
     cmd: |
-      python3 -m vllm.entrypoints.openai.api_server
+      ${vllm-serve}
         --port ${PORT}
         --served-model-name ${MODEL_ID}
         --model cpatonn/Qwen3-Coder-30B-A3B-Instruct-AWQ-4bit
         --gpu-memory-utilization 0.92
         --max-model-len ${context_window}
         --max-num-seqs 1
-        --dtype float16
-        --tool-call-parser qwen3_coder
+        # --dtype float16
+        # --dtype bfloat16
+        --dtype auto
+        --tool-call-parser qwen3_xml
         --enable-auto-tool-choice
     proxy: http://127.0.0.1:${PORT}
     metadata:
@@ -119,7 +126,7 @@ models:
       context_window: 32768
     cmd: |
       env PYTHON_EXECUTION_BACKEND=dangerously_use_uv 
-        python3 -m vllm.entrypoints.openai.api_server
+        ${vllm-serve}
           --port ${PORT}
           --served-model-name ${MODEL_ID}
           --model openai/gpt-oss-20b
@@ -202,7 +209,7 @@ models:
     proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
-  # so far Nemotron-3-Super is slow on llama.cpp...
+  # so far Nemotron-3-Super is super-slow on llama.cpp...
   llamacpp-NVIDIA-Nemotron-3-Super-120B-A12B:
     macros:
       context_window: 32768
@@ -230,7 +237,7 @@ models:
     #vllm-serve
     #python3 -m vllm.entrypoints.openai.api_server
     cmd: |
-      /opt/venv-vllm/bin/vllm serve
+      ${vllm-serve}
         cyankiwi/Qwen3.5-4B-AWQ-BF16-INT8
         --port ${PORT}
         --served-model-name ${MODEL_ID}
@@ -241,7 +248,7 @@ models:
         --tool-call-parser qwen3_coder
         --gpu-memory-utilization 0.6
         --dtype bfloat16
-    cmdStop: vllm-stop ${MODEL_ID}
+    #cmdStop: vllm-stop ${MODEL_ID}
     metadata:
       context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
@@ -252,7 +259,7 @@ models:
       context_window: 131072
 
     cmd: |
-      /opt/venv-vllm/bin/vllm serve
+      ${vllm-serve}
       cyankiwi/Qwen3.5-9B-AWQ-BF16-INT8
         --port ${PORT}
         --served-model-name ${MODEL_ID}
@@ -272,12 +279,13 @@ models:
 
   vllm-Qwen3.5-27B-AWQ-4bit:
     macros:
-      context_window: 12000
+      context_window: 32768
 
     # https://huggingface.co/cyankiwi/Qwen3.5-27B-AWQ-4bit/discussions/3#69a774be2c189c0667767415
+    # Note: on my debian system w. 3090 I need to do `systemctl stop gdm3` to free enough vRAM.
     cmd: |
       env PYTORCH_ALLOC_CONF=expandable_segments:True
-        /opt/venv-vllm/bin/vllm serve
+      ${vllm-serve}
         cyankiwi/Qwen3.5-27B-AWQ-4bit
         --port ${PORT}
         --served-model-name ${MODEL_ID}
@@ -289,7 +297,7 @@ models:
         --enable-chunked-prefill
         --enable-prefix-caching
         --enforce-eager
-        --gpu-memory-utilization 0.95
+        --gpu-memory-utilization 0.98
         --kv-cache-dtype auto
         --language-model-only
         --max-num-batched-tokens 4096
@@ -344,7 +352,7 @@ models:
     macros:
       context_window: 38000
     cmd: |
-      python3 -m vllm.entrypoints.openai.api_server
+      ${vllm-serve}
         --port ${PORT}
         --served-model-name ${MODEL_ID}
         #--model mistralai/Devstral-Small-2-24B-Instruct-2512
@@ -412,6 +420,7 @@ models:
     proxy: http://127.0.0.1:${PORT}
     ttl: 7200
 
+  # Tool calling is not really working for me with llama.cpp...
   llamacpp-Nemotron-3-Nano-30B-A3B:
     macros:
       context_window: 512000
@@ -428,6 +437,25 @@ models:
     metadata:
       context_window: ${context_window}
     ttl: 3600
+
+  # ...I hope to have better luck with vllm:
+  vllm-Nemotron-3-Nano-30B-A3B:
+    macros:
+      context_window: 229376
+    cmd : |
+      ${vllm-serve}
+      stelterlab/NVIDIA-Nemotron-3-Nano-30B-A3B-AWQ
+      --trust-remote-code
+      --port ${PORT}
+      --served-model-name ${MODEL_ID}
+      --gpu-memory-utilization 0.92
+      --max-model-len ${context_window}
+      --max-num-seqs 1
+      --reasoning-parser-plugin /configs/nano_v3_reasoning_parser.py
+      --reasoning-parser nano_v3
+      --enable-auto-tool-choice
+      --tool-call-parser qwen3_xml
+      
 
   llamacpp-Qwen3-Embedding-4B:
     macros:
@@ -628,7 +656,7 @@ models:
     macros:
       context_window: 2048
     cmd: |
-      python3 -m vllm.entrypoints.openai.api_server
+      ${vllm-serve}
         --port ${PORT}
         --served-model-name vllm-SmolLM2-1.7B-Instruct
         --model HuggingFaceTB/SmolLM2-1.7B-Instruct
@@ -644,8 +672,8 @@ models:
     macros:
       context_window: 32768
     cmd: |
-      env VLLM_ATTENTION_BACKEND=FLASHINFER python3
-        -m vllm.entrypoints.openai.api_server
+      env VLLM_ATTENTION_BACKEND=FLASHINFER 
+      ${vllm-serve}
         --port ${PORT}
         --served-model-name vllm-Qwen3-14B
         --model Qwen/Qwen3-14B-AWQ

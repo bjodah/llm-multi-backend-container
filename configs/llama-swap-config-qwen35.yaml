@@ -39,7 +39,7 @@
 
   iklcpp-Qwen3.5-35B-A3B:
     macros:
-      context_window: 32768
+      context_window: 65536
 
     cmd: |
       env PATH=/opt/ik_llama.cpp/build/bin:$PATH ${llamacpp-gpu}
@@ -54,7 +54,7 @@
 
   iklcpp-Qwen3.5-35B-A3B-cpu:
     macros:
-      context_window: 32768
+      context_window: 262144
 
     cmd: |
       env PATH=/opt/ik_llama.cpp/build/bin:$PATH ${llamacpp-gpu}
@@ -65,6 +65,28 @@
       ${lcp_sampling_qwen35}
       --n-cpu-moe 999
       --no-mmproj-offload
+      -ub 2048
+      -b 2048
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+
+  iklcpp-Qwen3-Coder-30B-A3B-Instruct-cpu:
+    macros:
+      context_window: 131072
+
+    cmd: |
+      env PATH=/opt/ik_llama.cpp/build/bin:$PATH ${llamacpp-gpu}
+      ${lcp_kv_bf16}
+      --flash-attn on
+      --ctx-size ${context_window}
+      --hf-repo ubergarm/Qwen3-Coder-30B-A3B-Instruct-GGUF --hf-file Qwen3-Coder-30B-A3B-Instruct-IQ4_KSS.gguf
+      ${lcp_sampling_qwen35}
+      --n-cpu-moe 999
+      --no-mmproj-offload
+      -ub 2048
+      -b 2048
+      --merge-qkv
     metadata:
       context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}

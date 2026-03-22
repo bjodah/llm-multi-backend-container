@@ -21,6 +21,9 @@ query_chat() {
     return $retcode
 }
 if [ $# -eq 0 ]; then
+    query_chat vllm-Nemotron-3-Nano-30B-A3B "What's the capital of Scandinavia?"
+    exit
+
     query_chat vllm-Qwen3.5-4B@instr "What's the capital of Scandinavia?" && curl -s http://localhost:8687/last-request | jq '.'
 
     exit
