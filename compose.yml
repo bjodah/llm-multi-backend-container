@@ -59,26 +59,9 @@ services:
       /configs/llama-swap-config.yaml
       /logs/llama-swap.log
 
-  # logging-proxy:
-  #   name: llm-mb_logging-proxy
-  #   build:
-  #     context: openai-proxy
-  #     dockerfile: Containerfile
-  #   ports:
-  #     - "8687:8687"
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ./logs:/logs
-  #   environment:
-  #     - OPENAI_PROXY_UNDERLYING=http://llama-swapper:8686
-  #     - OPENAI_PROXY_SQLITE_DB_PATH=/logs/logging-proxy.db
-  #   command: "--host 0.0.0.0 --port 8687"
 
   memoryelaine:
     name: llm-mb_memoryelaine
-    # build:
-    #   context: env-memoryelaine
-    #   dockerfile: Containerfile
     image: memoryelaine
     ports:
       - "8687:8687"
@@ -97,30 +80,6 @@ services:
     environment:
       - LLAMA_API_KEY=sk-empty
 
-  # chain-of-thought-proxy:
-  #   name: llm-mb_cot-proxy
-  #   build:
-  #     context: cot_proxy
-  #     dockerfile: Containerfile
-  #   ports:
-  #     - "8688:8688"
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ./logs:/logs
-  #     - ./cot_proxy/examples:/configs
-  #     - ./cot_proxy/cot_proxy.py:/app/cot_proxy.py
-  #   environment:
-  #     - COT_TARGET_BASE_URL=http://logging-proxy:8687/
-  #     - COT_CONFIG=/configs/cot_proxy.yaml
-  #   command: >
-  #     --bind 0.0.0.0:8688
-  #     --workers 4
-  #     --timeout 3000
-  #     --access-logfile /logs/cot-access.log
-  #     --error-logfile /logs/cot-err.log
-  #     --capture-output
-  #     cot_proxy:app
-
   inferplex:
     name: llm-mb_inferplex
     image: inferplex
@@ -132,50 +91,3 @@ services:
       - ./logs:/logs
     command: >
       --config /inferplex-config.yaml --upstream-base-url http://memoryelaine:8687/ --listen-addr 0.0.0.0 --listen-port 8688
-
-
-  open-webui-demo:
-    name: llm-mb_open-webui
-    image: ghcr.io/open-webui/open-webui:main
-    environment:
-#      - DATA_DIR="/app/backend/data"
-      - ENABLE_OLLAMA_API=False
-      - ENABLE_OPENAI_API=True
-      - OPENAI_API_KEY=sk-empty
-      - OPENAI_API_BASE_URL=http://llama-swapper:8686/v1
-      - DEFAULT_MODELS="openai/llamacpp-Qwen3.5-35B-A3B"
-      - ENABLE_IMAGE_GENERATION=true
-      - IMAGE_GENERATION_ENGINE=openai
-      - IMAGE_GENERATION_MODEL=FLUX.2-klein-4B
-      - IMAGE_SIZE=1024x1024
-      - IMAGES_OPENAI_API_BASE_URL=http://llama-swapper:8686/v1
-      - IMAGES_OPENAI_API_KEY=dummy-key
-      - WEBUI_AUTH=False
-      - DEFAULT_USER_ROLE="admin"
-      - HOST=0.0.0.0 # 127.0.0.1
-      - PORT=33033
-    entrypoint:
-      bash
-    command:
-      start.sh
-      #-c "while true; do sleep 1; done"
-    # extra_hosts:
-    #   - host.docker.internal:host-gateway
-    # network_mode: host 
-    ports:
-      - 33033:33033
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-      - ./data/open-webui:/app/backend/data
-
-  open-webui-pipelines:
-    name: llm-mb_open-webui-pipelines
-    image: ghcr.io/open-webui/pipelines:main
-    extra_hosts:
-      - host.docker.internal:host-gateway
-    network_mode: host
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-      - ./data/open-webui-pipelines:/app/pipelines:rw
