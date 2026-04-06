@@ -18,11 +18,14 @@ groups:
     exclusive: true
     members:
       - "llamacpp-Mellum-4b-sft-all"
-      - "iklcpp-Qwen3-Coder-30B-A3B-Instruct-cpu"
-      - "llamacpp-Qwen3-Embedding-4B"
+      - "llamacpp-Qwen3.5-35B-A3B-UD-IQ3_S"
+      #- "llamacpp-gemma-4-26B-A4B"
+      #- "iklcpp-Qwen3-Coder-30B-A3B-Instruct-cpu"
+      #- "llamacpp-Qwen3-Embedding-4B"
       # - "llamacpp-Qwen3.5-35B-A3B"
       # - "FLUX.2-klein-4B"
       # - "vllm-Qwen3-VL-8B-it"
+
 
 
 macros:
@@ -239,6 +242,48 @@ models:
       capabilities: [tool, reasoning, json]
     ttl: 7200
 
+  vllm-gemma-4-26B-A4B:
+    macros:
+      context_window: 24000
+    cmd: |
+      ${vllm-serve}
+      cyankiwi/gemma-4-26B-A4B-it-AWQ-4bit
+        --port ${PORT}
+        --served-model-name ${MODEL_ID}
+        --max-model-len ${context_window}
+        --gpu-memory-utilization 0.85
+        --enable-auto-tool-choice
+        --reasoning-parser gemma4
+        --tool-call-parser gemma4
+
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+
+  llamacpp-gemma-4-E4B:
+    macros:
+      context_window: 32768
+    cmd: |
+      ${llamacpp-gpu}
+      ${lcp_k8v8}
+      --hf-repo unsloth/gemma-4-E4B-it-GGUF
+      --ctx-size ${context_window}
+      --temp 1.0
+      --top-p 0.95
+      --top-k 64
+
+  llamacpp-gemma-4-26B-A4B:
+    macros:
+      context_window: 65536
+    cmd: |
+      ${llamacpp-gpu}
+      ${lcp_k8v8}
+      --hf-repo unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q3_K_XL
+      --ctx-size ${context_window}
+      --temp 1.0
+      --top-p 0.95
+      --top-k 64
+
   vllm-Qwen3.5-4B:
     macros:
       context_window: 65536 #262144
@@ -412,7 +457,7 @@ models:
   
   llamacpp-Mellum-4b-sft-all:
     macros:
-      context_window: 4096
+      context_window: 2048
     cmd: |
       ${llamacpp-gpu}
       ${lcp_k8v8}
@@ -660,6 +705,17 @@ models:
     proxy: http://127.0.0.1:11901
     ttl: 3600
 
+  llamacpp-lfm25-350m:
+    macros:
+      context_window: 8192
+    cmd: |
+      ${llamacpp-gpu}
+      ${lcp_k8v8}
+      --hf-repo LiquidAI/LFM2.5-350M-GGUF:Q8_0
+      --ctx-size ${context_window}
+      --temp 0.1
+      --top-k 50
+      --repeat_penalty 1.05
 
   vllm-SmolLM2-1.7B-Instruct:
     macros:

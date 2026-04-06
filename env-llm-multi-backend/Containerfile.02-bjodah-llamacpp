@@ -83,4 +83,4 @@ RUN \
          -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
          -S . \
          -B build \
-    && cmake --build ./build --config Release
+    && cmake --build ./build --config Release --parallel 8

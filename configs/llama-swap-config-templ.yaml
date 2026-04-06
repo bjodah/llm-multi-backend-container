@@ -5,6 +5,21 @@
 
 
 
+  llamacpp-Qwen3.5-35B-A3B-UD-IQ3_S:
+    macros:
+      context_window: 32768
+
+    cmd: |
+      ${llamacpp-gpu}
+      ${lcp_kv_bf16}
+      --flash-attn on
+      --ctx-size ${context_window}
+      --hf-repo unsloth/Qwen3.5-35B-A3B-GGUF:UD-IQ3_S
+      ${lcp_sampling_qwen35}
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+
   llamacpp-Qwen3.5-35B-A3B:
     macros:
       context_window: 32768
@@ -137,4 +152,3 @@
     metadata:
       context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
-
