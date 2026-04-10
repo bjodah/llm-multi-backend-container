@@ -1,20 +1,22 @@
 # -*- compile-command: "podman build -f Containerfile.01-bjodah-vllm" -*-
-FROM bjodah/cu128:latest
+FROM bjodah/cu132:latest
 
 ENV HF_HUB_ENABLE_HF_TRANSFER=1
 
 RUN \
     --mount=type=cache,target=/root/.cache,sharing=locked \
     bash -lc '\
-    uv venv --python 3.11 /opt/venv-vllm \
+    uv venv --python 3.13 /opt/venv-vllm \
     && . /opt/venv-vllm/bin/activate \
     && uv pip install \
     -U \
     --pre \
-    --torch-backend=cu128 \
+    --torch-backend=cu130 \
     --index-strategy unsafe-best-match \
-    --extra-index-url https://wheels.vllm.ai/nightly \
+    --extra-index-url https://wheels.vllm.ai/nightly/cu130 \
     "vllm>=0.19.0" torch torchvision hf_transfer \
-    && uv pip install "transformers>=5.5.0"'
+    && uv pip install "vllm[audio]" \
+    && uv pip install "transformers>=5.5.0" \
+    && uv pip install "librosa"'
 # https://docs.vllm.ai/projects/recipes/en/latest/Google/Gemma4.html#pip
 

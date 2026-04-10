@@ -5,9 +5,26 @@
 
 
 
+  llamacpp-Qwen3.5-2B:
+    macros:
+      context_window: 8192
+
+    cmd: |
+      ${llamacpp-gpu}
+      ${lcp_kv_bf16}
+      --flash-attn on
+      --ctx-size ${context_window}
+      --hf-repo unsloth/Qwen3.5-2B-GGUF:Q6_K
+      --split-mode none
+      --main-gpu 1
+      ${lcp_sampling_qwen35}
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+
   llamacpp-Qwen3.5-35B-A3B-UD-IQ3_S:
     macros:
-      context_window: 32768
+      context_window: 131072
 
     cmd: |
       ${llamacpp-gpu}
@@ -97,7 +114,6 @@
       --ctx-size ${context_window}
       --hf-repo ubergarm/Qwen3-Coder-30B-A3B-Instruct-GGUF --hf-file Qwen3-Coder-30B-A3B-Instruct-IQ4_KSS.gguf
       --n-cpu-moe 999
-      --no-mmproj-offload
       -ub 2048
       -b 2048
       --merge-qkv
@@ -152,3 +168,22 @@
     metadata:
       context_window: ${context_window}
     proxy: http://127.0.0.1:${PORT}
+
+  iklcpp-Qwen3.5-122B-A10B-Uncensored-HauhauCS-Aggressive:
+    macros:
+      context_window: 48000
+
+    cmd: |
+      env PATH=/opt/ik_llama.cpp/build/bin:$PATH ${llamacpp-gpu}
+      ${lcp_kv_bf16}
+      --flash-attn on
+      --ctx-size ${context_window}
+      --hf-repo HauhauCS/Qwen3.5-122B-A10B-Uncensored-HauhauCS-Aggressive --hf-file Qwen3.5-122B-A10B-Uncensored-HauhauCS-Aggressive-IQ4_XS.gguf
+      --merge-qkv
+      --n-cpu-moe 36
+      --no-mmap
+      ${lcp_sampling_qwen35}
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
+

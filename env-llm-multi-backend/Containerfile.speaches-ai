@@ -1,0 +1,34 @@
+#FROM bjodah/cu132
+FROM nvidia/cuda:12.6.3-base-ubuntu24.04
+
+# `ffmpeg` is installed because without it `gradio` won't work with mp3(possible others as well) files
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates curl ffmpeg git \
+    && curl -LsSf https://astral.sh/uv/install.sh | sh
+
+ENV UV_LINK_MODE=copy \
+    UV_CACHE_DIR=/root/.cache/uv \
+    UV_PYTHON_CACHE_DIR=/root/.cache/uv/python
+
+
+#--mount=type=bind,source=$HOME/.cache/uv,target=/root/.cache/uv \
+RUN git clone --depth 1 https://github.com/speaches-ai/speaches /root/speaches \
+    && cd /root/speaches \
+    && bash -lc 'uv sync --frozen --compile-bytecode --no-dev'
+
+ENV UVICORN_HOST=0.0.0.0
+ENV UVICORN_PORT=8000
+
+# https://huggingface.co/docs/huggingface_hub/en/package_reference/environment_variables#donottrack
+# https://www.reddit.com/r/StableDiffusion/comments/1f6asvd/gradio_sends_ip_address_telemetry_by_default/
+ENV DO_NOT_TRACK=1
+ENV GRADIO_ANALYTICS_ENABLED="False"
+ENV DISABLE_TELEMETRY=1
+ENV HF_HUB_DISABLE_TELEMETRY=1
+ENV PYANNOTE_METRICS_ENABLED=0
+EXPOSE 8000
+WORKDIR /root/speaches
+CMD ["/bin/bash", "-lc", "source /root/speaches/.venv/bin/activate && env LD_LIBRARY_PATH=/root/speaches/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib uvicorn --factory speaches.main:create_app"]

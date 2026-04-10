@@ -32,7 +32,6 @@ services:
       - ./configs/tabby-api_tokens.yml:/opt/tabbyAPI/api_tokens.yml
       - ./configs/tabby-sampler_overrides:/opt/tabbyAPI/sampler_overrides
       - ./configs/tabby-templates/devstral-2-template.jinja:/opt/tabbyAPI/templates/devstral-2-template.jinja
-      - ./qwen2.5-VL-inference-openai:/phildougherty-qwen-vl-api
       #- /opt/gguf-unsloth-maverick:/opt/gguf-unsloth-maverick  # my machine only...
     working_dir: "/"
     security_opt:
@@ -50,6 +49,8 @@ services:
       - LLAMA_API_KEY=sk-empty
       - LLAMA_ARG_NO_CONTEXT_SHIFT=1
       - LLAMA_ARG_NO_WEBUI=1
+      - LLAMA_ARG_MAIN_GPU=0
+      - LLAMA_ARG_SPLIT_MODE=none
       #- LLAMA_LOG_VERBOSITY=1
       - VLLM_API_KEY=sk-empty
     ipc: host
@@ -76,7 +77,9 @@ services:
   multi-fim-proxy:
     name: llm-mb_fim-proxy
     image: multi-fim-proxy
-    network: host
+    ports:
+      - "8689:8689"
+    #network: host
     environment:
       - LLAMA_API_KEY=sk-empty
 

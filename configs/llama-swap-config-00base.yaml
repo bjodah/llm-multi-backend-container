@@ -13,19 +13,37 @@ startPort: 11000
 
 groups:
 
-  "fim-and-chat":
+  # "fim-and-chat":
+  #   swap: false
+  #   exclusive: true
+  #   members:
+  #     - "llamacpp-Qwen3.5-35B-A3B-UD-IQ3_S"
+
+  "forever":
+    persistent: true
+    exclusive: false
     swap: false
-    exclusive: true
     members:
       - "llamacpp-Mellum-4b-sft-all"
-      - "llamacpp-Qwen3.5-35B-A3B-UD-IQ3_S"
+      - "llamacpp-Qwen2.5-Coder-1.5B"
+      - "llamacpp-Qwen3-Embedding-0.6B"
+      - "llamacpp-Qwen3-Reranker-0.6B"
+      # - "llamacpp-lfm25-350m"
       #- "llamacpp-gemma-4-26B-A4B"
       #- "iklcpp-Qwen3-Coder-30B-A3B-Instruct-cpu"
-      #- "llamacpp-Qwen3-Embedding-4B"
+      #- "llamacpp-Qwen3.5-2B"
       # - "llamacpp-Qwen3.5-35B-A3B"
       # - "FLUX.2-klein-4B"
       # - "vllm-Qwen3-VL-8B-it"
 
+hooks:
+  on_startup:
+    preload:
+      - "llamacpp-Qwen3.5-35B-A3B-UD-IQ3_S"
+      - "llamacpp-Mellum-4b-sft-all"
+      - "llamacpp-Qwen2.5-Coder-1.5B"
+      - "llamacpp-Qwen3-Embedding-0.6B"
+      - "llamacpp-Qwen3-Reranker-0.6B"
 
 
 macros:
@@ -57,6 +75,11 @@ macros:
   "lcp_k8v8": >-
     --cache-type-k q8_0
     --cache-type-v q8_0
+    --flash-attn on
+
+  "lcp_k4v4": >-
+    --cache-type-k q4_0
+    --cache-type-v q4_0
     --flash-attn on
 
   "lcp_batching_qwen3": >-
@@ -268,6 +291,7 @@ models:
       ${lcp_k8v8}
       --hf-repo unsloth/gemma-4-E4B-it-GGUF
       --ctx-size ${context_window}
+      --swa-full
       --temp 1.0
       --top-p 0.95
       --top-k 64
@@ -280,6 +304,7 @@ models:
       ${lcp_k8v8}
       --hf-repo unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q3_K_XL
       --ctx-size ${context_window}
+      --swa-full
       --temp 1.0
       --top-p 0.95
       --top-k 64
@@ -457,7 +482,7 @@ models:
   
   llamacpp-Mellum-4b-sft-all:
     macros:
-      context_window: 2048
+      context_window: 4096
     cmd: |
       ${llamacpp-gpu}
       ${lcp_k8v8}
@@ -516,8 +541,10 @@ models:
       context_window: 8192
     cmd: |
       ${llamacpp-gpu}
+      --main-gpu 1
       ${lcp_k8v8}
-      --hf-repo Qwen/Qwen3-Embedding-4B-GGUF:Q8_0
+      --hf-repo Qwen/Qwen3-Embedding-4B-GGUF:Q4_K_M
+      # Q8_0
       --ctx-size ${context_window}
       --embeddings
       --pooling mean
@@ -525,6 +552,39 @@ models:
       --top-p 0.99
       --min-p 0.01
       --top-k 20
+
+  llamacpp-Qwen3-Embedding-0.6B:
+    macros:
+      context_window: 8192
+    cmd: |
+      ${llamacpp-gpu}
+      --main-gpu 1
+      ${lcp_k8v8}
+      --hf-repo Qwen/Qwen3-Embedding-0.6B-GGUF:Q8_0
+      --ctx-size ${context_window}
+      --embeddings
+      --pooling mean
+      --temp 0.007
+      --top-p 0.99
+      --min-p 0.01
+      --top-k 20
+
+  llamacpp-Qwen3-Reranker-0.6B:
+    macros:
+      context_window: 8192
+    cmd: |
+      ${llamacpp-gpu}
+      --main-gpu 1
+      ${lcp_k8v8}
+      --hf-repo ggml-org/Qwen3-Reranker-0.6B-Q8_0-GGUF
+      --ctx-size ${context_window}
+      --embeddings
+      --pooling mean
+      --temp 0.007
+      --top-p 0.99
+      --min-p 0.01
+      --top-k 20
+
 
   llamacpp-Qwen3-Coder-30B-A3B-it:
     macros:
@@ -539,6 +599,47 @@ models:
     proxy: http://127.0.0.1:${PORT}
     metadata:
       context_window: ${context_window}
+    ttl: 3600
+
+  llamacpp-Qwen3-Coder-30B-A3B-it-UD-IQ2_XXS:
+    macros:
+      context_window: 16384
+    cmd: |
+      ${llamacpp-gpu}
+      --split-mode none
+      # --main-gpu 1
+      --n-cpu-moe 999
+      ${lcp_k4v4}
+      --hf-repo unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:UD-IQ2_XXS
+      --ctx-size ${context_window}
+      ${lcp_batching_qwen3}
+      ${lcp_sampling_qwen3}
+    proxy: http://127.0.0.1:${PORT}
+    metadata:
+      context_window: ${context_window}
+    ttl: 3600
+
+  llamacpp-Qwen2.5-Coder-1.5B:
+    macros:
+      context_window: 4096
+    cmd: |
+      ${llamacpp-gpu}
+      --split-mode none
+      --main-gpu 1
+      ${lcp_k8v8}
+      --hf-repo unsloth/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q6_K
+      --ctx-size ${context_window}
+      ${lcp_batching_qwen3}
+      --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc"
+      --top-k 40
+      --top-p 0.95
+      --min-p 0.01
+      --temp 0.1
+      --dry-multiplier 0.1
+      --dry-allowed-length 3
+    metadata:
+      context_window: ${context_window}
+    proxy: http://127.0.0.1:${PORT}
     ttl: 3600
 
   llamacpp-mistral-small-3.2-24b-2506:
@@ -710,6 +811,8 @@ models:
       context_window: 8192
     cmd: |
       ${llamacpp-gpu}
+      --split-mode none
+      --main-gpu 1
       ${lcp_k8v8}
       --hf-repo LiquidAI/LFM2.5-350M-GGUF:Q8_0
       --ctx-size ${context_window}
